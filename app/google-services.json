@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "987683256590",
+    "project_id": "sa-mp-mobile-eb475",
+    "storage_bucket": "sa-mp-mobile-eb475.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:987683256590:android:741c836747410855e63f5f",
+        "android_client_info": {
+          "package_name": "com.rstarx.hexrays"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "987683256590-6er3toqeqgmuf28mcoh6qrrt04fnsgcp.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBBpcdsaJHGJY1UcOyYcMM7Kc0WVn6cKCE"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "987683256590-6er3toqeqgmuf28mcoh6qrrt04fnsgcp.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

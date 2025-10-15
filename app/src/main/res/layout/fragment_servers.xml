@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <com.google.android.material.tabs.TabLayout
+        android:id="@+id/tabLayout_servers"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/_45sdp"
+        app:tabGravity="fill"
+        app:tabIndicatorGravity="bottom"
+        app:tabIndicatorHeight="@dimen/_5sdp"
+        android:background="@color/colorPrimary"
+        app:tabBackground="@android:color/transparent"
+        app:tabIndicatorColor="#FF0037"
+        app:tabSelectedTextColor="#FF0037"
+        app:tabTextAppearance="@style/tab_layout_title"
+        app:tabTextColor="#AAA9A9"
+        app:tabMode="auto"
+        app:tabRippleColor="@null"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"/>
+
+    <com.rstarx.hexrays.launcher.util.ViewPagerWithoutSwipe
+        android:id="@+id/viewPager_servers"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/tabLayout_servers" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>
