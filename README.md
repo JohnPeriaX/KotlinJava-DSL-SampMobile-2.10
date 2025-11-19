@@ -8,7 +8,7 @@
 
 ### Update – sampvoice Fixed!
 
-**Patch 1** (November 19,जे 2025)  
+**Patch 1** (November 19, 2025)  
 **✅ Fully fixed sampvoice system**  
 Players can now **speak and hear each other normally** again!  
 No more missing voice, microphone issues, or connection problems.
