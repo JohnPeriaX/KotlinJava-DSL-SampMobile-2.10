@@ -15,9 +15,9 @@ public:
     static constexpr int      kDefValSoundVolume        = 100;
     static constexpr bool     kDefValSoundBalancer      = false;
     static constexpr bool     kDefValSoundFilter        = false;
+    static constexpr float    kSpeakerIconSize          = 20.f;
     static constexpr bool     kDefValMicroEnable        = true;
     static constexpr int      kDefValMicroVolume        = 75;
-    static constexpr float    kDefValSpeakerIconSize    = 46.0f;
 
 public:
     static bool IsPlaybackLoaded() noexcept;
@@ -34,6 +34,7 @@ public:
     static int GetSoundVolume() noexcept;
     static bool GetSoundBalancer() noexcept;
     static bool GetSoundFilter() noexcept;
+    static float GetSpeakerIconScale() noexcept;
     static bool GetMicroEnable() noexcept;
     static int GetMicroVolume() noexcept;
     static const std::string& GetDeviceName() noexcept;
@@ -42,6 +43,7 @@ public:
     static void SetSoundVolume(int soundVolume) noexcept;
     static void SetSoundBalancer(bool soundBalancer) noexcept;
     static void SetSoundFilter(bool soundFilter) noexcept;
+    static void SetSpeakerIconScale(float speakerIconScale) noexcept;
     static void SetMicroEnable(bool microEnable) noexcept;
     static void SetMicroVolume(int microVolume) noexcept;
     static void SetDeviceName(std::string deviceName) noexcept;
@@ -56,6 +58,7 @@ private:
     static int soundVolume;
     static bool soundBalancer;
     static bool soundFilter;
+    static float speakerIconScale;
 
     static bool microEnable;
     static int microVolume;

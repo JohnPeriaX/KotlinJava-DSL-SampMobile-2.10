@@ -26,15 +26,13 @@ void StreamAtVehicle::Tick() noexcept
     CVehicle *pVehicle = pVehiclePool->GetAt(this->vehicleId);
     if(!pVehicle) return;
 
-    RwMatrix pVehicleMatrix = pVehicle->m_pVehicle->GetMatrix().ToRwMatrix();
+    RwMatrix pVehicleMatrix;
+    pVehicle->m_pVehicle->GetMatrix(&pVehicleMatrix);
 
     for(const auto& channel : this->GetChannels())
     {
         if(channel->HasSpeaker())
         {
-            BASS_ChannelSet3DPosition(channel->GetHandle(),
-                reinterpret_cast<BASS_3DVECTOR*>(&pVehicleMatrix.pos),
-                nullptr, nullptr);
         }
     }
 }
@@ -53,9 +51,6 @@ void StreamAtVehicle::OnChannelCreate(const Channel& channel) noexcept
     CVehicle *pVehicle = pVehiclePool->GetAt(this->vehicleId);
     if(!pVehicle) return;
 
-    RwMatrix pVehicleMatrix = pVehicle->m_pVehicle->GetMatrix().ToRwMatrix();
-
-    BASS_ChannelSet3DPosition(channel.GetHandle(),
-        reinterpret_cast<BASS_3DVECTOR*>(&pVehicleMatrix.pos),
-        &kZeroVector, &kZeroVector);
+    RwMatrix pVehicleMatrix;
+    pVehicle->m_pVehicle->GetMatrix(&pVehicleMatrix);
 }

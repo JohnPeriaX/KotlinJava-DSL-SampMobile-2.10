@@ -19,10 +19,6 @@ public:
     static bool OnPluginLoad() noexcept;
     static bool OnSampLoad() noexcept;
 
-    //static bool recordStatus;
-    static int MicRecord;
-    static int MicPress;
-
 private:
     static void OnInitGame() noexcept;
     static void OnExitGame() noexcept;

@@ -5,12 +5,12 @@ Effect::Effect(const uint32_t type, const int priority,
                const void* const paramPtr, const uint32_t paramSize)
     : type(type), priority(priority), params(paramSize)
 {
-    std::memcpy(this->params.data(), paramPtr, paramSize);
+    memcpy(this->params.data(), paramPtr, paramSize);
 }
 
 Effect::~Effect() noexcept
 {
-    for (const auto& fxHandle : this->fxHandles)
+    for(const auto& fxHandle : this->fxHandles)
     {
         BASS_ChannelRemoveFX(fxHandle.first, fxHandle.second);
     }
@@ -18,10 +18,10 @@ Effect::~Effect() noexcept
 
 void Effect::Apply(const Channel& channel)
 {
-    if (const auto fxHandle = BASS_ChannelSetFX(channel.GetHandle(),
+    if(const auto fxHandle = BASS_ChannelSetFX(channel.GetHandle(),
         this->type, this->priority); fxHandle != NULL)
     {
-        if (BASS_FXSetParameters(fxHandle, this->params.data()) == FALSE)
+        if(BASS_FXSetParameters(fxHandle, this->params.data()) == FALSE)
         {
             LogVoice("[sv:err:effect:apply] : failed "
                 "to set parameters (code:%d)", BASS_ErrorGetCode());

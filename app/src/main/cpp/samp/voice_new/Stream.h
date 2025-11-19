@@ -18,7 +18,7 @@ private:
     using StopCallback = std::function<void(const Stream&, uint16_t)>;
 
 protected:
-    explicit Stream(uint32_t streamFlags, StreamType type, uint32_t color, std::string name) noexcept;
+    explicit Stream(uint32_t streamFlags, StreamType type, uint32_t color, std::string name, float distance) noexcept;
 
 public:
     virtual ~Stream() noexcept = default;

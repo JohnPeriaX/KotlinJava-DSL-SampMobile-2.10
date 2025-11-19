@@ -29,7 +29,7 @@ namespace SV
     // Constants
     // --------------------------------------------
 
-    constexpr uint16_t  kNonePlayer = 0xffff;
+    constexpr uint16_t kNonePlayer = 0xffff;
 
     constexpr uint8_t  kVersion = 11;
     constexpr uint32_t kSignature = 0xDeadBeef;
@@ -39,7 +39,7 @@ namespace SV
 
     constexpr uint32_t kVoiceRate = 100;
     constexpr uint32_t kFrequency = 48000;
-    constexpr uint32_t kFrequency1 = 44100;
+    constexpr uint32_t kFrequency2 = 44100;
     constexpr uint32_t kFrameSizeInSamples = (kFrequency / 1000) * kVoiceRate;
     constexpr uint32_t kFrameSizeInBytes = kFrameSizeInSamples * sizeof(uint16_t);
 

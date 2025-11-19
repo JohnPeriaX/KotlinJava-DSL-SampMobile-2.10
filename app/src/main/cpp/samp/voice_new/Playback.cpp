@@ -1,7 +1,4 @@
-#include "../vendor/bass/bass.h"
-#include <opus.h>
-
-
+#include "../main.h"
 #include "../game/common.h"
 #include "../game/game.h"
 
@@ -9,7 +6,6 @@
 
 #include "PluginConfig.h"
 #include "Header.h"
-#include "main.h"
 
 extern CGame *pGame;
 
@@ -56,15 +52,6 @@ void Playback::Free() noexcept
 void Playback::Tick() noexcept
 {
     if(!Playback::loadStatus) return;
-    CCamera& TheCamera = *reinterpret_cast<CCamera*>(g_libGTASA + (VER_x32 ? 0x00951FA8 : 0xBBA8D0));
-
-    /*BASS_Set3DPosition(
-        reinterpret_cast<const BASS_3DVECTOR*>(&TheCamera.GetMatrix().m_pos), nullptr,
-        reinterpret_cast<const BASS_3DVECTOR*>(&TheCamera.GetMatrix().m_forward),
-        reinterpret_cast<const BASS_3DVECTOR*>(&TheCamera.GetMatrix().m_up)
-    );*/
-
-    BASS_Apply3D();
 }
 
 bool Playback::GetSoundEnable() noexcept
@@ -97,16 +84,18 @@ void Playback::SetSoundEnable(const bool soundEnable) noexcept
     else BASS_SetConfig(BASS_CONFIG_GVOL_STREAM, 100 * PluginConfig::GetSoundVolume());
 }
 
+int clampExxx(int source, int min, int max)
+{
+    if (source < min) return min;
+    if (source > max) return max;
+    return source;
+}
+
 void Playback::SetSoundVolume(const int soundVolume) noexcept
 {
     if(!Playback::loadStatus) return;
 
-    int iSoundVolume = soundVolume;
-    if(soundVolume < 0) iSoundVolume = 0;
-    else if(soundVolume > 100) iSoundVolume = 100;
-
-    PluginConfig::SetSoundVolume(iSoundVolume);
-    //PluginConfig::SetSoundVolume(std::clamp(soundVolume, 0, 100));
+    PluginConfig::SetSoundVolume(clampExxx(soundVolume, 0, 100));
 
     if(PluginConfig::GetSoundEnable())
     {
@@ -118,13 +107,13 @@ void Playback::SetSoundBalancer(const bool soundBalancer) noexcept
 {
     static HFX balancerFxHandle { NULL };
 
-    if (!Playback::loadStatus) return;
+    if(!Playback::loadStatus) return;
 
     PluginConfig::SetSoundBalancer(soundBalancer);
 
     if (PluginConfig::GetSoundBalancer() && balancerFxHandle == NULL)
     {
-        balancerFxHandle = BASS_ChannelSetFX(Playback::deviceOutputChannel, BASS_FX_BFX_COMPRESSOR2, 0);
+        balancerFxHandle = BASS_ChannelSetFX(Playback::deviceOutputChannel, BASS_FX_BFX_COMPRESSOR2);
 
         if(balancerFxHandle == NULL)
         {
@@ -166,7 +155,7 @@ void Playback::SetSoundFilter(const bool soundFilter) noexcept
 
     if(PluginConfig::GetSoundFilter() && filterFxHandle == NULL)
     {
-        filterFxHandle = BASS_ChannelSetFX(Playback::deviceOutputChannel, BASS_FX_BFX_BQF, 0);
+        filterFxHandle = BASS_ChannelSetFX(Playback::deviceOutputChannel, BASS_FX_BFX_BQF);
 
         if(filterFxHandle == NULL)
         {
@@ -190,7 +179,7 @@ void Playback::SetSoundFilter(const bool soundFilter) noexcept
             PluginConfig::SetSoundFilter(false);
         }
     }
-    else if (!PluginConfig::GetSoundFilter() && filterFxHandle != NULL)
+    else if(!PluginConfig::GetSoundFilter() && filterFxHandle != NULL)
     {
         BASS_ChannelRemoveFX(Playback::deviceOutputChannel, filterFxHandle);
         filterFxHandle = NULL;
@@ -223,15 +212,16 @@ bool Playback::BassInitHookFunc() noexcept
     BASS_SetConfig(BASS_CONFIG_BUFFER, SV::kChannelBufferSizeInMs);
     BASS_SetConfig(BASS_CONFIG_UPDATEPERIOD, SV::kAudioUpdatePeriod);
     BASS_SetConfig(BASS_CONFIG_UPDATETHREADS, SV::kAudioUpdateThreads);
-    BASS_SetConfig(BASS_CONFIG_3DALGORITHM, BASS_3DALG_LIGHT);
+//    BASS_SetConfig(BASS_CONFIG_3DALGORITHM, BASS_3DALG_LIGHT);
+    BASS_SetConfig(BASS_CONFIG_ANDROID_AAUDIO, 2);
     
     /*LogVoice("[sv:dbg:playback:bassinithook] : hooked function BASS_Init(device:%d, "
         "freq:%u, flags:0x%x, win:0x%x, dsguid:0x%x)...", device, freq, flags, win, dsguid);*/
 
     LogVoice("[sv:dbg:playback:bassinithook] : calling function BASS_Init(device:-1, "
-        "freq:%u, flags:0x%x)...", SV::kFrequency, BASS_DEVICE_MONO | BASS_DEVICE_3D);
+        "freq:%u, flags:0x%x)...", SV::kFrequency2, BASS_DEVICE_MONO);
 
-    if(BASS_Init(-1, SV::kFrequency, BASS_DEVICE_MONO | BASS_DEVICE_3D, nullptr, nullptr) == 0)
+    if(BASS_Init(-1, SV::kFrequency2, BASS_DEVICE_MONO) == 0)
     {
         LogVoice("[sv:err:playback:bassinithook] : failed to init bass library (code:%d)", BASS_ErrorGetCode());
         return false;
@@ -250,10 +240,6 @@ bool Playback::BassInitHookFunc() noexcept
         LogVoice("[sv:err:playback:init] : failed to create device output channel (code:%d)", BASS_ErrorGetCode());
         return false;
     }
-
-    BASS_Set3DFactors(1.f, 1.f, 0.f);
-    BASS_Set3DPosition(&kZeroVector, &kZeroVector, &kZeroVector, &kZeroVector);
-    BASS_Apply3D();
 
     LogVoice("[sv:dbg:playback:bassinithook] : module loaded");
 

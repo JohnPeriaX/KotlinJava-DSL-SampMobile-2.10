@@ -60,6 +60,11 @@ bool PluginConfig::GetSoundFilter() noexcept
     return PluginConfig::soundFilter;
 }
 
+float PluginConfig::GetSpeakerIconScale() noexcept
+{
+    return PluginConfig::speakerIconScale;
+}
+
 bool PluginConfig::GetMicroEnable() noexcept
 {
     return PluginConfig::microEnable;
@@ -95,6 +100,11 @@ void PluginConfig::SetSoundFilter(const bool soundFilter) noexcept
     PluginConfig::soundFilter = soundFilter;
 }
 
+void PluginConfig::SetSpeakerIconScale(const float speakerIconScale) noexcept
+{
+    PluginConfig::speakerIconScale = speakerIconScale;
+}
+
 void PluginConfig::SetMicroEnable(const bool microEnable) noexcept
 {
     PluginConfig::microEnable = microEnable;
@@ -119,6 +129,7 @@ bool PluginConfig::soundEnable { kDefValSoundEnable };
 int PluginConfig::soundVolume { kDefValSoundVolume };
 bool PluginConfig::soundBalancer { kDefValSoundBalancer };
 bool PluginConfig::soundFilter { kDefValSoundFilter };
+float PluginConfig::speakerIconScale { kSpeakerIconSize };
 
 bool PluginConfig::microEnable { kDefValMicroEnable };
 int PluginConfig::microVolume { kDefValMicroVolume };

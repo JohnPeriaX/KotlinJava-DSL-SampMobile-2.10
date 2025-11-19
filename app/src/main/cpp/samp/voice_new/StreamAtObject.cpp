@@ -26,15 +26,13 @@ void StreamAtObject::Tick() noexcept
     CObject *pObject = pObjectPool->GetAt(this->objectId);
     if(!pObject) return;
 
-    RwMatrix pObjectMatrix = pObject->m_pEntity->GetMatrix().ToRwMatrix();
+    RwMatrix pObjectMatrix;
+    pObject->m_pEntity->GetMatrix(&pObjectMatrix);
 
     for(const auto& channel : this->GetChannels())
     {
         if(channel->HasSpeaker())
         {
-            BASS_ChannelSet3DPosition(channel->GetHandle(),
-                reinterpret_cast<BASS_3DVECTOR*>(&pObjectMatrix.pos),
-                nullptr, nullptr);
         }
     }
 }
@@ -53,9 +51,6 @@ void StreamAtObject::OnChannelCreate(const Channel& channel) noexcept
     CObject *pObject = pObjectPool->GetAt(this->objectId);
     if(!pObject) return;
 
-    RwMatrix pObjectMatrix = pObject->m_pEntity->GetMatrix().ToRwMatrix();
-
-    BASS_ChannelSet3DPosition(channel.GetHandle(),
-        reinterpret_cast<BASS_3DVECTOR*>(&pObjectMatrix.pos),
-        &kZeroVector, &kZeroVector);
+    RwMatrix pObjectMatrix;
+    pObject->m_pEntity->GetMatrix(&pObjectMatrix);
 }

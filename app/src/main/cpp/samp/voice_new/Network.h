@@ -1,8 +1,7 @@
 #pragma once
 
-#include <deque>
-#include "../vendor/RakNet/BitStream.h"
-#include "../vendor/RakNet/RakClient.h"
+#include "../vendor/raknet/BitStream.h"
+#include "../vendor/raknet/RakClient.h"
 
 #include "include/SPSCQueue.h"
 
@@ -54,7 +53,7 @@ public:
     static bool SendControlPacket(uint16_t packet, const void *dataAddr = nullptr, uint16_t dataSize = 0) noexcept;
     static bool SendVoicePacket(const void *dataAddr, uint16_t dataSize) noexcept;
     static void EndSequence() noexcept;
-    static ControlPacket* ReceiveControlPacket() noexcept;
+    static ControlPacketContainerPtr ReceiveControlPacket() noexcept;
     static VoicePacketContainerPtr ReceiveVoicePacket() noexcept;
 
     static std::size_t AddConnectCallback(ConnectCallback callback) noexcept;
@@ -67,30 +66,29 @@ public:
     static void RemoveDisconnectCallback(std::size_t callback) noexcept;
 
     static void VoiceThread() noexcept;
-
+    
     static void OnRaknetConnect(const char *ip, uint32_t port) noexcept;
     static bool OnRaknetRpc(int id, RakNet::BitStream& parameters) noexcept;
-    static bool OnRaknetReceive(Packet* packet) noexcept;
+    static bool OnRaknetReceive(Packet& packet) noexcept;
     static void OnRaknetDisconnect() noexcept;
 
 private:
-    static inline bool initStatus {false};
+    static bool initStatus;
 
-    static inline int socketHandle {INVALID_SOCKET};
-    static inline int connectionStatus {ConnectionStatus::Disconnected};
-    static inline std::thread voiceThread;
-    static inline std::string serverIp;
-    static inline uint32_t serverKey {NULL};
+    static int socketHandle;
+    static int connectionStatus;
+    static std::thread voiceThread;
+    static std::string serverIp;
+    static uint32_t serverKey;
 
-    static inline std::vector<ConnectCallback> connectCallbacks;
-    static inline std::vector<SvConnectCallback> svConnectCallbacks;
-    static inline std::vector<SvInitCallback> svInitCallbacks;
-    static inline std::vector<DisconnectCallback> disconnectCallbacks;
+    static std::vector<ConnectCallback> connectCallbacks;
+    static std::vector<SvConnectCallback> svConnectCallbacks;
+    static std::vector<SvInitCallback> svInitCallbacks;
+    static std::vector<DisconnectCallback> disconnectCallbacks;
 
-    static inline std::mutex controlQueueMutex;
-    static inline std::deque<ControlPacket*> controlQueue;
-    static inline SPSCQueue<VoicePacketContainerPtr> voiceQueue {512};
+    static SPSCQueue<ControlPacketContainerPtr> controlQueue;
+    static SPSCQueue<VoicePacketContainerPtr> voiceQueue;
 
-    static inline VoicePacketContainer inputVoicePacket {kMaxVoiceDataSize};
-    static inline VoicePacketContainer outputVoicePacket {kMaxVoiceDataSize};
+    static VoicePacketContainer inputVoicePacket;
+    static VoicePacketContainer outputVoicePacket;
 };

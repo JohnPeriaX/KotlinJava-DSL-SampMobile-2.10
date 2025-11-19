@@ -8,7 +8,7 @@ struct ControlPacket
 {
     uint16_t packet;
     uint16_t length;
-    uint8_t* data;
+    uint8_t data[];
 
     uint32_t GetFullSize();
 };
