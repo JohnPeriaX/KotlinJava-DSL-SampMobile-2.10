@@ -237,10 +237,16 @@ bool Record::Init(const uint32_t bitrate) noexcept
     int iSamplingSize = 44100;
 
     Record::speexEchoState = speex_echo_state_init(SV::kFrameSizeInSamples, SV::kFrameSizeInBytes);
-    speex_echo_ctl(Record::speexEchoState, SPEEX_ECHO_SET_SAMPLING_RATE, &iSamplingSize);
+    if (Record::speexEchoState)
+    {
+        speex_echo_ctl(Record::speexEchoState, SPEEX_ECHO_SET_SAMPLING_RATE, &iSamplingSize);
 
-    speexPreprocessState = speex_preprocess_state_init(SV::kFrameSizeInSamples, iSamplingSize);
-    speex_preprocess_ctl(speexPreprocessState, SPEEX_PREPROCESS_SET_ECHO_STATE, speexEchoState);
+        speexPreprocessState = speex_preprocess_state_init(SV::kFrameSizeInSamples, iSamplingSize);
+        if (speexPreprocessState)
+        {
+            speex_preprocess_ctl(speexPreprocessState, SPEEX_PREPROCESS_SET_ECHO_STATE, speexEchoState);
+        }
+    }
 
 /*
     // create engine
@@ -407,18 +413,26 @@ void Record::Tick() noexcept
         {
             std::array<opus_int16, SV::kFrameSizeInSamples> encOutBuffer {};
 
-            // perform echo canceling
-            speex_echo_capture(speexEchoState, Record::encBuffer.data(), encOutBuffer.data());
-            
-            // apply noise/echo suppresion
-            speex_preprocess_run(speexPreprocessState, encOutBuffer.data());
+            if (Record::speexEchoState && Record::speexPreprocessState)
+            {
+                // perform echo canceling
+                speex_echo_capture(speexEchoState, Record::encBuffer.data(), encOutBuffer.data());
+                
+                // apply noise/echo suppression
+                speex_preprocess_run(speexPreprocessState, encOutBuffer.data());
 
-            // playback the audio and reset echo canceller if we got underrun
-            BASS_StreamPutData(Record::checkChannel, encOutBuffer.data(), readDataSize);
-            //speex_echo_state_reset(speexEchoState);
+                // playback the audio and reset echo canceller if we got underrun
+                BASS_StreamPutData(Record::checkChannel, encOutBuffer.data(), readDataSize);
 
-            // put frame into playback buffer
-            speex_echo_playback(speexEchoState, Record::encBuffer.data());
+                // put frame into playback buffer
+                speex_echo_playback(speexEchoState, Record::encBuffer.data());
+            }
+            else
+            {
+                // fallback: bypass AEC/NS and forward raw mic data
+                std::copy(Record::encBuffer.begin(), Record::encBuffer.end(), encOutBuffer.begin());
+                BASS_StreamPutData(Record::checkChannel, encOutBuffer.data(), readDataSize);
+            }
 
             //(*bqPlayerBufferQueue)->Enqueue(bqPlayerBufferQueue, Record::encBuffer.data(), readDataSize);
         }
@@ -440,8 +454,15 @@ uint32_t Record::GetFrame(uint8_t* const bufferPtr, const uint32_t bufferSize) n
 
     std::array<opus_int16, SV::kFrameSizeInSamples> encOutBuffer {};
 
-    // perform echo canceling
-    speex_echo_capture(Record::speexEchoState, Record::encBuffer.data(), encOutBuffer.data());
+    // perform echo canceling or bypass
+    if (Record::speexEchoState)
+    {
+        speex_echo_capture(Record::speexEchoState, Record::encBuffer.data(), encOutBuffer.data());
+    }
+    else
+    {
+        std::copy(Record::encBuffer.begin(), Record::encBuffer.end(), encOutBuffer.begin());
+    }
 
     //LogVoice("Here?");
 

@@ -24,7 +24,7 @@ bool SpeakerList::Init() noexcept
 
     try
     {
-        SpeakerList::tSpeakerIcon = (RwTexture*)CUtil::LoadTextureFromDB("samp", "speaker");
+        SpeakerList::tSpeakerIcon = (RwTexture*)CUtil::LoadTextureFromDB("samp", "voice_speaker");
     }
     catch (const std::exception& exception)
     {
@@ -179,7 +179,7 @@ void SpeakerList::Draw(CVector* vec, float fDist)
 
     CVector Out;
 	// CSprite::CalcScreenCoors
-	((void (*)(CVector*, CVector*, float*, float*, bool, bool))(g_libGTASA + (VER_x32 ? 0x00665DB4 + 1 : 0x82CC28)))(&TagPos, &Out, 0, 0, 0, 0);
+	((void (*)(CVector*, CVector*, float*, float*, bool, bool))(g_libGTASA + (VER_x32 ? 0x005C57E8 + 1 : 0x6E9DF8)))(&TagPos, &Out, 0, 0, 0, 0);
 
 	if(Out.z < 1.0f)
 		return;
@@ -236,7 +236,7 @@ void SpeakerList::SyncConfigs() noexcept
 
 void SpeakerList::ResetConfigs() noexcept
 {
-    SpeakerList::SetSpeakerIconScale(PluginConfig::kDefValSpeakerIconSize);
+    SpeakerList::SetSpeakerIconScale(PluginConfig::kSpeakerIconSize);
 }
 
 std::array<std::unordered_map<Stream*, StreamInfo>, MAX_PLAYERS> SpeakerList::playerStreams;
@@ -246,4 +246,4 @@ bool SpeakerList::initStatus { false };
 bool SpeakerList::showStatus { false };
 
 RwTexture* SpeakerList::tSpeakerIcon { nullptr };
-float SpeakerList::speakerIconScale { PluginConfig::kDefValSpeakerIconSize };
+float SpeakerList::speakerIconScale { PluginConfig::kSpeakerIconSize };

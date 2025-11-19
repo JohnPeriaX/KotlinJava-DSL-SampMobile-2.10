@@ -113,7 +113,7 @@ void Playback::SetSoundBalancer(const bool soundBalancer) noexcept
 
     if (PluginConfig::GetSoundBalancer() && balancerFxHandle == NULL)
     {
-        balancerFxHandle = BASS_ChannelSetFX(Playback::deviceOutputChannel, BASS_FX_BFX_COMPRESSOR2);
+        balancerFxHandle = BASS_ChannelSetFX(Playback::deviceOutputChannel, BASS_FX_BFX_COMPRESSOR2, 0);
 
         if(balancerFxHandle == NULL)
         {
@@ -155,7 +155,7 @@ void Playback::SetSoundFilter(const bool soundFilter) noexcept
 
     if(PluginConfig::GetSoundFilter() && filterFxHandle == NULL)
     {
-        filterFxHandle = BASS_ChannelSetFX(Playback::deviceOutputChannel, BASS_FX_BFX_BQF);
+        filterFxHandle = BASS_ChannelSetFX(Playback::deviceOutputChannel, BASS_FX_BFX_BQF, 0);
 
         if(filterFxHandle == NULL)
         {
@@ -221,7 +221,7 @@ bool Playback::BassInitHookFunc() noexcept
     LogVoice("[sv:dbg:playback:bassinithook] : calling function BASS_Init(device:-1, "
         "freq:%u, flags:0x%x)...", SV::kFrequency2, BASS_DEVICE_MONO);
 
-    if(BASS_Init(-1, SV::kFrequency2, BASS_DEVICE_MONO) == 0)
+    if(BASS_Init(-1, SV::kFrequency2, BASS_DEVICE_MONO, nullptr, nullptr) == 0)
     {
         LogVoice("[sv:err:playback:bassinithook] : failed to init bass library (code:%d)", BASS_ErrorGetCode());
         return false;

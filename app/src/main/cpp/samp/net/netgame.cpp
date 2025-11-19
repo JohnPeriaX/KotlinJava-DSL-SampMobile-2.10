@@ -48,7 +48,7 @@ CNetGame::CNetGame(const char* szHostOrIp, int iPort, const char *szPlayerName, 
 	FLog("CNetGame initializing..");
 
 	// voice
-	//Network::OnRaknetConnect(szHostOrIp, iPort);
+	Network::OnRaknetConnect(szHostOrIp, iPort);
 
 	//MyLog2("Voice connect %s:%d", szHostOrIp, iPort);
 	//MyLog2("Voice connect %s:%d", szHostOrIp, iPort);
@@ -108,7 +108,7 @@ CNetGame::CNetGame(const char* szHostOrIp, int iPort, const char *szPlayerName, 
 CNetGame::~CNetGame()
 {
 	// voice
-	//Network::OnRaknetDisconnect();
+	Network::OnRaknetDisconnect();
 
 	m_pRakClient->Disconnect(0);
 	UnregisterRPCs(m_pRakClient);
@@ -312,7 +312,7 @@ void CNetGame::UpdateNetwork()
                 break;
 
             case Network::kRaknetPacketId: {
-                Network::OnRaknetReceive(pkt);
+                Network::OnRaknetReceive(*pkt);
                 break;
             }
 
@@ -322,9 +322,10 @@ void CNetGame::UpdateNetwork()
         }
 
 		// voice
-		/*if (!Network::OnRaknetReceive(*pkt)) {
-			return;
-		}*/
+		/*
+		if (!Network::OnRaknetReceive(*pkt)) breakStatus = true;
+		if (breakStatus) return;
+		*/
 
 		m_pRakClient->DeallocatePacket(pkt);
 	}

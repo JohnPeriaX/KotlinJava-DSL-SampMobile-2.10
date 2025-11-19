@@ -1,5 +1,5 @@
 #include "Channel.h"
-#include <speex/speex_echo.h>
+#include "SpeexCompat.h"
 
 #include "PluginConfig.h"
 #include "Record.h"

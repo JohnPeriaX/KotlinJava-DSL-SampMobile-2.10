@@ -7,8 +7,7 @@
 
 #include <array>
 
-#include <speex/speex_echo.h>
-#include <speex/speex_preprocess.h>
+#include "SpeexCompat.h"
 
 #include "include/util/Memory.hpp"
 

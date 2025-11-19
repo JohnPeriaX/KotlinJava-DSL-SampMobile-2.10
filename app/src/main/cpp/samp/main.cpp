@@ -224,7 +224,7 @@ void DoInitStuff()
 		pGame->ToggleThePassingOfTime(false);
 
 		// voice
-		/*LogVoice("[dbg:samp:load] : module loading...");
+		LogVoice("[dbg:samp:load] : module loading...");
 
 		for (const auto& loadCallback : Samp::loadCallbacks) {
 			if (loadCallback != nullptr) {
@@ -232,7 +232,7 @@ void DoInitStuff()
 			}
 		}
 
-		Samp::loadStatus = true;*/
+		Samp::loadStatus = true;
 
 		LogVoice("[dbg:samp:load] : module loaded");
 
