@@ -24,6 +24,11 @@ namespace Memory
 {
     class ScopeExit {
     public:
+        ScopeExit() = default;
+        ScopeExit(const ScopeExit&) = delete;
+        ScopeExit(ScopeExit&&) = default;
+        ScopeExit& operator=(const ScopeExit&) = delete;
+        ScopeExit& operator=(ScopeExit&&) = default;
 
     private:
         using CallbackType = std::function<void()>;
@@ -73,7 +78,7 @@ namespace Memory
 
             assert((uint32_t)(memSize) >= sizeof(ObjectType));
 
-            std::memcpy(this->bytes.data(), (const void*)(memAddr), this->bytes.size());
+            memcpy(this->bytes.data(), (const void*)(memAddr), this->bytes.size());
         }
 
         ~ObjectContainer() noexcept = default;
