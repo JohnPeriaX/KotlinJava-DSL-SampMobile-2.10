@@ -14,6 +14,9 @@ void StreamAtPoint::SetPosition(const CVector& position) noexcept
 
     for(const auto& channel : this->GetChannels())
     {
+        BASS_ChannelSet3DPosition(channel->GetHandle(),
+            reinterpret_cast<BASS_3DVECTOR*>(&this->position),
+            nullptr, nullptr);
     }
 }
 
@@ -22,4 +25,8 @@ void StreamAtPoint::OnChannelCreate(const Channel& channel) noexcept
     static const BASS_3DVECTOR kZeroVector { 0, 0, 0 };
 
     this->LocalStream::OnChannelCreate(channel);
+
+    BASS_ChannelSet3DPosition(channel.GetHandle(),
+    reinterpret_cast<BASS_3DVECTOR*>(&this->position),
+    &kZeroVector, &kZeroVector);
 }

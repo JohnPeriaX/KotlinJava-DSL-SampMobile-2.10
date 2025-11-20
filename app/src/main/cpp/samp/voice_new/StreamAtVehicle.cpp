@@ -33,6 +33,9 @@ void StreamAtVehicle::Tick() noexcept
     {
         if(channel->HasSpeaker())
         {
+            BASS_ChannelSet3DPosition(channel->GetHandle(),
+                reinterpret_cast<BASS_3DVECTOR*>(&pVehicle->m_pVehicle->GetPosition()),
+                nullptr, nullptr);
         }
     }
 }
@@ -53,4 +56,8 @@ void StreamAtVehicle::OnChannelCreate(const Channel& channel) noexcept
 
     RwMatrix pVehicleMatrix;
     pVehicle->m_pVehicle->GetMatrix(&pVehicleMatrix);
+
+    BASS_ChannelSet3DPosition(channel.GetHandle(),
+        reinterpret_cast<BASS_3DVECTOR*>(&pVehicle->m_pVehicle->GetPosition()),
+        &kZeroVector, &kZeroVector);
 }

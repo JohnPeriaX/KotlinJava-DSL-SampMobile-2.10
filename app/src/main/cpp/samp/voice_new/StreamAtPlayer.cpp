@@ -36,6 +36,9 @@ void StreamAtPlayer::Tick() noexcept
     {
         if(channel->HasSpeaker())
         {
+            BASS_ChannelSet3DPosition(channel->GetHandle(),
+                reinterpret_cast<BASS_3DVECTOR*>(&pPlayerPed->m_pPed->GetPosition()),
+                nullptr, nullptr);
         }
     }
 }
@@ -59,4 +62,8 @@ void StreamAtPlayer::OnChannelCreate(const Channel& channel) noexcept
 
     RwMatrix pPlayerMatrix;
     pPlayerPed->m_pPed->GetMatrix(&pPlayerMatrix);
+
+    BASS_ChannelSet3DPosition(channel.GetHandle(),
+        reinterpret_cast<BASS_3DVECTOR*>(&pPlayer->GetPlayerPed()->m_pPed->GetPosition()),
+        &kZeroVector, &kZeroVector);
 }
