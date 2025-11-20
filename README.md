@@ -13,6 +13,22 @@
 Players can now **speak and hear each other normally** again!  
 No more missing voice, microphone issues, or connection problems.
 
+### แก้ไขครั้งที่ 2 (20 พฤศจิกายน 2568)
+**✨ เพิ่มฟีเจอร์ 3D Position Updates สำหรับ Voice Stream Channels**  
+ตอนนี้เสียงจะดัง–เบาตามระยะห่างและทิศทางของตัวละครจริง ๆ แล้ว!  
+ยิ่งใกล้กัน = เสียงดังชัด  
+ยิ่งไกล = เสียงเบาลงและมีทิศทางสมจริง  
+เดินไปด้านหลังคนอื่น เสียงจะมาจากด้านหลังด้วย!
+
+### Major Update – 3D Voice Positioning Added!
+
+**Patch 2** (November 20, 2025)  
+**✨ Added 3D position updates for voice stream channels**  
+Voice volume and direction now fully depend on your in-game position!  
+- Closer = louder and clearer  
+- Farther = quieter with realistic attenuation  
+- Walk behind someone = hear their voice from behind!
+- 
 ---
 
 **ขอบคุณทุกคนที่รออย่างอดทน ❤️**  
