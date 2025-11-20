@@ -29,6 +29,27 @@ Voice volume and direction now fully depend on your in-game position!
 - Farther = quieter with realistic attenuation  
 - Walk behind someone = hear their voice from behind!
 - 
+
+### Patch 2.1 (20 พฤศจิกายน 2568)
+**🔊 เปิดใช้งาน 3D Audio สำหรับ Local Voice Streams เต็มระบบ**  
+**🧭 อัปเดตตำแหน่งผู้ฟัง (Listener Position) แบบเรียลไทม์**  
+
+เสียงตอนนี้สมจริงสุด ๆ:  
+- ดัง–เบาตามระยะห่างจริง 100%  
+- มีทิศทาง 360° ครบทุกมุม (หน้า-หลัง-ซ้าย-ขวา-บน-ล่าง)  
+- เดินเข้าใกล้ = เสียงชัดและดังขึ้นทันที  
+- หมุนตัวหรือหันหลัง = ทิศทางเสียงเปลี่ยนตามทันที  
+
+### Patch 2.1 (November 20, 2025)
+**🔊 Enabled full 3D audio for local voice streams**  
+**🧭 Real-time listener position updates**  
+
+Voice is now fully positional:  
+- Perfect distance-based volume attenuation  
+- Complete 360° directional audio  
+- Walk closer → instantly louder & clearer  
+- Turn around → voice direction follows perfectly
+
 ---
 
 **ขอบคุณทุกคนที่รออย่างอดทน ❤️**  
