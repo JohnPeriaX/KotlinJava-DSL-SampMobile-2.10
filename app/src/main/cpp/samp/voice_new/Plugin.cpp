@@ -1,5 +1,6 @@
 #include "../main.h"
 #include "../gui/gui.h"
+#include "../game/game.h"
 
 #include "Plugin.h"
 
@@ -20,6 +21,7 @@
 #include "StreamAtObject.h"
 
 extern UI* pUI;
+extern CGame* pGame;
 
 bool Plugin::OnPluginLoad() noexcept
 {
@@ -555,6 +557,15 @@ void Plugin::OnRender()
 {
     Timer::Tick();
     Plugin::MainLoop();
+
+    // Update listener position for 3D audio and apply changes
+    if (pGame && pGame->FindPlayerPed()) {
+        CPlayerPed* player = pGame->FindPlayerPed();
+        const BASS_3DVECTOR* pos = reinterpret_cast<const BASS_3DVECTOR*>(&player->m_pPed->GetPosition());
+        // Leave velocity/front/top as previously set/default for simplicity
+        BASS_Set3DPosition(pos, nullptr, nullptr, nullptr);
+    }
+    BASS_Apply3D();
     SpeakerList::Render();
 }
 
