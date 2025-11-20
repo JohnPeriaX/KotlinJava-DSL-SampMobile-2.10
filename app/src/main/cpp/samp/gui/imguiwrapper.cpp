@@ -71,7 +71,7 @@ bool ImGuiWrapper::initialize()
 	m_renderer = new ImGuiRenderer(ImGui::GetBackgroundDrawList(), font);
 
 	// voice 
-	for (const auto& deviceInitCallback : Render::deviceInitCallbacks) {
+	for (const auto& deviceInitCallback : CVoiceRender::deviceInitCallbacks) {
 		if (deviceInitCallback != nullptr) {
 			deviceInitCallback();
 		}
@@ -97,7 +97,7 @@ void ImGuiWrapper::render()
 			MicroIcon::Show();
 		}
 
-		for (const auto& renderCallback : Render::renderCallbacks) {
+		for (const auto& renderCallback : CVoiceRender::renderCallbacks) {
 			if (renderCallback != nullptr) {
 				renderCallback();
 			}
@@ -115,7 +115,7 @@ void ImGuiWrapper::shutdown()
 	Log::traceLastFunc("ImGuiWrapper::shutdown");
 
 	// voice
-	for (const auto& deviceFreeCallback : Render::deviceFreeCallbacks) {
+	for (const auto& deviceFreeCallback : CVoiceRender::deviceFreeCallbacks) {
 		if (deviceFreeCallback != nullptr) {
 			deviceFreeCallback();
 		}

@@ -26,15 +26,15 @@ bool Plugin::OnPluginLoad() noexcept
     LogVoice("[sv:info] : this voicechat officialy by cybermor for samp pc. "
         "I just edited the source to be able work on samp mobile.\n");
 
-    if(!Render::Init())
+    if(!CVoiceRender::Init())
     {
         LogVoice("[sv:err:plugin] : failed to init render module");
         return false;
     }
 
-    Render::AddDeviceInitCallback(Plugin::OnDeviceInit);
-    Render::AddRenderCallback(Plugin::OnRender);
-    Render::AddDeviceFreeCallback(Plugin::OnDeviceFree);
+    CVoiceRender::AddDeviceInitCallback(Plugin::OnDeviceInit);
+    CVoiceRender::AddRenderCallback(Plugin::OnRender);
+    CVoiceRender::AddDeviceFreeCallback(Plugin::OnDeviceFree);
 
     return true;
 }
@@ -44,7 +44,7 @@ bool Plugin::OnSampLoad() noexcept
     if(!Samp::Init())
     {
         LogVoice("[sv:err:plugin] : failed to init samp");
-        Render::Free();
+        CVoiceRender::Free();
         return false;
     }
 
@@ -54,7 +54,7 @@ bool Plugin::OnSampLoad() noexcept
     if(!Network::Init())
     {
         LogVoice("[sv:err:plugin] : failed to init network");
-        Render::Free();
+        CVoiceRender::Free();
         Samp::Free();
         return false;
     }
@@ -67,7 +67,7 @@ bool Plugin::OnSampLoad() noexcept
     if(!Playback::Init())
     {
         LogVoice("[sv:err:plugin] : failed to init playback");
-        Render::Free();
+        CVoiceRender::Free();
         Samp::Free();
         Network::Free();
         return false;

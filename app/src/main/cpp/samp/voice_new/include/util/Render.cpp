@@ -1,129 +1,129 @@
-#include "../../../main.h"
+#include "main.h"
 
 #include "Render.h"
 
-bool Render::Init() noexcept
+bool CVoiceRender::Init() noexcept
 {
-    if(Render::initStatus) 
+    if(CVoiceRender::initStatus)
         return false;
 
     LogVoice("[dbg:render:init] : module initializing...");
 
-    Render::deviceInitCallbacks.clear();
-    Render::renderCallbacks.clear();
-    Render::deviceFreeCallbacks.clear();
+    CVoiceRender::deviceInitCallbacks.clear();
+    CVoiceRender::renderCallbacks.clear();
+    CVoiceRender::deviceFreeCallbacks.clear();
 
     LogVoice("[dbg:render:init] : module initialized");
 
-    Render::initStatus = true;
+    CVoiceRender::initStatus = true;
 
     return true;
 }
 
-void Render::Free() noexcept
+void CVoiceRender::Free() noexcept
 {
-    if(!Render::initStatus) return;
+    if(!CVoiceRender::initStatus) return;
 
     LogVoice("[dbg:render:free] : module releasing...");
 
-    for(const auto& deviceFreeCallback : Render::deviceFreeCallbacks)
+    for(const auto& deviceFreeCallback : CVoiceRender::deviceFreeCallbacks)
 	{
 		if(deviceFreeCallback != nullptr) 
 			deviceFreeCallback();
 	}
 
-    Render::deviceInitCallbacks.clear();
-    Render::renderCallbacks.clear();
-    Render::deviceFreeCallbacks.clear();
+    CVoiceRender::deviceInitCallbacks.clear();
+    CVoiceRender::renderCallbacks.clear();
+    CVoiceRender::deviceFreeCallbacks.clear();
 
     LogVoice("[dbg:render:free] : module released");
 
-    Render::initStatus = false;
+    CVoiceRender::initStatus = false;
 }
 
-std::size_t Render::AddDeviceInitCallback(DeviceInitCallback callback) noexcept
+std::size_t CVoiceRender::AddDeviceInitCallback(DeviceInitCallback callback) noexcept
 {
-    if(!Render::initStatus) return -1;
+    if(!CVoiceRender::initStatus) return -1;
 
-    for(std::size_t i { 0 }; i < Render::deviceInitCallbacks.size(); ++i)
+    for(std::size_t i { 0 }; i < CVoiceRender::deviceInitCallbacks.size(); ++i)
     {
-        if(Render::deviceInitCallbacks[i] == nullptr)
+        if(CVoiceRender::deviceInitCallbacks[i] == nullptr)
         {
-            Render::deviceInitCallbacks[i] = std::move(callback);
+            CVoiceRender::deviceInitCallbacks[i] = std::move(callback);
             return i;
         }
     }
 
-    Render::deviceInitCallbacks.emplace_back(std::move(callback));
-    return Render::deviceInitCallbacks.size() - 1;
+    CVoiceRender::deviceInitCallbacks.emplace_back(std::move(callback));
+    return CVoiceRender::deviceInitCallbacks.size() - 1;
 }
 
-std::size_t Render::AddRenderCallback(RenderCallback callback) noexcept
+std::size_t CVoiceRender::AddRenderCallback(RenderCallback callback) noexcept
 {
-    if(!Render::initStatus) return -1;
+    if(!CVoiceRender::initStatus) return -1;
 
-    for(std::size_t i { 0 }; i < Render::renderCallbacks.size(); ++i)
+    for(std::size_t i { 0 }; i < CVoiceRender::renderCallbacks.size(); ++i)
     {
-        if(Render::renderCallbacks[i] == nullptr)
+        if(CVoiceRender::renderCallbacks[i] == nullptr)
         {
-            Render::renderCallbacks[i] = std::move(callback);
+            CVoiceRender::renderCallbacks[i] = std::move(callback);
             return i;
         }
     }
 
-    Render::renderCallbacks.emplace_back(std::move(callback));
-    return Render::renderCallbacks.size() - 1;
+    CVoiceRender::renderCallbacks.emplace_back(std::move(callback));
+    return CVoiceRender::renderCallbacks.size() - 1;
 }
 
-std::size_t Render::AddDeviceFreeCallback(DeviceFreeCallback callback) noexcept
+std::size_t CVoiceRender::AddDeviceFreeCallback(DeviceFreeCallback callback) noexcept
 {
-    if(!Render::initStatus) return -1;
+    if(!CVoiceRender::initStatus) return -1;
 
-    for(std::size_t i { 0 }; i < Render::deviceFreeCallbacks.size(); ++i)
+    for(std::size_t i { 0 }; i < CVoiceRender::deviceFreeCallbacks.size(); ++i)
     {
-        if(Render::deviceFreeCallbacks[i] == nullptr)
+        if(CVoiceRender::deviceFreeCallbacks[i] == nullptr)
         {
-            Render::deviceFreeCallbacks[i] = std::move(callback);
+            CVoiceRender::deviceFreeCallbacks[i] = std::move(callback);
             return i;
         }
     }
 
-    Render::deviceFreeCallbacks.emplace_back(std::move(callback));
-    return Render::deviceFreeCallbacks.size() - 1;
+    CVoiceRender::deviceFreeCallbacks.emplace_back(std::move(callback));
+    return CVoiceRender::deviceFreeCallbacks.size() - 1;
 }
 
-void Render::RemoveDeviceInitCallback(const std::size_t callback) noexcept
+void CVoiceRender::RemoveDeviceInitCallback(const std::size_t callback) noexcept
 {
-    if(!Render::initStatus) return;
+    if(!CVoiceRender::initStatus) return;
 
-    if(callback >= Render::deviceInitCallbacks.size())
+    if(callback >= CVoiceRender::deviceInitCallbacks.size())
         return;
 
-    Render::deviceInitCallbacks[callback] = nullptr;
+    CVoiceRender::deviceInitCallbacks[callback] = nullptr;
 }
 
-void Render::RemoveRenderCallback(const std::size_t callback) noexcept
+void CVoiceRender::RemoveRenderCallback(const std::size_t callback) noexcept
 {
-    if(!Render::initStatus) return;
+    if(!CVoiceRender::initStatus) return;
 
-    if(callback >= Render::renderCallbacks.size())
+    if(callback >= CVoiceRender::renderCallbacks.size())
         return;
 
-    Render::renderCallbacks[callback] = nullptr;
+    CVoiceRender::renderCallbacks[callback] = nullptr;
 }
 
-void Render::RemoveDeviceFreeCallback(const std::size_t callback) noexcept
+void CVoiceRender::RemoveDeviceFreeCallback(const std::size_t callback) noexcept
 {
-    if(!Render::initStatus) return;
+    if(!CVoiceRender::initStatus) return;
 
-    if(callback >= Render::deviceFreeCallbacks.size())
+    if(callback >= CVoiceRender::deviceFreeCallbacks.size())
         return;
 
-    Render::deviceFreeCallbacks[callback] = nullptr;
+    CVoiceRender::deviceFreeCallbacks[callback] = nullptr;
 }
 
-bool Render::initStatus { false };
+bool CVoiceRender::initStatus {false };
 
-std::vector<Render::DeviceInitCallback> Render::deviceInitCallbacks;
-std::vector<Render::RenderCallback> Render::renderCallbacks;
-std::vector<Render::DeviceFreeCallback> Render::deviceFreeCallbacks;
+std::vector<CVoiceRender::DeviceInitCallback> CVoiceRender::deviceInitCallbacks;
+std::vector<CVoiceRender::RenderCallback> CVoiceRender::renderCallbacks;
+std::vector<CVoiceRender::DeviceFreeCallback> CVoiceRender::deviceFreeCallbacks;

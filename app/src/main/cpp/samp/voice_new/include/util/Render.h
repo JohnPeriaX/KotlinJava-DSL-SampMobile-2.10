@@ -1,14 +1,12 @@
 #pragma once
 
-#include <functional>
-
-class Render {
-    Render() = delete;
-    ~Render() = delete;
-    Render(const Render&) = delete;
-    Render(Render&&) = delete;
-    Render& operator=(const Render&) = delete;
-    Render& operator=(Render&&) = delete;
+class CVoiceRender {
+    CVoiceRender() = delete;
+    ~CVoiceRender() = delete;
+    CVoiceRender(const CVoiceRender&) = delete;
+    CVoiceRender(CVoiceRender&&) = delete;
+    CVoiceRender& operator=(const CVoiceRender&) = delete;
+    CVoiceRender& operator=(CVoiceRender&&) = delete;
 
 private:
     using DeviceInitCallback = std::function<void()>;
