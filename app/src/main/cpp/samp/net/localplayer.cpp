@@ -743,7 +743,7 @@ void CLocalPlayer::SendOnFootFullSyncData()
 	ofSync.dwAnimation = 0;
 	//_this->field_104 = 1;
 
-	if (/*(GetTickCount() - m_dwLastUpdateOnFootData) > 500 || */memcmp(&m_ofSync, &ofSync, sizeof(ONFOOT_SYNC_DATA)))
+	if ((GetTickCount() - m_dwLastUpdateOnFootData) > 500 || memcmp(&m_ofSync, &ofSync, sizeof(ONFOOT_SYNC_DATA)))
 	{
 		m_dwLastUpdateOnFootData = GetTickCount();
 
