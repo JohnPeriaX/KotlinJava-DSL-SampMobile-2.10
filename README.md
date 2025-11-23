@@ -50,6 +50,13 @@ Voice is now fully positional:
 - Walk closer → instantly louder & clearer  
 - Turn around → voice direction follows perfectly
 
+### Patch 3 (23 พฤศจิกายน 2568)
+- แก้บัค AFK
+
+### Patch 3 (November 23, 2025)
+- Fix AFK
+
+
 ---
 
 **ขอบคุณทุกคนที่รออย่างอดทน ❤️**  
