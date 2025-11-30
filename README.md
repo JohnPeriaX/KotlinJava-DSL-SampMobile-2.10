@@ -1,68 +1,68 @@
-# 2.10 OPEN-SOURCE
+---
+title: "GTA SA Reversed Android"
+description: "Reverse engineering project for GTA: San Andreas Android"
+version: "2.10"
+author: "JohnPeria"
+license: "MIT"
+---
 
-# 📢 อัปเดตสำคัญ – แก้ไข sampvoice !
+<p align="center">
+  <img src="https://i.ibb.co/XN7Q9Tm/image-removebg-preview.png" width="200" alt="Project Logo">
+</p>
 
-### แก้ไขครั้งที่ 1 (19 พฤศจิกายน 2568)
-**✅ แก้ไขระบบ sampvoice ให้กลับมาใช้งานได้เต็มรูปแบบ**  
-ตอนนี้ผู้เล่นสามารถ **พูดและได้ยินเสียงกันตามปกติ** อีกครั้ง ไม่มีปัญหาเสียงขาดหายหรือไมค์ไม่ทำงานแล้ว!
+<h1 align="center">GTA SA Reversed Android</h1>
 
-### Update – sampvoice Fixed!
-
-**Patch 1** (November 19, 2025)  
-**✅ Fully fixed sampvoice system**  
-Players can now **speak and hear each other normally** again!  
-No more missing voice, microphone issues, or connection problems.
-
-### แก้ไขครั้งที่ 2 (20 พฤศจิกายน 2568)
-**✨ เพิ่มฟีเจอร์ 3D Position Updates สำหรับ Voice Stream Channels**  
-ตอนนี้เสียงจะดัง–เบาตามระยะห่างและทิศทางของตัวละครจริง ๆ แล้ว!  
-ยิ่งใกล้กัน = เสียงดังชัด  
-ยิ่งไกล = เสียงเบาลงและมีทิศทางสมจริง  
-เดินไปด้านหลังคนอื่น เสียงจะมาจากด้านหลังด้วย!
-
-### Major Update – 3D Voice Positioning Added!
-
-**Patch 2** (November 20, 2025)  
-**✨ Added 3D position updates for voice stream channels**  
-Voice volume and direction now fully depend on your in-game position!  
-- Closer = louder and clearer  
-- Farther = quieter with realistic attenuation  
-- Walk behind someone = hear their voice from behind!
-- 
-
-### Patch 2.1 (20 พฤศจิกายน 2568)
-**🔊 เปิดใช้งาน 3D Audio สำหรับ Local Voice Streams เต็มระบบ**  
-**🧭 อัปเดตตำแหน่งผู้ฟัง (Listener Position) แบบเรียลไทม์**  
-
-เสียงตอนนี้สมจริงสุด ๆ:  
-- ดัง–เบาตามระยะห่างจริง 100%  
-- มีทิศทาง 360° ครบทุกมุม (หน้า-หลัง-ซ้าย-ขวา-บน-ล่าง)  
-- เดินเข้าใกล้ = เสียงชัดและดังขึ้นทันที  
-- หมุนตัวหรือหันหลัง = ทิศทางเสียงเปลี่ยนตามทันที  
-
-### Patch 2.1 (November 20, 2025)
-**🔊 Enabled full 3D audio for local voice streams**  
-**🧭 Real-time listener position updates**  
-
-Voice is now fully positional:  
-- Perfect distance-based volume attenuation  
-- Complete 360° directional audio  
-- Walk closer → instantly louder & clearer  
-- Turn around → voice direction follows perfectly
-
-### Patch 3 (23 พฤศจิกายน 2568)
-- แก้บัค AFK
-
-### Patch 3 (November 23, 2025)
-- Fix AFK
-
+<p align="center">
+  <img src="https://img.shields.io/badge/Status-Active-green?style=for-the-badge">
+  <img src="https://img.shields.io/badge/Version-2.10-blue?style=for-the-badge">
+  <img src="https://img.shields.io/badge/Open%20Source-Yes-success?style=for-the-badge">
+  <img src="https://img.shields.io/badge/Platform-Android-orange?style=for-the-badge">
+  <img src="https://img.shields.io/badge/License-MIT-green?style=for-the-badge">
+  <img src="https://img.shields.io/github/stars/JohnPeriaX/KotlinJava-DSL-SampMobile-2.10?style=for-the-badge">
+  <img src="https://img.shields.io/github/forks/JohnPeriaX/KotlinJava-DSL-SampMobile-2.10?style=for-the-badge">
+  <img src="https://img.shields.io/github/issues/JohnPeriaX/KotlinJava-DSL-SampMobile-2.10?style=for-the-badge">
+  <img src="https://img.shields.io/github/downloads/JohnPeriaX/KotlinJava-DSL-SampMobile-2.10/total?style=for-the-badge">
+</p>
 
 ---
 
-**ขอบคุณทุกคนที่รออย่างอดทน ❤️**  
-เราจะยังคงพัฒนาและแก้ไขบั๊กต่าง ๆ ต่อไปเพื่อให้เซิร์ฟเวอร์ดีที่สุดสำหรับทุกคน
-
-**Thank you for your patience ❤️**  
-We will continue to improve and fix issues to make the server the best experience for everyone!
+> ⚠️ **หมายเหตุสำคัญ / Important Notice**  
+> หากฉันหายไปหรือไม่มีการอัพเดทแบบยาวนาน **ฉันอาจหยุดโปรเจคนี้ไปแล้ว**  
+> If I disappear or there are no updates for a long time, **I may have discontinued this project.**
 
 ---
+
+## 📚 สารบัญ (Table of Contents)
+
+- [💬 พูดคุย & แจ้งบัค / Discussion](https://t.me/patch_force)
+
+---
+
+## 📖 ภาพรวม (Overview)
+
+### 🇹🇭 ไทย  
+โครงการนี้เป็นการ **รีเวิร์สเอนจิเนียร์ GTA: San Andreas เวอร์ชัน Android**  
+เพื่อศึกษาการทำงานภายในเกม ปรับปรุงความเข้ากันได้ และรองรับฟีเจอร์ใหม่สำหรับม็อดหรือการพัฒนาเซิร์ฟเวอร์
+
+### 🇬🇧 English  
+This project focuses on **reverse engineering GTA: San Andreas for Android**,  
+allowing developers to understand internal systems, improve compatibility, and expand modding or server-side possibilities.
+
+---
+
+## 🔓 Open-Source 2.10
+
+### 🇹🇭 ไทย  
+โครงการนี้เปิดซอร์ส 100% เพื่อให้ทุกคนสามารถเรียนรู้ แก้ไข และพัฒนาต่อยอดได้อย่างอิสระ
+
+### 🇬🇧 English  
+This project is fully open-source, enabling anyone to study, modify, and extend it freely.
+
+---
+
+## 💻 การติดตั้ง / Installation
+
+### 🇹🇭 ไทย
+1. Clone โปรเจค:  
+```bash
+git clone https://github.com/JohnPeriaX/KotlinJava-DSL-SampMobile-2.10.git
