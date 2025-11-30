@@ -826,7 +826,7 @@ void CPlayerPed::SetCurrentAim(CAMERA_AIM* pAim)
 {
 	GameStoreRemotePlayerAim(m_bytePlayerNumber, pAim);
 }
-//0.3.7
+
 uint8_t CPlayerPed::GetCameraMode()
 {
 	if (m_bytePlayerNumber == 0) {
