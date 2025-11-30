@@ -371,13 +371,13 @@ void CGame::RemoveModel(int iModel, bool bFromStreaming)
 		}
 	}
 }
- (������������ 2 ��������� ��������� ��������� � 0.3DL)
+
 CObject* CGame::NewObject(int iModel, CVector vecPos, CVector vecRot, float fDrawDistance)
 {
 	CObject *pObjectNew = new CObject(iModel, vecPos, vecRot, fDrawDistance, 0);
 	return pObjectNew;
 }
- (�� ����������� ������ bIsNPC)
+
 CPlayerPed* CGame::NewPlayer(int iSkin, float fX, float fY, float fZ, float fRotation, bool unk, bool bIsNPC)
 {
 	uint8_t bytePedSlot = FindFirstFreePlayerPedSlot();
@@ -555,7 +555,16 @@ void CGame::DisableRaceCheckpoint()
 
 void CGame::SetWantedLevel(uint8_t level)
 {
-	//CHook::WriteMemory(g_libGTASA+0x2BDF6E, (uintptr_t)&level, 1);
+#if VER_x32
+	CHook::WriteMemory(g_libGTASA+0x2BDFDC, (uintptr_t)&level, 1);
+#else
+    CHook::WriteMemory(g_libGTASA+0x37E160, (uintptr_t)&level, 1);
+#endif
+}
+
+uint8_t CGame::GetWantedLevel()
+{
+    return CHook::CallFunction<uint8_t>(g_libGTASA + (VER_x32 ? 0x002BDFDC : 0x37E160));
 }
 
 void CGame::EnableStuntBonus(bool bEnable)
