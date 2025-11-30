@@ -1600,62 +1600,76 @@ bool RwResourcesFreeResEntry_hook(void* entry)
     return result;
 }
 
-static uint32_t dwRLEDecompressSourceSize = 0;
-
-size_t (*OS_FileRead)(OSFile a1, void *buffer, size_t numBytes);
-size_t OS_FileRead_hook(OSFile a1, void *buffer, size_t numBytes)
+uint32_t dwRLEDecompressSourceSize = 0;
+extern int(*OS_FileRead)(void* a1, void* a2, int a3);
+int OS_FileRead_hook(void* a1, void* a2, int a33);
+int OS_FileRead_hook(void* a1, void* a2, int a3)
 {
-    dwRLEDecompressSourceSize = numBytes;
+    int ret = OS_FileRead(a1, a2, a3);
 
-    return OS_FileRead(a1, buffer, numBytes);
+    if (a3 >= 4)
+    {
+        uintptr_t caller = (uintptr_t)__builtin_return_address(0) - g_libGTASA;
+
+#ifdef VER_x32
+        if (caller == 0x1E91AC)
+#else
+        if (caller == 0x2858B8)
+#endif
+        {
+            dwRLEDecompressSourceSize = *(uint32_t*)a2;
+        }
+    }
+
+    return ret;
 }
 
-void (*RLEDecompress)(uint8_t* pDest, size_t uiDestSize, uint8_t const* pSrc, size_t uiSegSize, uint32_t uiEscape);
-void RLEDecompress_hook(uint8_t* pDest, size_t uiDestSize, const uint8_t* pSrc, size_t uiSegSize, uint32_t uiEscape) {
-
-    if (!pDest || !pSrc || uiDestSize == 0 || uiSegSize == 0) {
-        // Обработка некорректных входных данных или размеров
-        // Здесь можно сгенерировать исключение или вернуть код ошибки
+void (*RLEDecompress)(uint8_t* dest, size_t destSize, const uint8_t* src, size_t segSize, uint32_t escape);
+void RLEDecompress_hook(uint8_t* dest, size_t destSize, const uint8_t* src, size_t segSize, uint32_t escape)
+{
+    if (!dest || !src || !destSize || !segSize || !dwRLEDecompressSourceSize) {
+        RLEDecompress(dest, destSize, src, segSize, escape);
         return;
     }
 
-    const uint8_t* pTempSrc = pSrc;
-    const uint8_t* const pEndOfDest = pDest + uiDestSize;
-    const uint8_t* const pEndOfSrc = pSrc + dwRLEDecompressSourceSize; // Предполагается, что dwRLEDecompressSourceSize определено правильно
+    uint8_t* out = dest;
+    const uint8_t* in = src;
+    const uint8_t* srcEnd = src + dwRLEDecompressSourceSize;
+    const uint8_t* destEnd = dest + destSize;
 
-    try {
-        while (pDest < pEndOfDest && pTempSrc < pEndOfSrc) {
-            if (*pTempSrc == uiEscape) {
-                if (pTempSrc + 1 >= pEndOfSrc || pTempSrc[1] == 0 || pTempSrc + 2 + uiSegSize > pEndOfSrc) {
-                    // Обработка ошибки, неверное значение ucCurSeg или недостаточно данных в исходном буфере
-                    throw std::runtime_error("rled error 1");
-                }
+    while (out < destEnd && in < srcEnd)
+    {
+        if (*in == escape)
+        {
+            if (in + 1 >= srcEnd) break;               // ไม่มี count
+            uint8_t count = in[1];
+            if (count == 0) { in += 2; continue; }     // escape ตัวเดียว (rare case)
+            if (in + 2 + segSize > srcEnd) break;      // ข้อมูลไม่ครบ
 
-                uint8_t ucCurSeg = pTempSrc[1];
-                while (ucCurSeg--) {
-                    if (pDest + uiSegSize > pEndOfDest) {
-                        // Обработка ошибки, недостаточно места в целевом буфере
-                        throw std::runtime_error("rled error 2");
-                    }
-                    memcpy(pDest, pTempSrc + 2, uiSegSize);
-                    pDest += uiSegSize;
-                }
-                pTempSrc += 2 + uiSegSize;
-            } else {
-                if (pDest + uiSegSize > pEndOfDest || pTempSrc + uiSegSize > pEndOfSrc) {
-                    // Обработка ошибки, недостаточно данных в исходном буфере или недостаточно места в целевом буфере
-                    throw std::runtime_error("rled error 3");
-                }
-                memcpy(pDest, pTempSrc, uiSegSize);
-                pDest += uiSegSize;
-                pTempSrc += uiSegSize;
+            size_t bytesToCopy = (size_t)count * segSize;
+            if (out + bytesToCopy > destEnd) break;    // ป้องกัน overflow
+
+            for (uint8_t i = 0; i < count; ++i)
+            {
+                memcpy(out, in + 2, segSize);
+                out += segSize;
             }
+            in += 2 + segSize;
         }
-
-        dwRLEDecompressSourceSize = 0;
-    } catch (const std::exception& e) {
-        FLog("%s", e.what());
+        else
+        {
+            if (in + segSize > srcEnd || out + segSize > destEnd) break;
+            memcpy(out, in, segSize);
+            out += segSize;
+            in += segSize;
+        }
     }
+
+    dwRLEDecompressSourceSize = 0;
+
+    // ถ้ายังเหลือพื้นที่ใน dest (บางกรณี rare) ให้ game ทำต่อเอง
+    if (out < destEnd)
+        RLEDecompress(out, destEnd - out, in, segSize, escape);
 }
 
 void (*CGame_Process)();
