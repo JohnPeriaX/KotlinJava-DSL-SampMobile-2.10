@@ -366,7 +366,7 @@ float CVehicle::GetTrainSpeed()
 	
 	return 0.0f;
 }
- (dword -> word)
+
 uint16_t CVehicle::GetHydraThrusters()
 {
 	//if (m_pVehicle) {

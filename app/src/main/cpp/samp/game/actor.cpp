@@ -74,7 +74,7 @@ void CActor::SetInvulnerable(bool bInvulnerable)
 		ScriptCommand(&set_actor_immunities, m_dwGTAId, 0, 0, 0, 0, 0);
 	}
 }
- (adapted)
+
 void CActor::ApplyAnimation(const char* szAnimName, const char* szAnimLib, float fDelta,
 	int bLoop, int bLockX, int bLockY, int bFreeze, int iTime)
 {

@@ -465,7 +465,7 @@ void CLocalPlayer::ResetAllSyncAttributes()
 	m_nLastVehicle = INVALID_VEHICLE_ID;
 	m_bWasInCar = false;
 }
- ( ศใํ๎๐ F4-class-reselect)
+
 void CLocalPlayer::ToggleSpectating(bool bToggle)
 {
 	if (m_bIsSpectating && !bToggle) {
@@ -683,7 +683,7 @@ void CLocalPlayer::SendWastedNotification()
     FLog("SendWastedNotification %d %d", byteDeathReason, WhoWasResponsible);
 	pNetGame->GetRakClient()->RPC(&RPC_Death, &bsPlayerDeath, HIGH_PRIORITY, RELIABLE_ORDERED, 0, false, UNASSIGNED_NETWORK_ID, nullptr);
 }
- (ํๅ๒ extKeys ่ this->field_104 = 1)
+
 void CLocalPlayer::SendOnFootFullSyncData()
 {
 	RakNet::BitStream bsPlayerSync;
