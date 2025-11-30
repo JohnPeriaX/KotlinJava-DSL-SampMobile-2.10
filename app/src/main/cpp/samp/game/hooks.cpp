@@ -1600,21 +1600,26 @@ bool RwResourcesFreeResEntry_hook(void* entry)
     return result;
 }
 
+extern "C" int OS_FileRead(void* file, void* buf, int len);
+__attribute__((weak)) int OS_FileRead(void* file, void* buf, int len) { return 0; }
+
+static int (*orig_OS_FileRead)(void*, void*, int) = nullptr;
+
 uint32_t dwRLEDecompressSourceSize = 0;
-extern int(*OS_FileRead)(void* a1, void* a2, int a3);
-int OS_FileRead_hook(void* a1, void* a2, int a33);
+
+// Hook
 int OS_FileRead_hook(void* a1, void* a2, int a3)
 {
-    int ret = OS_FileRead(a1, a2, a3);
+    int ret = orig_OS_FileRead ? orig_OS_FileRead(a1, a2, a3) : 0;
 
     if (a3 >= 4)
     {
         uintptr_t caller = (uintptr_t)__builtin_return_address(0) - g_libGTASA;
 
 #ifdef VER_x32
-        if (caller == 0x1E91AC)
+        if (caller == 0x1E91AC)  // 0.3.7 / x32
 #else
-        if (caller == 0x2858B8)
+        if (caller == 0x2858B8 || caller == 0x2858C0)  // 2.10 มี 2 จุดเรียกใกล้ ๆ กัน
 #endif
         {
             dwRLEDecompressSourceSize = *(uint32_t*)a2;
@@ -1624,52 +1629,60 @@ int OS_FileRead_hook(void* a1, void* a2, int a3)
     return ret;
 }
 
-void (*RLEDecompress)(uint8_t* dest, size_t destSize, const uint8_t* src, size_t segSize, uint32_t escape);
+// Original RLE function pointer
+void (*orig_RLEDecompress)(uint8_t* dest, size_t destSize, const uint8_t* src, size_t segSize, uint32_t escape) = nullptr;
 void RLEDecompress_hook(uint8_t* dest, size_t destSize, const uint8_t* src, size_t segSize, uint32_t escape)
 {
-    if (!dest || !src || !destSize || !segSize || !dwRLEDecompressSourceSize) {
-        RLEDecompress(dest, destSize, src, segSize, escape);
+    // ตรวจสอบพอยน์เตอร์และค่าพื้นฐานก่อน
+    if (!dest || !src || destSize == 0 || segSize == 0 || dwRLEDecompressSourceSize == 0 || !orig_RLEDecompress)
+    {
+        orig_RLEDecompress(dest, destSize, src, segSize, escape);
         return;
     }
 
     uint8_t* out = dest;
     const uint8_t* in = src;
-    const uint8_t* srcEnd = src + dwRLEDecompressSourceSize;
-    const uint8_t* destEnd = dest + destSize;
+    const uint8_t* in_end  = src + dwRLEDecompressSourceSize;
+    const uint8_t* out_end = dest + destSize;
 
-    while (out < destEnd && in < srcEnd)
+    while (out < out_end && in < in_end)
     {
         if (*in == escape)
         {
-            if (in + 1 >= srcEnd) break;               // ไม่มี count
+            if (in + 2 >= in_end) break;                    // ไม่มี count หรือ segment
             uint8_t count = in[1];
-            if (count == 0) { in += 2; continue; }     // escape ตัวเดียว (rare case)
-            if (in + 2 + segSize > srcEnd) break;      // ข้อมูลไม่ครบ
+            if (count == 0) { in += 2; continue; }          // escape literal
 
-            size_t bytesToCopy = (size_t)count * segSize;
-            if (out + bytesToCopy > destEnd) break;    // ป้องกัน overflow
+            if (in + 2 + segSize > in_end) break;           // ข้อมูลไม่ครบ
 
+            size_t bytes_to_copy = (size_t)count * segSize;
+            if (out + bytes_to_copy > out_end) break;       // ป้องกัน buffer overflow
+
+            const uint8_t* segment = in + 2;
             for (uint8_t i = 0; i < count; ++i)
             {
-                memcpy(out, in + 2, segSize);
+                memcpy(out, segment, segSize);
                 out += segSize;
             }
             in += 2 + segSize;
         }
         else
         {
-            if (in + segSize > srcEnd || out + segSize > destEnd) break;
+            if (in + segSize > in_end || out + segSize > out_end) break;
             memcpy(out, in, segSize);
             out += segSize;
             in += segSize;
         }
     }
 
+    // รีเซ็ตทุกครั้ง ป้องกัน reuse ค่าเก่า
     dwRLEDecompressSourceSize = 0;
 
-    // ถ้ายังเหลือพื้นที่ใน dest (บางกรณี rare) ให้ game ทำต่อเอง
-    if (out < destEnd)
-        RLEDecompress(out, destEnd - out, in, segSize, escape);
+    // ถ้ายังเขียนไม่ครบ dest (กรณี rare มาก) ให้ฟังก์ชันเดิมช่วยต่อ
+    if (out < out_end)
+    {
+        orig_RLEDecompress(out, out_end - out, in, segSize, escape);
+    }
 }
 
 void (*CGame_Process)();
@@ -1819,7 +1832,7 @@ void InstallSpecialHooks()
 
     CHook::RET("_ZN4CPed31RemoveWeaponWhenEnteringVehicleEi"); // CPed::RemoveWeaponWhenEnteringVehicle
 
-    CHook::InstallPLT(g_libGTASA + (VER_x32 ? 0x6701D4 : 0x840708), &RLEDecompress_hook, &RLEDecompress);
+    CHook::InstallPLT(g_libGTASA + (VER_x32 ? 0x6701D4 : 0x840708), &RLEDecompress_hook, &orig_RLEDecompress);
 
     CHook::InlineHook("_Z11OS_FileReadPvS_i", &OS_FileRead_hook, &OS_FileRead);
 
