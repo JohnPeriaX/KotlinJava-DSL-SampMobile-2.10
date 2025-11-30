@@ -577,7 +577,7 @@ void SendBulletSync(CVector* vecOrigin, CVector* a2, CColPoint *colPoint, CEntit
 }
 
 extern bool g_customFire;
-/* 0.3.7 */
+
 uint32_t(*CWeapon__FireInstantHit)(CWeapon* thiz, CPedGTA* pFiringEntity, CVector* vecOrigin, CVector* muzzlePosn, CEntityGTA* targetEntity,
 								  CVector* target, CVector* originForDriveBy, bool arg6, bool muzzle);
 uint32_t CWeapon__FireInstantHit_hook(CWeapon* thiz, CPedGTA* pFiringEntity, CVector* vecOrigin, CVector* muzzlePosn, CEntityGTA* targetEntity,
