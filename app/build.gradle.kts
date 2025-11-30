@@ -32,11 +32,24 @@ android {
 
         multiDexEnabled = true
 
+        //-> เปลี่ยนเป็น false หากคุณต้องการสร้างทั้งแบบ 32/64 บิต เปลี่ยนเป็น true หากคุณต้องการสร้างเฉพาะแบบ 32 บิต
+        //-> Change to false if you want to build both 32/64-bit. Change to true if you want to build only 32-bit.
+        val build32BitOnly = true
+
         ndk {
-            abiFilters.addAll(listOf("armeabi-v7a", "arm64-v8a"))
+            abiFilters.clear()
+            abiFilters.add("armeabi-v7a")
+            if (!build32BitOnly) {
+                abiFilters.add("arm64-v8a")
+            }
+        }
+
+        externalNativeBuild.cmake {
+            arguments("-DBUILD_32BIT_ONLY=${if (build32BitOnly) "1" else "0"}")
         }
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
+
         /*externalNativeBuild {
             cmake {
                 cppFlags += "-std=c++11"

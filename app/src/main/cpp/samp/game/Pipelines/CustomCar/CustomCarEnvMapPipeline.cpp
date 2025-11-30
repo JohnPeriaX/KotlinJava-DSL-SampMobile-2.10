@@ -94,7 +94,8 @@ RpMaterial* CCustomCarEnvMapPipeline__CustomPipeMaterialSetup(RpMaterial* materi
 }
 
 void CCustomCarEnvMapPipeline::InjectHooks() {
-#if !VER_x32
+#if !defined(BUILD_32BIT_ONLY) && !VER_x32
+    // Skip these hooks for 32-bit only builds and 32-bit ABI
     CHook::InlineHook(g_libGTASA + 0x2CC144, &openglWorldSectorAllInOnePipelineInit_hooked, &openglWorldSectorAllInOnePipelineInit);
     CHook::InlineHook(g_libGTASA + 0x2CB7C8, &openglAtomicAllInOnePipelineInit_hooked, &openglAtomicAllInOnePipelineInit);
 #endif

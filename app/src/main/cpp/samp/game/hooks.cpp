@@ -1722,7 +1722,7 @@ void InjectHooks()
     FLog("InjectHooks");
     CHook::Write(g_libGTASA + (VER_x32 ? 0x678954 : 0x84F2D0), &Scene);
 
-#if !VER_x32 // mb all.. wtf crash x64?
+#if !defined(BUILD_32BIT_ONLY) && !VER_x32
     CHook::RET("_ZN11CPlayerInfo14LoadPlayerSkinEv");
     CHook::RET("_ZN11CPopulation10InitialiseEv");
 #endif
