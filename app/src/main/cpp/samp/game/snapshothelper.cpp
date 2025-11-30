@@ -52,7 +52,7 @@ void CSnapShotHelper::SetUpScene()
     RpWorldAddCamera(Scene.m_pRpWorld, m_camera);
 }
 
-// 0.3.7
+
 RwTexture* CSnapShotHelper::CreateObjectSnapShot(int iModel, uint32_t dwColor, CVector* vecRot, float fZoom)
 {
     if(iModel > 20000) return nullptr;
@@ -124,7 +124,7 @@ RwTexture* CSnapShotHelper::CreateObjectSnapShot(int iModel, uint32_t dwColor, C
 	DestroyAtomicOrClump(reinterpret_cast<uintptr_t>(pRwObject));
 	return bufferTexture;
 }
-// 0.3.7
+
 RwTexture* CSnapShotHelper::CreatePedSnapShot(int iModel, uint32_t dwColor, CVector* vecRot, float fZoom)
 {
 	FLog("Ped snapshot: %d", iModel);

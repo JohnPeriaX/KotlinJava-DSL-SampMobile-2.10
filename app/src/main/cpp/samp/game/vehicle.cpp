@@ -155,7 +155,7 @@ CVehicle::~CVehicle()
         CStreaming::RemoveModelIfNoRefs(modelId);
 	}
 }
-// 0.3.7
+
 bool CVehicle::IsRCVehicle()
 {
 	if (m_pVehicle)
@@ -176,7 +176,7 @@ bool CVehicle::IsRCVehicle()
 
 	return false;
 }
-// 0.3.7
+
 float CVehicle::GetHealth()
 {
 	if (m_pVehicle) {
@@ -185,14 +185,14 @@ float CVehicle::GetHealth()
 
 	return 0.0f;
 }
-// 0.3.7
+
 void CVehicle::SetHealth(float fHealth)
 {
 	if (m_pVehicle) {
 		m_pVehicle->fHealth = fHealth;
 	}
 }
-// 0.3.7
+
 int CVehicle::GetVehicleSubtype()
 {
 	if (m_pVehicle) {
@@ -201,7 +201,7 @@ int CVehicle::GetVehicleSubtype()
 
 	return 0;
 }
-// 0.3.7
+
 void CVehicle::AddComponent(int iComponentID)
 {
 	if (!m_pVehicle || !GamePool_Vehicle_GetAt(m_dwGTAId)) return;
@@ -217,7 +217,7 @@ void CVehicle::AddComponent(int iComponentID)
 	uint32_t dwRet;
 	ScriptCommand(&add_car_component, m_dwGTAId, iComponentID, &dwRet);
 }
-// 0.3.7
+
 void CVehicle::SetPaintJob(uint8_t bytePaintJobID)
 {
 	if (m_pVehicle && GamePool_Vehicle_GetAt(m_dwGTAId))
@@ -230,7 +230,7 @@ void CVehicle::SetPaintJob(uint8_t bytePaintJobID)
 		}
 	}
 }
-// 0.3.7
+
 void CVehicle::SetColor(uint8_t byteColor1, uint8_t byteColor2)
 {
 	if (m_pVehicle && GamePool_Vehicle_GetAt(m_dwGTAId))
@@ -243,7 +243,7 @@ void CVehicle::SetColor(uint8_t byteColor1, uint8_t byteColor2)
 	m_byteColor2 = byteColor2;
 	m_bHaveColor = true;
 }
-// 0.3.7
+
 void CVehicle::DetachTrailer()
 {
 	bInProcessDetachTrailer = true;
@@ -256,12 +256,12 @@ void CVehicle::DetachTrailer()
 		}
 	}
 }
-// 0.3.7
+
 void CVehicle::SetTrailer(CVehicle* pTrailer)
 {
 	m_pTrailer = pTrailer;
 }
-// 0.3.7
+
 void CVehicle::LinkToInterior(int iInterior)
 {
 	if(m_pVehicle)
@@ -277,7 +277,7 @@ void CVehicle::SetTireDamageStatus(uint8_t byteTireDamageStatus)
 {
 
 }
-// 0.3.7
+
 void CVehicle::RemoveEveryoneFromVehicle()
 {
 	if (!m_pVehicle) return;
@@ -300,7 +300,7 @@ void CVehicle::RemoveEveryoneFromVehicle()
         }
     }
 }
-// 0.3.7
+
 CVehicle* CVehicle::GetTrailer()
 {
 	if (m_pVehicle)
@@ -324,7 +324,7 @@ CVehicle* CVehicle::GetTrailer()
 
 	return nullptr;
 }
-// 0.3.7
+
 CVehicle* CVehicle::GetTractor()
 {
 	if (!m_pVehicle) return nullptr;
@@ -357,7 +357,7 @@ CVehicle* CVehicle::GetTractor()
 
 	return nullptr;
 }
-// 0.3.7
+
 float CVehicle::GetTrainSpeed()
 {
 	//if (m_pVehicle) {
@@ -366,7 +366,7 @@ float CVehicle::GetTrainSpeed()
 	
 	return 0.0f;
 }
-// 0.3.7 (dword -> word)
+ (dword -> word)
 uint16_t CVehicle::GetHydraThrusters()
 {
 	//if (m_pVehicle) {
@@ -391,7 +391,7 @@ float CVehicle::GetBikeLean()
 
 	return 0.0f;
 }
-// 0.3.7
+
 bool CVehicle::IsATrainPart()
 {
 	if (m_pVehicle)
@@ -405,12 +405,12 @@ bool CVehicle::IsATrainPart()
 
 	return false;
 }
-// 0.3.7
+
 bool CVehicle::VerifyInstance()
 {
 	return GamePool_Vehicle_GetAt(m_dwGTAId) != nullptr;
 }
-// 0.3.7
+
 void CVehicle::SetDoorState(int state)
 {
 	if (state)
@@ -447,14 +447,14 @@ void CVehicle::CloseWindow(uint8_t component)
 
 	}
 }
-// 0.3.7
+
 void CVehicle::AttachTrailer()
 {
 	if (m_pTrailer) {
 		ScriptCommand(&put_trailer_on_cab, m_pTrailer->m_dwGTAId, m_dwGTAId);
 	}
 }
-// 0.3.7
+
 void CVehicle::RemoveComponent(int iComponentID)
 {
 	if (!m_pVehicle || !GamePool_Vehicle_GetAt(m_dwGTAId))
@@ -462,14 +462,14 @@ void CVehicle::RemoveComponent(int iComponentID)
 
 	ScriptCommand(&remove_component, m_dwGTAId, iComponentID);
 }
-// 0.3.7
+
 void CVehicle::SetZAngle(float fAngle)
 {
 	if (GamePool_Vehicle_GetAt(m_dwGTAId)) {
 		ScriptCommand(&set_car_z_angle, m_dwGTAId, fAngle);
 	}
 }
-// 0.3.7
+
 bool CVehicle::IsDriverLocalPlayer()
 {
 	if (m_pVehicle && m_pVehicle->pDriver == GamePool_FindPlayerPed())
@@ -477,7 +477,7 @@ bool CVehicle::IsDriverLocalPlayer()
 
 	return false;
 }
-// 0.3.7
+
 void CVehicle::SetInvulnerable(bool bInv)
 {
 	if (m_pVehicle && GamePool_Vehicle_GetAt(m_dwGTAId))
@@ -496,7 +496,7 @@ void CVehicle::SetInvulnerable(bool bInv)
 		}
 	}
 }
-// 0.3.7
+
 bool CVehicle::HasSunk()
 {
 	if (m_pVehicle) {
@@ -505,7 +505,7 @@ bool CVehicle::HasSunk()
 
 	return false;
 }
-// 0.3.7
+
 bool CVehicle::HasADriver()
 {
 	if (m_pVehicle && GamePool_Vehicle_GetAt(m_dwGTAId))
@@ -539,7 +539,7 @@ void CVehicle::ApplyLightState(int iState)
 	m_iLightState = iState;
     m_pVehicle->m_nVehicleFlags.bLightsOn = iState;
 }
-// 0.3.7
+
 void CVehicle::ProcessMarkers()
 {
 	if(!m_pVehicle || !GamePool_Vehicle_GetAt(m_dwGTAId))
@@ -595,7 +595,7 @@ void CVehicle::ProcessMarkers()
 		}
 	}
 }
-// 0.3.7
+
 bool CVehicle::IsOccupied()
 {
 	if (m_pVehicle)

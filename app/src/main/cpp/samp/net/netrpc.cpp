@@ -174,7 +174,7 @@ void InitGame(RPCParameters* rpcParams)
 		pUI->chat()->addInfoMessage(u8"{ff0000}Voice chat not inited. Please allow the app to access the microphone!");
 	}*/
 }
-// 0.3.7
+
 #include "java/jniutil.h"
 extern CJavaWrapper* pJavaWrapper;
 int Button2Show;
@@ -266,7 +266,7 @@ void DialogBox(RPCParameters *rpcParams)
 
 	return;
 }
-// 0.3.7
+
 void Chat(RPCParameters *rpcParams)
 {
 	Log::traceLastFunc("[RPC-IN] Chat");
@@ -303,7 +303,7 @@ void Chat(RPCParameters *rpcParams)
 		}
 	}
 }
-// 0.3.7
+
 void ClientMessage(RPCParameters *rpcParams)
 {
 	Log::traceLastFunc("[RPC-IN] Client message ");
@@ -330,7 +330,7 @@ void ClientMessage(RPCParameters *rpcParams)
 		if (pUI) pUI->chat()->addClientMessage(Encoding::cp2utf(szMsg), UI::fixcolor(dwColor));
 	}
 }
-// 0.3.7
+
 void RequestClass(RPCParameters *rpcParams)
 {
 	Log::traceLastFunc("[RPC-IN] Request class");
@@ -365,7 +365,7 @@ void RequestClass(RPCParameters *rpcParams)
 		pLocalPlayer->HandleClassSelectionOutcome(false);
 	}
 }
-// 0.3.7
+
 void RequestSpawn(RPCParameters *rpcParams)
 {
 	Log::traceLastFunc("[RPC-IN] Request spawn");
@@ -387,7 +387,7 @@ void RequestSpawn(RPCParameters *rpcParams)
 		pLocalPlayer->m_bWaitingForSpawnRequestReply = false;
 	}
 }
-// 0.3.7
+
 void ToggleClock(RPCParameters *rpcParams)
 {
 	Log::traceLastFunc("[RPC-IN] Toggle clock");
@@ -410,7 +410,7 @@ void ToggleClock(RPCParameters *rpcParams)
 			(int*)&pNetGame->m_pNetSet->byteWorldTime_Minute);
 	}
 }
-// 0.3.7
+
 void SetTimeEx(RPCParameters *rpcParams)
 {
 	Log::traceLastFunc("[RPC-IN] SetTimeEx");
@@ -432,7 +432,7 @@ void SetTimeEx(RPCParameters *rpcParams)
 	pNetGame->m_pNetSet->byteWorldTime_Hour = byteHour;
 	pNetGame->m_pNetSet->byteWorldTime_Minute = byteMinute;
 }
-// 0.3.7
+
 void Weather(RPCParameters *rpcParams)
 {
 	Log::traceLastFunc("[RPC-IN] Weather");
@@ -450,7 +450,7 @@ void Weather(RPCParameters *rpcParams)
 	pNetGame->m_pNetSet->byteWeather = byteWeather;
 	pGame->SetWorldWeather(byteWeather);
 }
-// 0.3.7
+
 void WorldTime(RPCParameters *rpcParams)
 {
 	Log::traceLastFunc("[RPC-IN] World time");
@@ -466,7 +466,7 @@ void WorldTime(RPCParameters *rpcParams)
 
 	pNetGame->m_pNetSet->byteWorldTime_Hour = byteWorldTIme;
 }
-// 0.3.7
+
 void ConnectionRejected(RPCParameters *rpcParams)
 {
 	Log::traceLastFunc("[RPC-IN] Connection rejected");
@@ -504,14 +504,14 @@ void ConnectionRejected(RPCParameters *rpcParams)
 
 	pNetGame->GetRakClient()->Disconnect(500);
 }
-// 0.3.7
+
 void GameModeRestart(RPCParameters *rpcParams)
 {
 	Log::traceLastFunc("[RPC-IN] Gamemode restart");
 
 	pNetGame->ShutdownForGameModeRestart();
 }
-// 0.3.7
+
 void ServerJoin(RPCParameters *rpcParams)
 {
 	Log::traceLastFunc("[RPC-IN] Server join");
@@ -553,7 +553,7 @@ void ServerJoin(RPCParameters *rpcParams)
 		pRemotePlayer->SetPlayerColor(dwMarkerColor);
 	}
 }
-// 0.3.7
+
 void ServerQuit(RPCParameters *rpcParams)
 {
 	Log::traceLastFunc("[RPC-IN] Server quit");
@@ -572,7 +572,7 @@ void ServerQuit(RPCParameters *rpcParams)
 
 	pNetGame->GetPlayerPool()->Delete(playerId, byteReason);
 }
-// 0.3.7
+
 void WorldPlayerAdd(RPCParameters *rpcParams)
 {
 	FLog("[RPC-IN] World player add");
@@ -653,7 +653,7 @@ void WorldPlayerAdd(RPCParameters *rpcParams)
 		}
 	}
 }
-// 0.3.7
+
 void WorldPlayerRemove(RPCParameters *rpcParams)
 {
 	Log::traceLastFunc("[RPC-IN] World player remove");
@@ -676,7 +676,7 @@ void WorldPlayerRemove(RPCParameters *rpcParams)
 		}
 	}
 }
-// 0.3.7
+
 void WorldPlayerDeath(RPCParameters *rpcParams)
 {
 	Log::traceLastFunc("[RPC-IN] World player death");
@@ -699,7 +699,7 @@ void WorldPlayerDeath(RPCParameters *rpcParams)
 		}
 	}
 }
-// 0.3.7
+
 void WorldVehicleAdd(RPCParameters* rpcParams)
 {
 	Log::traceLastFunc("[RPC-IN] World vehicle add");
@@ -785,7 +785,7 @@ void WorldVehicleAdd(RPCParameters* rpcParams)
 		pVehicle->SetColor(VehicleInfo.iBodyColor1, VehicleInfo.iBodyColor2);
 	}*/
 }
-// 0.3.7
+
 void WorldVehicleRemove(RPCParameters* rpcParams)
 {
 	Log::traceLastFunc("[RPC-IN] World vehicle remove");
@@ -865,7 +865,7 @@ void WorldVehicleRemove(RPCParameters* rpcParams)
 		pVehiclePool->Delete(VehicleID + 3);
 	}
 }
-// 0.3.7
+
 void TimerUpdate(RPCParameters *rpcParams)
 {
 	Log::traceLastFunc("[RPC-IN] Timer update");
@@ -881,7 +881,7 @@ void TimerUpdate(RPCParameters *rpcParams)
 
 	//pGame->UpdateGlobalTimer(dwTime);
 }
-// 0.3.7
+
 void ScmEvent(RPCParameters *rpcParams)
 {
 	Log::traceLastFunc("[RPC-IN] SCM event");
@@ -908,7 +908,7 @@ void ScmEvent(RPCParameters *rpcParams)
 	
 	ProcessIncommingEvent(playerId, iEvent, dwParam1, dwParam2, dwParam3);
 }
-// 0.3.7
+
 void UpdateScoresPingsIPs(RPCParameters *rpcParams)
 {
 	Log::traceLastFunc("[RPC-IN] Update scores and pings");
@@ -933,7 +933,7 @@ void UpdateScoresPingsIPs(RPCParameters *rpcParams)
 		pPlayerPool->UpdatePlayerPing(playerId, iPlayerPing);
 	}
 }
-// 0.3.7
+
 void Pickup(RPCParameters *rpcParams)
 {
 	Log::traceLastFunc("[RPC-IN] Pickup");
@@ -952,7 +952,7 @@ void Pickup(RPCParameters *rpcParams)
 		pPickupPool->New(&Pickup, iIndex);
 	}
 }
-// 0.3.7
+
 void DestroyPickup(RPCParameters *rpcParams)
 {
 	Log::traceLastFunc("[RPC-IN] Destroy pickup");
@@ -969,7 +969,7 @@ void DestroyPickup(RPCParameters *rpcParams)
 		pPickupPool->Destroy(iIndex);
 	}
 }
-// 0.3.7
+
 void Create3DTextLabel(RPCParameters* rpcParams)
 {
 	Log::traceLastFunc("[RPC-IN] Create 3D text label");
@@ -1003,7 +1003,7 @@ void Create3DTextLabel(RPCParameters* rpcParams)
 		pTextLabelPool->NewLabel(wLabelId, &label);
 	}
 }
-// 0.3.7
+
 void Update3DTextLabel(RPCParameters* rpcParams)
 {
 	Log::traceLastFunc("[RPC-IN] Update 3D text label");
@@ -1022,7 +1022,7 @@ void Update3DTextLabel(RPCParameters* rpcParams)
 			pTextLabelPool->ClearLabel(wLabelId);
 	}
 }
-// 0.3.7
+
 void SetCheckpoint(RPCParameters* rpcParams)
 {
 	Log::traceLastFunc("[RPC-IN] Set checkpoint");
@@ -1046,14 +1046,14 @@ void SetCheckpoint(RPCParameters* rpcParams)
 	pGame->SetCheckpointInformation(&vecPos, &vecSize);
 	pGame->m_bCheckpointsEnabled = true;
 }
-// 0.3.7
+
 void DisableCheckpoint(RPCParameters* rpcParams)
 {
 	Log::traceLastFunc("[RPC-IN] Disable checkpoint");
 
 	pGame->m_bCheckpointsEnabled = false;
 }
-// 0.3.7
+
 void SetRaceCheckpoint(RPCParameters* rpcParams)
 {
 	Log::traceLastFunc("[RPC-IN] Set race checkpoint");
@@ -1078,14 +1078,14 @@ void SetRaceCheckpoint(RPCParameters* rpcParams)
 	pGame->SetRaceCheckpointInformation(byteType, &vecPos, &vecNextPos, fRadius);
 	pGame->m_bRaceCheckpointsEnabled = true;
 }
-// 0.3.7
+
 void DisableRaceCheckpoint(RPCParameters* rpcParams)
 {
 	Log::traceLastFunc("[RPC-IN] Disable race checkpoint");
 
 	pGame->m_bRaceCheckpointsEnabled = false;
 }
-// 0.3.7
+
 void DamageVehicle(RPCParameters *rpcParams)
 {
 	Log::traceLastFunc("[RPC-IN] Damage vehicle");
@@ -1137,7 +1137,7 @@ void SetVehicleTireStatus(RPCParameters* rpcParams)
 	}
 }
 
-// 0.3.7
+
 void EnterVehicle(RPCParameters* rpcParams)
 {
 	Log::traceLastFunc("[RPC-IN] Enter vehicle");
@@ -1168,7 +1168,7 @@ void EnterVehicle(RPCParameters* rpcParams)
 		pRemotePlayer->EnterVehicle(VehicleID, bytePassenger);
 	}
 }
-// 0.3.7
+
 void ExitVehicle(RPCParameters* rpcParams)
 {
 	Log::traceLastFunc("[RPC-IN] Exit vehicle");
@@ -1188,7 +1188,7 @@ void ExitVehicle(RPCParameters* rpcParams)
 			pRemotePlayer->ExitVehicle();
 	}
 }
-// 0.3.7
+
 void VehicleParamsEx(RPCParameters* rpcParams)
 {
 	Log::traceLastFunc("[RPC-IN] VehicleParamsEx");
@@ -1356,7 +1356,7 @@ void VehicleParamsEx(RPCParameters* rpcParams)
 		pVehicle->OpenWindow(9);
 	}
 }
-// 0.3.7
+
 void ShowActor(RPCParameters* rpcParams)
 {
 	Log::traceLastFunc("[RPC-IN] Show actor");
@@ -1376,7 +1376,7 @@ void ShowActor(RPCParameters* rpcParams)
 		pActorPool->New(&newActor);
 	}
 }
-// 0.3.7
+
 void HideActor(RPCParameters* rpcParams)
 {
 	Log::traceLastFunc("[RPC-IN] Hide actor");

@@ -44,7 +44,7 @@ void CCamera::SetBehindPlayer()
     ScriptCommand(&restore_camera_jumpcut);
 }
 
-// 0.3.7
+
 void CCamera::SetPosition(float fX, float fY, float fZ, float fRotationX, float fRotationY, float fRotationZ)
 {
     ScriptCommand(&restore_camera_to_user);
@@ -52,14 +52,14 @@ void CCamera::SetPosition(float fX, float fY, float fZ, float fRotationX, float 
 }
 
 
-// 0.3.7
+
 void CCamera::LookAtPoint(float fX, float fY, float fZ, int iType)
 {
     ScriptCommand(&restore_camera_to_user);
     ScriptCommand(&point_camera, fX, fY, fZ, iType);
 }
 
-// 0.3.7
+
 void CCamera::InterpolateCameraPos(CVector *posFrom, CVector *posTo, int time, uint8_t mode)
 {
     CCamera& TheCamera = *reinterpret_cast<CCamera*>(g_libGTASA + (VER_x32 ? 0x00951FA8 : 0xBBA8D0));
@@ -69,7 +69,7 @@ void CCamera::InterpolateCameraPos(CVector *posFrom, CVector *posTo, int time, u
     ScriptCommand(&set_camera_pos_time_smooth, posFrom->x, posFrom->y, posFrom->z, posTo->x, posTo->y, posTo->z, time, mode);
 }
 
-// 0.3.7
+
 void CCamera::InterpolateCameraLookAt(CVector *posFrom, CVector *posTo, int time, uint8_t mode)
 {
     ScriptCommand(&lock_camera_position, 1);

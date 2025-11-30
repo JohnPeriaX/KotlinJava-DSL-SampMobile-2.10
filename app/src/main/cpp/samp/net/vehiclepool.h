@@ -60,14 +60,14 @@ public:
 	void Process();
 	void NotifyVehicleDeath(VEHICLEID VehicleID);
 
-	// 0.3.7
+	
 	CVehicle* GetAt(VEHICLEID vehicleID) {
 		if (vehicleID < MAX_VEHICLES && m_bVehicleSlotState[vehicleID])
 			return m_pVehicles[vehicleID];
 
 		return nullptr;
 	}
-	// 0.3.7
+
 	bool GetSlotState(VEHICLEID VehicleID)
 	{
 		if (VehicleID < MAX_VEHICLES)
@@ -75,7 +75,7 @@ public:
 
 		return false;
 	}
-	// 0.3.7
+
 	VEHICLEID FindIDFromGtaPtr(CVehicleGTA* pGtaVehicle)
 	{
 		for (int i = 0; i < MAX_VEHICLES; i++)
@@ -86,7 +86,7 @@ public:
 		}
 	}
 
-	// 0.3.7
+	
 	uint32_t FindGtaIDFromID(VEHICLEID VehicleID)
 	{
 		if (m_pGTAVehicles[VehicleID]) {

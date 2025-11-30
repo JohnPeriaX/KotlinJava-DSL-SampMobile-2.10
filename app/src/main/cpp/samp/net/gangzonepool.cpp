@@ -4,7 +4,7 @@
 
 extern CGame* pGame;
 
-// 0.3.7
+
 CGangZonePool::CGangZonePool()
 {
 	for (uint16_t wZone = 0; wZone < MAX_GANG_ZONES; wZone++)
@@ -13,7 +13,7 @@ CGangZonePool::CGangZonePool()
 		m_bSlotState[wZone] = false;
 	}
 }
-// 0.3.7
+
 CGangZonePool::~CGangZonePool()
 {
 	for (uint16_t wZone = 0; wZone < MAX_GANG_ZONES; wZone++)
@@ -25,7 +25,7 @@ CGangZonePool::~CGangZonePool()
 		}
 	}
 }
-// 0.3.7
+
 void CGangZonePool::New(uint16_t wZoneID, float fMinX, float fMinY, float fMaxX, float fMaxY, uint32_t dwColor)
 {
 	if (m_pGangZone[wZoneID])
@@ -49,7 +49,7 @@ void CGangZonePool::New(uint16_t wZoneID, float fMinX, float fMinY, float fMaxX,
 		m_bSlotState[wZoneID] = true;
 	}
 }
-// 0.3.7
+
 void CGangZonePool::Delete(uint16_t wZoneID)
 {
 	if (m_pGangZone[wZoneID])
@@ -59,21 +59,21 @@ void CGangZonePool::Delete(uint16_t wZoneID)
 		m_bSlotState[wZoneID] = false;
 	}
 }
-// 0.3.7
+
 void CGangZonePool::Flash(uint16_t wZoneID, uint32_t dwColor)
 {
 	if (m_pGangZone[wZoneID]) {
 		m_pGangZone[wZoneID]->dwAltColor = dwColor;
 	}
 }
-// 0.3.7
+
 void CGangZonePool::StopFlash(uint16_t wZoneID)
 {
 	if (m_pGangZone[wZoneID]) {
 		m_pGangZone[wZoneID]->dwAltColor = m_pGangZone[wZoneID]->dwColor;
 	}
 }
-// 0.3.7
+
 void CGangZonePool::Draw(uint32_t unk)
 {
 	static uint32_t dwLastTick = 0;

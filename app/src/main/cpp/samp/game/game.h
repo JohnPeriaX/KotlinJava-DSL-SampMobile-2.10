@@ -72,7 +72,7 @@ public:
 
 	static const char* GetDataDirectory();
 
-	// 0.3.7
+	
 	CPlayerPed* FindPlayerPed() {
 		if (m_pGamePlayer == nullptr) {
 			m_pGamePlayer = new CPlayerPed();

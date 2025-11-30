@@ -348,7 +348,7 @@ void CRemotePlayer::Process()
 		}
 	}
 }
-// 0.3.7
+
 void CRemotePlayer::InterpolateAndRotate()
 {
 	if(m_pPlayerPed)
@@ -371,7 +371,7 @@ void CRemotePlayer::InterpolateAndRotate()
 		m_pPlayerPed->SetRotation(fZ);
 	}
 }
-// 0.3.7
+
 void CRemotePlayer::UpdateOnFootTargetPosition()
 {
 	if(!m_pPlayerPed) return;
@@ -417,7 +417,7 @@ void CRemotePlayer::UpdateOnFootTargetPosition()
 		m_pPlayerPed->m_pPed->SetMatrix((CMatrix&)matPlayer);
 	}
 }
-// 0.3.7
+
 void CRemotePlayer::UpdateOnFootPositionAndSpeed(CVector* vecPos, CVector* vecMove)
 {
 	m_vecOnFootTargetPos.x = vecPos->x;
@@ -430,7 +430,7 @@ void CRemotePlayer::UpdateOnFootPositionAndSpeed(CVector* vecPos, CVector* vecMo
 
 	m_pPlayerPed->m_pPed->SetVelocity(m_vecOnFootTargetSpeed);
 }
-// 0.3.7
+
 bool CRemotePlayer::SurfingOnVehicle()
 {
 	if(GetState() == PLAYER_STATE_ONFOOT) 
@@ -487,7 +487,7 @@ void CRemotePlayer::ResetAllSyncAttributes()
 		m_dwLastStoredSyncDataTime = GetTickCount();
 	}
 }
-// 0.3.7
+
 void CRemotePlayer::SetPlayerColor(uint32_t dwColor)
 {
 	SetRadarColor(m_PlayerID, dwColor);
@@ -498,14 +498,14 @@ uint32_t CRemotePlayer::GetPlayerColor()
 	return TranslateColorCodeToRGBA(m_PlayerID);
 }
 
-// 0.3.7
+
 void CRemotePlayer::Say(char *szMessage)
 {
 	char* szPlayerName = pNetGame->GetPlayerPool()->GetPlayerName(m_PlayerID);
 	uint32_t dwColor = TranslateColorCodeToRGBA(m_PlayerID);
 	if (pUI) pUI->chat()->addChatMessage(Encoding::cp2utf(szMessage), szPlayerName, UI::fixcolor(dwColor));
 }
-// 0.3.7
+
 bool CRemotePlayer::Spawn(uint8_t byteTeam, int iSkin, CVector *vecPos, float fRotation,
 	uint32_t dwColor, uint8_t byteFightingStyle)
 {
@@ -557,7 +557,7 @@ bool CRemotePlayer::Spawn(uint8_t byteTeam, int iSkin, CVector *vecPos, float fR
 		return false;
 	}
 }
-// 0.3.7
+
 void CRemotePlayer::Remove()
 {
 	if (m_pPlayerPed)
@@ -570,7 +570,7 @@ void CRemotePlayer::Remove()
 	SetState(PLAYER_STATE_NONE);
 	m_bShowNameTag = true;
 }
-// 0.3.7
+
 void CRemotePlayer::HandleDeath()
 {
     if (GetPlayerPed())
@@ -608,7 +608,7 @@ void CRemotePlayer::StoreOnFootFullSyncData(ONFOOT_SYNC_DATA *ofSync, uint32_t d
 
 	SetState(PLAYER_STATE_ONFOOT);
 }
-// 0.3.7
+
 void CRemotePlayer::StoreInCarFullSyncData(INCAR_SYNC_DATA* picSync, uint32_t dwTime)
 {
 	if (!dwTime || dwTime - m_dwLastStoredSyncDataTime >= 0) {
@@ -653,7 +653,7 @@ float DecompressAspectRatio(char v)
 	return v / 255.0f;
 }
 
-// 0.3.7
+
 void CRemotePlayer::StoreAimFullSyncData(AIM_SYNC_DATA* paimSync)
 {
 	if (!m_pPlayerPed) return;
@@ -701,7 +701,7 @@ void CRemotePlayer::StoreAimFullSyncData(AIM_SYNC_DATA* paimSync)
 			if (pwstWeapon->dwAmmoInClip < 2)
 				pwstWeapon->dwAmmoInClip = 2;
 }
-// 0.3.7
+
 void CRemotePlayer::StorePassengerFullSyncData(PASSENGER_SYNC_DATA* psSync)
 {
 	memcpy(&m_psSync, psSync, sizeof(PASSENGER_SYNC_DATA));
@@ -737,7 +737,7 @@ void CRemotePlayer::StorePassengerFullSyncData(PASSENGER_SYNC_DATA* psSync)
 
 	SetState(PLAYER_STATE_PASSENGER);
 }
-// 0.3.7
+
 void CRemotePlayer::StoreBulletFullSyncData(BULLET_SYNC_DATA* btSync)
 {
 	if (!m_pPlayerPed || !m_pPlayerPed->m_pPed->IsAdded()) return;
@@ -828,7 +828,7 @@ void CRemotePlayer::StoreBulletFullSyncData(BULLET_SYNC_DATA* btSync)
 	m_pPlayerPed->ProcessBulletData(&btData);
 	m_pPlayerPed->FireInstant();
 }
-// 0.3.7
+
 void CRemotePlayer::RemoveFromVehicle()
 {
 	RwMatrix mat;
@@ -842,7 +842,7 @@ void CRemotePlayer::RemoveFromVehicle()
 		}
 	}
 }
-// 0.3.7
+
 void CRemotePlayer::UpdateInCarMatrixAndSpeed(RwMatrix* pMatrix, CVector* pVecPos, CVector* pVecMoveSpeed)
 {
 	m_quat.SetFromMatrix(*&pMatrix);
@@ -856,7 +856,7 @@ void CRemotePlayer::UpdateInCarMatrixAndSpeed(RwMatrix* pMatrix, CVector* pVecPo
 
 	m_pCurrentVehicle->m_pVehicle->SetVelocity(m_vecInCarTargetSpeed);
 }
-// 0.3.7
+
 void CRemotePlayer::UpdateInCarTargetPosition()
 {
 	if (!m_pCurrentVehicle) return;
@@ -919,7 +919,7 @@ void CRemotePlayer::UpdateInCarTargetPosition()
 		m_pCurrentVehicle->m_pVehicle->SetMatrix((CMatrix&)matEnt);
 	}
 }
-// 0.3.7
+
 void CRemotePlayer::UpdateVehicleRotation()
 {
 	CQuaternion quat, qresult;
@@ -957,7 +957,7 @@ void CRemotePlayer::UpdateVehicleRotation()
 	qresult.GetMatrix(&matEnt);
 	m_pCurrentVehicle->m_pVehicle->SetMatrix((CMatrix&)matEnt);
 }
-// 0.3.7
+
 void CRemotePlayer::PutInCurrentVehicle()
 {
 	FLog("PutInCurrentVehicle");
@@ -994,7 +994,7 @@ void CRemotePlayer::PutInCurrentVehicle()
 		}
 	}
 }
-// 0.3.7
+
 float CRemotePlayer::GetDistanceFromLocalPlayer()
 {
 	if (!m_pPlayerPed) return 10000.0f;
@@ -1006,7 +1006,7 @@ float CRemotePlayer::GetDistanceFromLocalPlayer()
 		return m_pPlayerPed->m_pPed->GetDistanceFromLocalPlayerPed();
 	}
 }
-// 0.3.7
+
 void CRemotePlayer::EnterVehicle(VEHICLEID VehicleID, bool bPassenger)
 {
 	CVehiclePool* pVehiclePool = pNetGame->GetVehiclePool();
@@ -1024,7 +1024,7 @@ void CRemotePlayer::EnterVehicle(VEHICLEID VehicleID, bool bPassenger)
 		}
 	}
 }
-// 0.3.7
+
 void CRemotePlayer::ExitVehicle()
 {
 	if (m_pPlayerPed && m_pPlayerPed->IsInVehicle())
@@ -1034,7 +1034,7 @@ void CRemotePlayer::ExitVehicle()
 	}
 }
 
-// 0.3.7
+
 void CRemotePlayer::ShowGlobalMarker(short sPosX, short sPosY, short sPosZ)
 {
 	m_bGlobalMarkerShown = true;
@@ -1054,7 +1054,7 @@ void CRemotePlayer::ShowGlobalMarker(short sPosX, short sPosY, short sPosZ)
 		m_dwMarker = dwMarker;
 	}
 }
-// 0.3.7
+
 void CRemotePlayer::HideGlobalMarker()
 {
 	if (m_dwMarker)
@@ -1066,7 +1066,7 @@ void CRemotePlayer::HideGlobalMarker()
 	m_bGlobalMarkerShown = false;
 }
 
-// 0.3.7
+
 void CRemotePlayer::StateChange(uint8_t byteNewState, uint8_t byteOldState)
 {
 	if (byteNewState == PLAYER_STATE_DRIVER && byteOldState == PLAYER_STATE_ONFOOT)

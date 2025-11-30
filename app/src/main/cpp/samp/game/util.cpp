@@ -1896,7 +1896,7 @@ CVehicleGTA* GamePool_Vehicle_GetAt(int iID)
 	return ((CVehicleGTA* (*)(int))(g_libGTASA + (VER_x32 ? 0x00483D9E + 1 : 0x575CE8)))(iID);
 }
 
-// 0.3.7
+
 int GetVehicleSubtype(CVehicleGTA* pGtaVehicle)
 {
     if (pGtaVehicle) {
@@ -1952,13 +1952,13 @@ bool IsValidModel(int iModelID)
 
 	return false;
 }
-// 0.3.7
+
 int GetModelRefCounts(int iModel)
 {
 	uint16_t* p = (uint16_t*)(GetModelInfoByID(iModel) + (VER_x32 ? 30:30*2));
 	return *p;
 }
-// 0.3.7
+
 bool IsValidPedModel(uint modelID)
 {
     if(modelID < 0 || modelID > 20000) return false;
@@ -2011,7 +2011,7 @@ uintptr_t LoadTexture(const char* texname)
     return 0;
 }
 
-// 0.3.7 
+ 
 #include "sprite2d.h"
 #include "armhook/patch.h"
 #include <algorithm>
@@ -2051,33 +2051,33 @@ RwTexture* LoadTextureFromTxd(const char* txdname, const char* texturename)
 
     return tex;
 }
-// 0.3.7 
+ 
 int FindTxdSlot(const char* txdname)
 {
 	// CTxdStore::FindTxdSlot 
 	return ((int(*)(const char*))(g_libGTASA + 0x5D3E60 + 1))(txdname);
 }
-// 0.3.7 
+ 
 void PushCurrentTxd()
 {
 	// CTxdStore::PushCurrentTxd 
 	((void (*)())(g_libGTASA + 0x5D4184 + 1))();
 
 }
-// 0.3.7 
+ 
 void SetCurrentTxd(int slot)
 {
 	// CTxdStore::SetCurrentTxd 
 	((void (*)(int, int))(g_libGTASA + 0x5D40F4 + 1))(slot, 0);
 }
-// 0.3.7 
+ 
 void PopCurrentTxd()
 {
 	// CTxdStore::PopCurrentTxd 
 	((void (*)())(g_libGTASA + 0x5D41C4 + 1))();
 
 }
-// 0.3.7 
+ 
 uintptr_t SetTexture(const char* texturename)
 {
 	uintptr_t thiz = 0;
@@ -2103,7 +2103,7 @@ float DegToRad(float fDegrees)
 	if (fDegrees > 180.0f) return (float)(-(PI - (((fDegrees - 180.0f) * PI) / 180.0f)));
 	else return (float)((fDegrees * PI) / 180.0f);
 }
-// 0.3.7
+
 float fixAngle(float angle)
 {
 	if (angle > 180.0f)	angle -= 360.0f;
@@ -2111,7 +2111,7 @@ float fixAngle(float angle)
 
 	return angle;
 }
-// 0.3.7
+
 float subAngle(float a1, float a2)
 {
 	return fixAngle(fixAngle(a2) - a1);
@@ -2240,13 +2240,13 @@ void RemoveOccludersInRadius(RwV3d vecPos, float fRadius)
 bool bTextDrawTextureSlotState[200];
 uintptr_t TextDrawTexture[200];
 
-// 0.3.7
+
 void ResetTextDrawTextures()
 {
 	memset(bTextDrawTextureSlotState, 0, sizeof(bTextDrawTextureSlotState));
 	memset(TextDrawTexture, 0, sizeof(TextDrawTexture));
 }
-// 0.3.7
+
 int GetFreeTextDrawTextureSlot()
 {
 	for (int i = 0; i < 200; i++)
@@ -2259,7 +2259,7 @@ int GetFreeTextDrawTextureSlot()
 
 	return -1;
 }
-// 0.3.7
+
 void DestroyTextDrawTexture(int index)
 {
 	uintptr_t pTexture;
@@ -2595,7 +2595,7 @@ void GameResetStats()
 
 }
 
-// 0.3.7
+
 void ProjectMatrix(CVector* vecOut, CMatrix* mat, CVector* vecPos)
 {
     if(vecOut == nullptr || mat == nullptr || vecPos == nullptr)
@@ -2616,12 +2616,12 @@ static CVector _axis[3] = {
 		{0.0f, 0.0f, 1.0f}
 };
 
-// 0.3.7
+
 void RwMatrixRotate(RwMatrix* mat, int axis, float angle)
 {
 	((void (*) (RwMatrix*, RwV3d*, float, int))(g_libGTASA + (VER_x32 ? 0x001E38F4 + 1 : 0x27E710)))(mat, &_axis[axis], angle, 1);
 }
-// 0.3.7
+
 void RwMatrixScale(RwMatrix* matrix, RwV3d* scale)
 {
 	matrix->right.x *= scale->x;
@@ -2643,8 +2643,8 @@ const char* getGameDataFolderDirectory()
 {
 	return "";
 }
-// 0.3.7
-// 0.3.7
+
+
 
 int LineOfSight(RwV3d* start, RwV3d* end, void* colpoint, uintptr_t ent, char buildings, char vehicles, char peds, char objects, char dummies, bool seeThrough, bool camera, bool unk)
 {

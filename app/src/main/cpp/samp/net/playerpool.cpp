@@ -15,7 +15,7 @@ CPlayerPool::CPlayerPool()
 	m_LocalPlayerID = 0;
 	m_iLastPlayerID = 0;
 }
-// 0.3.7
+
 CPlayerPool::~CPlayerPool()
 {
 	if (m_pLocalPlayer) {
@@ -27,7 +27,7 @@ CPlayerPool::~CPlayerPool()
 		this->Delete(playerId, 0);
 	}
 }
-// 0.3.7
+
 void CPlayerPool::Process()
 {
 	for (PLAYERID playerId = 0; playerId < MAX_PLAYERS; playerId++)
@@ -41,7 +41,7 @@ void CPlayerPool::Process()
 		m_pLocalPlayer->Process();
 	}
 }
-// 0.3.7
+
 bool CPlayerPool::New(PLAYERID playerId, const char* szPlayerName, bool bIsNPC)
 {
 	/*CPlayer *pPlayer = new CPlayer(szPlayerName, bIsNPC);
@@ -81,7 +81,7 @@ bool CPlayerPool::New(PLAYERID playerId, const char* szPlayerName, bool bIsNPC)
 
 	return false;
 }
-// 0.3.7
+
 bool CPlayerPool::Delete(PLAYERID playerId, uint8_t byteReason)
 {
 	if (playerId >= MAX_PLAYERS || !m_bPlayerSlotState[playerId] || !m_pPlayers[playerId]) {
@@ -101,7 +101,7 @@ bool CPlayerPool::Delete(PLAYERID playerId, uint8_t byteReason)
 
 	return true;
 }
-// 0.3.7
+
 void CPlayerPool::FindLastPlayerID()
 {
 	int iLastPlayerID = 0;
@@ -131,7 +131,7 @@ int CPlayerPool::GetPlayerPing(PLAYERID playerId)
 	return m_dwPlayerPings[playerId];
 }
 
-// 0.3.7
+
 bool CPlayerPool::IsPlayerNPC(PLAYERID playerId)
 {
 	if (playerId > MAX_PLAYERS) {
@@ -153,7 +153,7 @@ int CPlayerPool::GetTotalPlayers()
 	return iTotal;
 }
 
-// 0.3.7
+
 void CPlayerPool::UpdatePlayerScore(PLAYERID playerId, int iScore)
 {
 	if (playerId == m_LocalPlayerID)
@@ -166,7 +166,7 @@ void CPlayerPool::UpdatePlayerScore(PLAYERID playerId, int iScore)
 		m_iPlayerScores[playerId] = iScore;
 	}
 }
-// 0.3.7
+
 void CPlayerPool::UpdatePlayerPing(PLAYERID playerId, int iPing)
 {
 	if (playerId == m_LocalPlayerID)
@@ -179,7 +179,7 @@ void CPlayerPool::UpdatePlayerPing(PLAYERID playerId, int iPing)
 		m_dwPlayerPings[playerId] = iPing;
 	}
 }
-// 0.3.7
+
 PLAYERID CPlayerPool::FindRemotePlayerIDFromGtaPtr(CPedGTA* pActor)
 {
 	for (int i = 0; i < MAX_PLAYERS; i++)
@@ -203,7 +203,7 @@ PLAYERID CPlayerPool::FindRemotePlayerIDFromGtaPtr(CPedGTA* pActor)
 
 	return INVALID_PLAYER_ID;
 }
-// 0.3.7
+
 void CPlayerPool::DeactivateAll()
 {
 	m_pLocalPlayer->m_bIsActive = false;
@@ -219,7 +219,7 @@ void CPlayerPool::DeactivateAll()
 		}
 	}
 }
-// 0.3.7
+
 void CPlayerPool::ProcessAttachedObjects()
 {
 	if (m_pLocalPlayer)
@@ -248,7 +248,7 @@ void CPlayerPool::ProcessAttachedObjects()
 		}
 	}
 }
-// 0.3.7
+
 void CPlayerPool::ApplyCollisionChecking()
 {
 	CRemotePlayer* pRemotePlayer = nullptr;

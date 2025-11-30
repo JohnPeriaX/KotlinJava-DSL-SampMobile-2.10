@@ -220,7 +220,7 @@ void GameResetRadarColors()
 	memcpy(&dwUseHudColors[0], &dwHudColors[0], sizeof(uint32_t) * NUM_RADAR_COLORS);
 }
 
-// 0.3.7
+
 uint32_t TranslateColorCodeToRGBA(uint iCode)
 {
 	switch (iCode)

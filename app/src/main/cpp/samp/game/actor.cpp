@@ -4,7 +4,7 @@
 
 extern CGame* pGame;
 
-// 0.3.7
+
 CActor::CActor(int iSkin, float fX, float fY, float fZ, float fAngle)
 {
     if (!CStreaming::TryLoadModel(iSkin))
@@ -24,7 +24,7 @@ CActor::CActor(int iSkin, float fX, float fY, float fZ, float fAngle)
 
     ScriptCommand(&set_actor_can_be_decapitated, m_dwGTAId, 0);
 }
-// 0.3.7
+
 CActor::~CActor()
 {
     auto modelId = m_pPed->m_nModelIndex;
@@ -55,14 +55,14 @@ void CActor::ForceTargetRotation(float fRotation)
 
     ScriptCommand(&set_actor_z_angle, m_dwGTAId, fRotation);
 }
-// 0.3.7
+
 void CActor::SetHealth(float fHealth)
 {
 	if (m_pPed) {
 		m_pPed->m_fHealth = fHealth;
 	}
 }
-// 0.3.7
+
 void CActor::SetInvulnerable(bool bInvulnerable)
 {
 	m_bInvulnerable = bInvulnerable;
@@ -74,7 +74,7 @@ void CActor::SetInvulnerable(bool bInvulnerable)
 		ScriptCommand(&set_actor_immunities, m_dwGTAId, 0, 0, 0, 0, 0);
 	}
 }
-// 0.3.7 (adapted)
+ (adapted)
 void CActor::ApplyAnimation(const char* szAnimName, const char* szAnimLib, float fDelta,
 	int bLoop, int bLockX, int bLockY, int bFreeze, int iTime)
 {
@@ -92,7 +92,7 @@ void CActor::ApplyAnimation(const char* szAnimName, const char* szAnimLib, float
 
 	ScriptCommand(&apply_animation, m_dwGTAId, szAnimName, szAnimLib, fDelta, bLoop, bLockX, bLockY, bFreeze, iTime);
 }
-// 0.3.7
+
 void CActor::ClearAnimation()
 {
 	if (m_pPed) {
@@ -100,7 +100,7 @@ void CActor::ClearAnimation()
 		//((void (*)(PED_TASKS_TYPE*, bool))(g_libGTASA + 0x4C0A44 + 1))(m_pPed->Tasks, true);
 	}
 }
-// 0.3.7
+
 void CActor::SetFacingAngle(float fAngle)
 {
 	if (m_pPed && GamePool_Ped_GetAt(m_dwGTAId)) {

@@ -2,7 +2,7 @@
 #include "../game/game.h"
 #include "netgame.h"
 
-// 0.3.7
+
 CActorPool::CActorPool()
 {
 	for (PLAYERID ActorID = 0; ActorID < MAX_ACTORS; ActorID++)
@@ -12,7 +12,7 @@ CActorPool::CActorPool()
 		m_pGtaPed[ActorID] = nullptr;
 	}
 }
-// 0.3.7
+
 CActorPool::~CActorPool()
 {
 	for (PLAYERID ActorID = 0; ActorID < MAX_ACTORS; ActorID++)
@@ -20,7 +20,7 @@ CActorPool::~CActorPool()
 		Delete(ActorID);
 	}
 }
-// 0.3.7
+
 void CActorPool::New(NEW_ACTOR* pNewActor)
 {
 	if (m_pActors[pNewActor->ActorID])
@@ -50,7 +50,7 @@ void CActorPool::New(NEW_ACTOR* pNewActor)
 		pActor->SetInvulnerable(false);
 	}
 }
-// 0.3.7
+
 void CActorPool::Delete(PLAYERID ActorID)
 {
 	CActor* pActor = GetAt(ActorID);

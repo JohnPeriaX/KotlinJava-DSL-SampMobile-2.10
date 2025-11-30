@@ -37,7 +37,7 @@ public:
 		return m_pLocalPlayer;
 	}
 
-	// 0.3.7
+	
 	CRemotePlayer* GetAt(PLAYERID playerId) {
 		if (playerId > MAX_PLAYERS || 
 			m_bPlayerSlotState[playerId] == false ||
@@ -47,7 +47,7 @@ public:
 
 		return m_pPlayers[playerId];
 	}
-	// 0.3.7
+
 	bool GetSlotState(PLAYERID playerId) {
 		if (playerId > MAX_PLAYERS) {
 			return false;

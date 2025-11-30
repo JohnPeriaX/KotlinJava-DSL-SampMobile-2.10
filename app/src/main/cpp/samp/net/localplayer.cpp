@@ -465,7 +465,7 @@ void CLocalPlayer::ResetAllSyncAttributes()
 	m_nLastVehicle = INVALID_VEHICLE_ID;
 	m_bWasInCar = false;
 }
-// 0.3.7 ( ศใํ๎๐ F4-class-reselect)
+ ( ศใํ๎๐ F4-class-reselect)
 void CLocalPlayer::ToggleSpectating(bool bToggle)
 {
 	if (m_bIsSpectating && !bToggle) {
@@ -661,7 +661,7 @@ bool CLocalPlayer::Spawn()
 
 	return true;
 }
-// 0.3.7
+
 void CLocalPlayer::HandleClassSelection()
 {
 	m_bClearedToSpawn = false;
@@ -671,7 +671,7 @@ void CLocalPlayer::HandleClassSelection()
 		m_pPlayerPed->TogglePlayerControllable(false);
 	}
 }
-// 0.3.7
+
 void CLocalPlayer::SendWastedNotification()
 {
 	uint8_t byteDeathReason;
@@ -683,7 +683,7 @@ void CLocalPlayer::SendWastedNotification()
     FLog("SendWastedNotification %d %d", byteDeathReason, WhoWasResponsible);
 	pNetGame->GetRakClient()->RPC(&RPC_Death, &bsPlayerDeath, HIGH_PRIORITY, RELIABLE_ORDERED, 0, false, UNASSIGNED_NETWORK_ID, nullptr);
 }
-// 0.3.7 (ํๅ๒ extKeys ่ this->field_104 = 1)
+ (ํๅ๒ extKeys ่ this->field_104 = 1)
 void CLocalPlayer::SendOnFootFullSyncData()
 {
 	RakNet::BitStream bsPlayerSync;
@@ -946,7 +946,7 @@ void CLocalPlayer::SendPassengerFullSyncData()
 
 	if(m_bPassengerDriveByMode)	SendAimSyncData();
 }
-// 0.3.7
+
 void CLocalPlayer::SendAimSyncData()
 {
 	AIM_SYNC_DATA aimSync;
@@ -1030,7 +1030,7 @@ void CLocalPlayer::CheckWeapons()
 		pNetGame->GetRakClient()->Send(&bsWeapons, HIGH_PRIORITY, RELIABLE, 0);
 	}
 }
-// 0.3.7
+
 void CLocalPlayer::UpdateRemoteInterior(uint8_t byteInterior)
 {
 	m_byteCurInterior = byteInterior;
@@ -1188,7 +1188,7 @@ void CLocalPlayer::MoveHeadWithCamera()
 
 }
 extern bool bNeedEnterVehicle;
-// 0.3.7
+
 /*bool CLocalPlayer::EnterVehicleAsPassenger()
 {
 	CVehiclePool* pVehiclePool = pNetGame->GetVehiclePool();
@@ -1373,12 +1373,12 @@ void CLocalPlayer::ProcessInCarWorldBounds()
 		}
 	}*/
 }
-// 0.3.7
+
 bool CLocalPlayer::CompareOnFootSyncKeys(uint16_t wKeys, uint16_t lrAnalog, uint16_t udAnalog)
 {
 	return wKeys != m_ofSync.wKeys || udAnalog != m_ofSync.udAnalog || lrAnalog != m_ofSync.lrAnalog;
 }
-// 0.3.7
+
 int CLocalPlayer::GetOptimumOnFootSendRate()
 {
 	if(!m_pPlayerPed) return 1000;
@@ -1393,7 +1393,7 @@ int CLocalPlayer::GetOptimumOnFootSendRate()
 		return (iNetModeNormalOnFootSendRate + iNumPlayersInRange);
 	}
 }
-// 0.3.7
+
 int CLocalPlayer::GetOptimumInCarSendRate()
 {
 	if(!m_pPlayerPed) return 1000;
@@ -1413,7 +1413,7 @@ void CLocalPlayer::UpdateVehicleDamage(VEHICLEID vehicleID)
 {
 
 }
-// 0.3.7
+
 void CLocalPlayer::SendNextClass()
 {
 	RwMatrix matPlayer;
@@ -1429,7 +1429,7 @@ void CLocalPlayer::SendNextClass()
 	pGame->PlaySound(1052, matPlayer.pos.x, matPlayer.pos.y, matPlayer.pos.z);
 	RequestClass(m_iSelectedClass);
 }
-// 0.3.7
+
 void CLocalPlayer::SendPrevClass()
 {
 	RwMatrix matPlayer;
@@ -1445,7 +1445,7 @@ void CLocalPlayer::SendPrevClass()
 	pGame->PlaySound(1053, matPlayer.pos.x, matPlayer.pos.y, matPlayer.pos.z);
 	RequestClass(m_iSelectedClass);
 }
-// 0.3.7
+
 void CLocalPlayer::SendSpawn()
 {
 	if (!m_bSpawnDialogShowed) return;
@@ -1453,14 +1453,14 @@ void CLocalPlayer::SendSpawn()
 	RequestSpawn();
 	m_bWaitingForSpawnRequestReply = true;
 }
-// 0.3.7
+
 void CLocalPlayer::RequestClass(int iClass)
 {
 	RakNet::BitStream bsClassRequest;
 	bsClassRequest.Write(iClass);
 	pNetGame->GetRakClient()->RPC(&RPC_RequestClass, &bsClassRequest, HIGH_PRIORITY, RELIABLE, 0, false, UNASSIGNED_NETWORK_ID, nullptr);
 }
-// 0.3.7
+
 void CLocalPlayer::RequestSpawn()
 {
 	RakNet::BitStream bsSpawnRequest;
@@ -1562,13 +1562,13 @@ void CLocalPlayer::ApplySpecialAction(uint8_t byteSpecialAction)
 		break;
 	}
 }
-// 0.3.7
+
 void CLocalPlayer::SetSpawnInfo(PLAYER_SPAWN_INFO* pSpawnInfo)
 {
 	memcpy(&m_SpawnInfo, pSpawnInfo, sizeof(PLAYER_SPAWN_INFO));
 	m_bHasSpawnInfo = true;
 }
-// 0.3.7
+
 void CLocalPlayer::HandleClassSelectionOutcome(bool bOutcome)
 {
 	if (bOutcome)
@@ -1650,17 +1650,17 @@ uint8_t CLocalPlayer::GetSpecialAction()
 
 	return SPECIAL_ACTION_NONE;
 }
-// 0.3.7
+
 uint32_t CLocalPlayer::GetPlayerColorAsARGB()
 {
 	return (TranslateColorCodeToRGBA(pNetGame->GetPlayerPool()->GetLocalPlayerID()) >> 8) | 0xFF000000;
 }
-// 0.3.7
+
 uint32_t CLocalPlayer::GetPlayerColorAsRGBA()
 {
 	return TranslateColorCodeToRGBA(pNetGame->GetPlayerPool()->GetLocalPlayerID());
 }
-// 0.3.7
+
 bool CLocalPlayer::IsNeedSyncDataSend(const void* data1, const void* data2, size_t size)
 {
 	if (GetTickCount() - m_dwLastSendSyncTick <= 500 && !memcmp(data1, data2, size)) {
@@ -1670,7 +1670,7 @@ bool CLocalPlayer::IsNeedSyncDataSend(const void* data1, const void* data2, size
 	m_dwLastSendSyncTick = GetTickCount();
 	return true;
 }
-// 0.3.7
+
 void CLocalPlayer::SendEnterVehicleNotification(VEHICLEID VehicleID, bool bPassenger)
 {
 	uint8_t bytePassenger = 0;
@@ -1682,7 +1682,7 @@ void CLocalPlayer::SendEnterVehicleNotification(VEHICLEID VehicleID, bool bPasse
 	bsSend.Write(bytePassenger);
 	pNetGame->GetRakClient()->RPC(&RPC_EnterVehicle, &bsSend, HIGH_PRIORITY, RELIABLE_SEQUENCED, 0, false, UNASSIGNED_NETWORK_ID, nullptr);
 }
-// 0.3.7
+
 void CLocalPlayer::SpectatePlayer(PLAYERID PlayerID)
 {
 	CPlayerPool* pPlayerPool = pNetGame->GetPlayerPool();
@@ -1711,12 +1711,12 @@ void CLocalPlayer::SpectateVehicle(VEHICLEID VehicleID)
 		m_bSpectateProcessed = false;
 	}
 }
-// 0.3.7
+
 void CLocalPlayer::SetPlayerColor(uint32_t dwColor)
 {
 	SetRadarColor(pNetGame->GetPlayerPool()->GetLocalPlayerID(), dwColor);
 }
-// 0.3.7
+
 void CLocalPlayer::SendExitVehicleNotification(VEHICLEID VehicleID)
 {
 	RakNet::BitStream bsSend;
@@ -1738,7 +1738,7 @@ void CLocalPlayer::SendExitVehicleNotification(VEHICLEID VehicleID)
 		}
 	}
 }
-// 0.3.7
+
 void CLocalPlayer::SendTakeDamageEvent(PLAYERID PlayerID, float fDamageFactor, int weaponType, int pedPieceType)
 {
 	fDamageFactor *= 0.33f;
@@ -1752,7 +1752,7 @@ void CLocalPlayer::SendTakeDamageEvent(PLAYERID PlayerID, float fDamageFactor, i
 
 	pNetGame->GetRakClient()->RPC(&RPC_PlayerGiveTakeDamage, &bsSend, HIGH_PRIORITY, RELIABLE_ORDERED, 0, false, UNASSIGNED_NETWORK_ID, nullptr);
 }
-// 0.3.7
+
 void CLocalPlayer::SendGiveDamageEvent(PLAYERID PlayerID, float fDamageFactor, int weaponType, int pedPieceType)
 {
 	fDamageFactor *= 0.33f;
@@ -1766,7 +1766,7 @@ void CLocalPlayer::SendGiveDamageEvent(PLAYERID PlayerID, float fDamageFactor, i
 
 	pNetGame->GetRakClient()->RPC(&RPC_PlayerGiveTakeDamage, &bsSend, HIGH_PRIORITY, RELIABLE_ORDERED, 0, false, UNASSIGNED_NETWORK_ID, nullptr);
 }
-// 0.3.7
+
 void CLocalPlayer::SendGiveDamageActorEvent(PLAYERID ActorID, float fDamageFactor, int weaponType, int pedPieceType)
 {
 	RakNet::BitStream bsSend;

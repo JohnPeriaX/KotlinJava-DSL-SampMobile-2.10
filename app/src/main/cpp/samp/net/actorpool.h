@@ -30,7 +30,7 @@ public:
 			return nullptr;
 		}
 	}
-	// 0.3.7
+
 	PLAYERID FindIDFromGtaPtr(CPedGTA* pPed) {
 		for (PLAYERID i = 0; i < MAX_ACTORS; i++) {
 			if (m_pGtaPed[i] == pPed) {

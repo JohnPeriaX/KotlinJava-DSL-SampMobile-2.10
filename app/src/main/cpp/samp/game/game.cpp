@@ -89,7 +89,7 @@ void CGame::Initialize()
 
     szGameTextMessage = new uint16_t[1076];
 }
-// 0.3.7
+
 void CGame::SetMaxStats()
 {
     CHook::CallFunction<void>("_ZN6CCheat18VehicleSkillsCheatEv");
@@ -98,7 +98,7 @@ void CGame::SetMaxStats()
     // CStats::SetStatValue nop
     CHook::RET("_ZN6CStats12SetStatValueEtf");
 }
-// 0.3.7
+
 void CGame::ToggleThePassingOfTime(bool bOnOff)
 {
 	/*if (bOnOff)
@@ -112,7 +112,7 @@ void CGame::ToggleThePassingOfTime(bool bOnOff)
 		this->m_bClockEnabled = false;
 	}*/
 }
-// 0.3.7
+
 void CGame::EnableClock(bool bEnable)
 {
 	/*char byteClockData[] = { '%', '0', '2', 'd', ':', '%', '0', '2', 'd', 0 };
@@ -129,25 +129,25 @@ void CGame::EnableClock(bool bEnable)
 		memset((void*)(g_libGTASA + 0x2BD618), 0, 10);
 	}*/
 }
-// 0.3.7
+
 void CGame::EnableZoneNames(bool bEnable)
 {
 	ScriptCommand(&enable_zone_names, bEnable);
 }
-// 0.3.7
+
 void CGame::SetWorldTime(int iHour, int iMinute)
 {
     *(uint8_t*)(g_libGTASA + (VER_x32 ? 0x00953143 : 0xBBBC1B)) = (uint8_t)iMinute;
     *(uint8_t*)(g_libGTASA + (VER_x32 ? 0x00953142 : 0xBBBC1A)) = (uint8_t)iHour;
     ScriptCommand(&set_current_time, iHour, iMinute);
 }
-// 0.3.7
+
 void CGame::GetWorldTime(int *iHour, int *iMinute)
 {
 	*iMinute = *(uint8_t*)(g_libGTASA + (VER_x32 ? 0x00953143 : 0xBBBC1B));
 	*iHour = *(uint8_t*)(g_libGTASA + (VER_x32 ? 0x00953142 : 0xBBBC1A));
 }
-// 0.3.7
+
 void CGame::PreloadObjectsAnims()
 {
 	// keep the throwable weapon models loaded
@@ -175,7 +175,7 @@ void CGame::PreloadObjectsAnims()
 	if(IsAnimationLoaded("STRIP") == 0) RequestAnimation("STRIP");
 	if(IsAnimationLoaded("WOP") == 0) RequestAnimation("WOP");
 }
-// 0.3.7
+
 void CGame::SetWorldWeather(int byteWeatherID)
 {
     CHook::CallFunction<void>(g_libGTASA + (VER_x32 ? 0x005CDF88 + 1 : 0x6F24E8), byteWeatherID);
@@ -186,7 +186,7 @@ void CGame::SetWorldWeather(int byteWeatherID)
         *(uint16_t*)(g_libGTASA + (VER_x32 ? 0x00A7D134 : 0xD216F0)) = byteWeatherID;
     }
 }
-// 0.3.7
+
 void CGame::DisplayHUD(bool bDisp)
 {
 	if (bDisp)
@@ -200,7 +200,7 @@ void CGame::DisplayHUD(bool bDisp)
 		*(uint8_t*)(g_libGTASA + (VER_x32 ? 0x991FD8 : 0xC20DFC)) = 1;
 	}
 }
-// 0.3.7
+
 uint8_t CGame::GetActiveInterior()
 {
 	return CGame::currArea;
@@ -210,7 +210,7 @@ const char* CGame::GetDataDirectory()
 {
 	return ""; // StorageRootBuffer
 }
-// 0.3.7
+
 void CGame::UpdateCheckpoints()
 {
 	if (m_bCheckpointsEnabled)
@@ -254,7 +254,7 @@ void CGame::UpdateCheckpoints()
 		m_dwRaceCheckpointMarker = 0;
 	}
 }
-// 0.3.7
+
 uint8_t CGame::GetPedSlotsUsed()
 {
 	uint8_t count = 0;
@@ -271,17 +271,17 @@ void CGame::PlaySound(int iSound, float fX, float fY, float fZ)
 {
 	ScriptCommand(&play_sound, fX, fY, fZ, iSound);
 }
-// 0.3.7
+
 void CGame::RefreshStreamingAt(float x, float y)
 {
 	ScriptCommand(&refresh_streaming_at, x, y);
 }
-// 0.3.7
+
 void CGame::DisableTrainTraffic()
 {
 	ScriptCommand(&enable_train_traffic, 0);
 }
-// 0.3.7
+
 void CGame::UpdateGlobalTimer(uint32_t dwTimer)
 {
 	if (!m_bClockEnabled)
@@ -289,7 +289,7 @@ void CGame::UpdateGlobalTimer(uint32_t dwTimer)
 		*(uint32_t*)(g_libGTASA + 0x96B4D8) = dwTimer & 0x3FFFFFFF;
 	}
 }
-// 0.3.7
+
 void CGame::SetGravity(float fGravity)
 {
 #if VER_x32
@@ -313,7 +313,7 @@ void CGame::DrawGangZone(float fPos[], uint32_t dwColor, uint32_t dwUnk)
 	// CRadar::DrawAreaOnRadar
     CHook::CallFunction<void>(g_libGTASA + (VER_x32 ? 0x00443C60 + 1 : 0x528EC4), fPos, &dwColor, dwUnk);
 }
-// 0.3.7
+
 uint32_t CGame::CreatePickup(int iModel, int iType, float x, float y, float z, int *pdwIndex)
 {
     uintptr hnd;
@@ -330,7 +330,7 @@ uint32_t CGame::CreatePickup(int iModel, int iType, float x, float y, float z, i
 
     return hnd;
 }
-// 0.3.7
+
 bool CGame::IsModelLoaded(int iModel)
 {
 	if (iModel > 20000 || iModel < 0) {
@@ -340,7 +340,7 @@ bool CGame::IsModelLoaded(int iModel)
 		return ScriptCommand(&is_model_available, iModel);
 	}
 }
-// 0.3.7
+
 void CGame::RequestModel(uint16_t iModelId, uint8_t iLoadingStream) 
 {
 	// CStreaming::RequestModel
@@ -348,12 +348,12 @@ void CGame::RequestModel(uint16_t iModelId, uint8_t iLoadingStream)
     //CStreaming::TryLoadModel(iModelId);
     ScriptCommand(&request_model, iModelId);
 }
-// 0.3.7
+
 void CGame::LoadRequestedModels()
 {
 	ScriptCommand(&load_requested_models);
 }
-// 0.3.7
+
 void CGame::RemoveModel(int iModel, bool bFromStreaming)
 {
 	if (iModel >= 0 && iModel < 20000)
@@ -371,13 +371,13 @@ void CGame::RemoveModel(int iModel, bool bFromStreaming)
 		}
 	}
 }
-// 0.3.7 (������������ 2 ��������� ��������� ��������� � 0.3DL)
+ (������������ 2 ��������� ��������� ��������� � 0.3DL)
 CObject* CGame::NewObject(int iModel, CVector vecPos, CVector vecRot, float fDrawDistance)
 {
 	CObject *pObjectNew = new CObject(iModel, vecPos, vecRot, fDrawDistance, 0);
 	return pObjectNew;
 }
-// 0.3.7 (�� ����������� ������ bIsNPC)
+ (�� ����������� ������ bIsNPC)
 CPlayerPed* CGame::NewPlayer(int iSkin, float fX, float fY, float fZ, float fRotation, bool unk, bool bIsNPC)
 {
 	uint8_t bytePedSlot = FindFirstFreePlayerPedSlot();
@@ -389,7 +389,7 @@ CPlayerPed* CGame::NewPlayer(int iSkin, float fX, float fY, float fZ, float fRot
 
     return pPed;
 }
-// 0.3.7
+
 bool CGame::RemovePlayer(CPlayerPed* pPed)
 {
 	if (!pPed) return false;
@@ -398,12 +398,12 @@ bool CGame::RemovePlayer(CPlayerPed* pPed)
 	bUsedPlayerSlots[pPed->m_bytePlayerNumber] = false;
 	return true;
 }
-// 0.3.7
+
 void CGame::DisableMarker(uint32_t dwMarker)
 {
 	ScriptCommand(&disable_marker, dwMarker);
 }
-// 0.3.7
+
 uint32_t CGame::CreateRadarMarkerIcon(uint8_t byteType, float fPosX, float fPosY, float fPosZ, uint32_t dwColor, uint8_t byteStyle)
 {
     uintptr dwMarkerID = 0;
@@ -433,24 +433,24 @@ uint32_t CGame::CreateRadarMarkerIcon(uint8_t byteType, float fPosX, float fPosY
 
     return dwMarkerID;
 }
-// 0.3.7
+
 bool CGame::IsAnimationLoaded(const char* szAnimLib)
 {
 	return ScriptCommand(&is_animation_loaded, szAnimLib);
 }
-// 0.3.7
+
 void CGame::RequestAnimation(const char* szAnimLib)
 {
 	ScriptCommand(&request_animation, szAnimLib);
 }
-// 0.3.7
+
 float CGame::FindGroundZForCoord(float fX, float fY, float fZ)
 {
     float fGroundZ;
     ScriptCommand(&get_ground_z, fX, fY, fZ, &fGroundZ);
     return fGroundZ;
 }
-// 0.3.7
+
 void CGame::DisableAutoAim()
 {
 	//CHook::RET(g_libGTASA + 0x4C6CF4); // CPlayerPed::FindWeaponLockOnTarget
@@ -460,13 +460,13 @@ void CGame::DisableAutoAim()
 	//CHook::RET(g_libGTASA + 0x4A82D4/*0x438DB4*/);
 }
 
-// 0.3.7
+
 void CGame::EnabledAutoAim()
 {
 	CHook::RET(g_libGTASA + 0x4C6CF4); // CPlayerPed::FindWeaponLockOnTarget
 	CHook::RET(g_libGTASA + 0x4C7CDC); // CPlayerPed::FindNextWeaponLockOnTarget
 }
-// 0.3.7
+
 CVehicle* CGame::NewVehicle(int iVehicleType, float fX, float fY, float fZ, float fRotation, bool bAddSiren)
 {
 	bool bPreloaded = false;
@@ -478,7 +478,7 @@ CVehicle* CGame::NewVehicle(int iVehicleType, float fX, float fY, float fZ, floa
 
 	return pNewVehicle;
 }
-// 0.3.7
+
 void CGame::SetCheckpointInformation(CVector* vecPos, CVector* vecSize)
 {
 	m_vecCheckpointPos.x = vecPos->x;
@@ -501,7 +501,7 @@ void CGame::SetCheckpointInformation(CVector* vecPos, CVector* vecSize)
 			1005, 0);
 	}
 }
-// 0.3.7
+
 void CGame::SetRaceCheckpointInformation(uint8_t byteType, CVector* vecPos, CVector* vecNextPos, float fRadius)
 {
 	m_vecRaceCheckpointPos.x = vecPos->x;
@@ -529,7 +529,7 @@ void CGame::SetRaceCheckpointInformation(uint8_t byteType, CVector* vecPos, CVec
 
 	MakeRaceCheckpoint();
 }
-// 0.3.7
+
 void CGame::MakeRaceCheckpoint()
 {
 	DisableRaceCheckpoint();
@@ -541,7 +541,7 @@ void CGame::MakeRaceCheckpoint()
 
 	m_bRaceCheckpointsEnabled = true;
 }
-// 0.3.7
+
 void CGame::DisableRaceCheckpoint()
 {
 	if (m_dwRaceCheckpointHandle)
@@ -563,7 +563,7 @@ void CGame::EnableStuntBonus(bool bEnable)
 	//CHook::UnFuck(0x7BE2A8);
 	//*(int*)(g_libGTASA+0x7BE2A8) = (int)bEnable;
 }
-// 0.3.7
+
 void CGame::DisplayGameText(const char* szStr, int iTime, int iSize)
 {
     ScriptCommand(&text_clear_all);
@@ -572,12 +572,12 @@ void CGame::DisplayGameText(const char* szStr, int iTime, int iSize)
     // CMessages::AddBigMesssage
     (( void (*)(uint16_t*, int, int))(g_libGTASA + (VER_x32 ? 0x0054C62C + 1 : 0x66C150)))(szGameTextMessage, iTime, iSize);
 }
-// 0.3.7
+
 void CGame::AddToLocalMoney(int iAmmount)
 {
 	ScriptCommand(&add_to_player_money, 0, iAmmount);
 }
-// 0.3.7
+
 void CGame::ResetLocalMoney()
 {
 	int iMoney = GetLocalMoney();
@@ -588,12 +588,12 @@ void CGame::ResetLocalMoney()
 	else
 		AddToLocalMoney(-(iMoney));
 }
-// 0.3.7
+
 int CGame::GetLocalMoney()
 {
 	return 0;
 }
-// 0.3.7
+
 void CGame::DisableEnterExits()
 {
 #if VER_x32

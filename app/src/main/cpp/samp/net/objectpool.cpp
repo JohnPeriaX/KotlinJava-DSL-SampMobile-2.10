@@ -4,7 +4,7 @@
 
 extern CGame *pGame;
 
-// 0.3.7
+
 CObjectPool::CObjectPool()
 {
 	for (OBJECTID ObjectID = 0; ObjectID < MAX_OBJECTS; ObjectID++)
@@ -15,7 +15,7 @@ CObjectPool::CObjectPool()
 
 	m_iObjectCount = 0;
 }
-// 0.3.7
+
 CObjectPool::~CObjectPool()
 {
 	for (OBJECTID ObjectID = 0; ObjectID < MAX_OBJECTS; ObjectID++)

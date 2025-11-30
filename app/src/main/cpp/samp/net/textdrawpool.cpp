@@ -5,7 +5,7 @@
 extern CGame* pGame;
 extern CNetGame* pNetGame;
 
-// 0.3.7
+
 CTextDrawPool::CTextDrawPool()
 {
     for (int i = 0; i < MAX_TEXT_DRAWS; i++) {
@@ -20,14 +20,14 @@ CTextDrawPool::CTextDrawPool()
     m_dwHoverColor = 0;
     m_wClickedTextDrawID = 0xFFFF;
 }
-// 0.3.7
+
 CTextDrawPool::~CTextDrawPool()
 {
     for (int i = 0; i < MAX_TEXT_DRAWS; i++) {
         Delete(i);
     }
 }
-// 0.3.7
+
 void CTextDrawPool::New(uint16_t wTextDrawID, TEXT_DRAW_TRANSMIT* pTextDrawTransmit, const char* szText)
 {
     if (m_pTextDraw[wTextDrawID]) {
@@ -40,7 +40,7 @@ void CTextDrawPool::New(uint16_t wTextDrawID, TEXT_DRAW_TRANSMIT* pTextDrawTrans
     m_pTextDraw[wTextDrawID] = pTextDraw;
     m_bSlotState[wTextDrawID] = true;
 }
-// 0.3.7
+
 void CTextDrawPool::Delete(uint16_t wTextDrawID)
 {
     if (m_pTextDraw[wTextDrawID]) {
@@ -49,7 +49,7 @@ void CTextDrawPool::Delete(uint16_t wTextDrawID)
         m_bSlotState[wTextDrawID] = false;
     }
 }
-// 0.3.7
+
 void CTextDrawPool::Draw()
 {
     for (int i = 0; i < MAX_TEXT_DRAWS; i++)

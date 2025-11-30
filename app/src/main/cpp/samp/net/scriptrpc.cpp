@@ -7,7 +7,7 @@ extern CGame *pGame;
 extern CNetGame *pNetGame;
 extern CAudioStream* pAudioStream;
 
-// 0.3.7
+
 void ScrSetGravity(RPCParameters *rpcParams)
 {
 	unsigned char * Data = reinterpret_cast<unsigned char *>(rpcParams->input);
@@ -21,7 +21,7 @@ void ScrSetGravity(RPCParameters *rpcParams)
 
 	return;
 }
-// 0.3.7
+
 void ScrSetCameraPos(RPCParameters *rpcParams)
 {
 	unsigned char * Data = reinterpret_cast<unsigned char *>(rpcParams->input);
@@ -37,7 +37,7 @@ void ScrSetCameraPos(RPCParameters *rpcParams)
 
 	return;
 }
-// 0.3.7
+
 void ScrSetCameraLookAt(RPCParameters *rpcParams)
 {
 	unsigned char * Data = reinterpret_cast<unsigned char *>(rpcParams->input);
@@ -58,7 +58,7 @@ void ScrSetCameraLookAt(RPCParameters *rpcParams)
 
 	return;
 }
-// 0.3.7
+
 void ScrInterpolateCamera(RPCParameters *rpcParams)
 {
 	unsigned char * Data = reinterpret_cast<unsigned char *>(rpcParams->input);
@@ -96,7 +96,7 @@ void ScrInterpolateCamera(RPCParameters *rpcParams)
 
 	return;
 }
-// 0.3.7
+
 void ScrTogglePlayerSpectating(RPCParameters *rpcParams)
 {
 	unsigned char * Data = reinterpret_cast<unsigned char *>(rpcParams->input);
@@ -112,7 +112,7 @@ void ScrTogglePlayerSpectating(RPCParameters *rpcParams)
 
 	return;
 }
-// 0.3.7
+
 void ScrSetSpawnInfo(RPCParameters *rpcParams)
 {
 	unsigned char * Data = reinterpret_cast<unsigned char *>(rpcParams->input);
@@ -126,7 +126,7 @@ void ScrSetSpawnInfo(RPCParameters *rpcParams)
 
 	return;
 }
-// 0.3.7
+
 void ScrAddGangZone(RPCParameters *rpcParams)
 {
 	unsigned char * Data = reinterpret_cast<unsigned char *>(rpcParams->input);
@@ -149,7 +149,7 @@ void ScrAddGangZone(RPCParameters *rpcParams)
 		pGangZonePool->New(wZoneID, minX, minY, maxX, maxY, dwColor);
 	}
 }
-// 0.3.7
+
 void ScrGangZoneDestroy(RPCParameters *rpcParams)
 {
 	unsigned char * Data = reinterpret_cast<unsigned char *>(rpcParams->input);
@@ -164,7 +164,7 @@ void ScrGangZoneDestroy(RPCParameters *rpcParams)
 		pGangZonePool->Delete(wZoneID);
 	}
 }
-// 0.3.7
+
 void ScrGangZoneFlash(RPCParameters *rpcParams)
 {
 	unsigned char * Data = reinterpret_cast<unsigned char *>(rpcParams->input);
@@ -181,7 +181,7 @@ void ScrGangZoneFlash(RPCParameters *rpcParams)
 		pGangZonePool->Flash(wZoneID, dwColor);
 	}
 }
-// 0.3.7
+
 void ScrGangZoneStopFlash(RPCParameters *rpcParams)
 {
 	unsigned char * Data = reinterpret_cast<unsigned char *>(rpcParams->input);
@@ -430,7 +430,7 @@ void ScrSetObjectMaterial(RPCParameters* rpcParams)
 	}
 }
 
-// 0.3.7
+
 void ScrRemoveBuilding(RPCParameters *rpcParams)
 {
 	unsigned char * Data = reinterpret_cast<unsigned char *>(rpcParams->input);
@@ -447,7 +447,7 @@ void ScrRemoveBuilding(RPCParameters *rpcParams)
 	bsData.Read(fRadius);
 	RemoveBuilding(iModel, CVector(fX, fY, fZ), fRadius);
 }
-// 0.3.7
+
 void ScrSetPlayerSkin(RPCParameters* rpcParams)
 {
 	unsigned char* Data = reinterpret_cast<unsigned char*>(rpcParams->input);
@@ -485,7 +485,7 @@ void ScrSetPlayerSkin(RPCParameters* rpcParams)
 		//if (gui) gui->chat()->addDebugMessage("Warning: SetPlayerSkin %d isn't a valid ped model.", iModel);
 	}
 }
-// 0.3.7
+
 void ScrSetPlayerMapIcon(RPCParameters* rpcParams)
 {
 	unsigned char* Data = reinterpret_cast<unsigned char*>(rpcParams->input);
@@ -513,7 +513,7 @@ void ScrSetPlayerMapIcon(RPCParameters* rpcParams)
 
 	pNetGame->SetMapIcon(byteIconID, vecPos.x, vecPos.y, vecPos.z, byteType, dwColor, byteStyle);
 }
-// 0.3.7
+
 void ScrRemovePlayerMapIcon(RPCParameters* rpcParams)
 {
 	unsigned char* Data = reinterpret_cast<unsigned char*>(rpcParams->input);
@@ -525,7 +525,7 @@ void ScrRemovePlayerMapIcon(RPCParameters* rpcParams)
 
 	pNetGame->DisableMapIcon(byteIconID);
 }
-// 0.3.7
+
 void ScrShowNameTag(RPCParameters* rpcParams)
 {
 	unsigned char* Data = reinterpret_cast<unsigned char*>(rpcParams->input);
@@ -546,7 +546,7 @@ void ScrShowNameTag(RPCParameters* rpcParams)
 		}
 	}
 }
-// 0.3.7
+
 void ScrApplyPlayerAnimation(RPCParameters* rpcParams)
 {
 	unsigned char* Data = reinterpret_cast<unsigned char*>(rpcParams->input);
@@ -601,7 +601,7 @@ void ScrApplyPlayerAnimation(RPCParameters* rpcParams)
 		}
 	}
 }
-// 0.3.7
+
 void ScrClearPlayerAnimations(RPCParameters* rpcParams)
 {
 	unsigned char* Data = reinterpret_cast<unsigned char*>(rpcParams->input);
@@ -636,7 +636,7 @@ void ScrClearPlayerAnimations(RPCParameters* rpcParams)
 		}
 	}
 }
-// 0.3.7
+
 void ScrSetPlayerHealth(RPCParameters* rpcParams)
 {
 	unsigned char* Data = reinterpret_cast<unsigned char*>(rpcParams->input);
@@ -648,7 +648,7 @@ void ScrSetPlayerHealth(RPCParameters* rpcParams)
 
 	pNetGame->GetPlayerPool()->GetLocalPlayer()->GetPlayerPed()->SetHealth(fHealth);
 }
-// 0.3.7
+
 void ScrGivePlayerWeapon(RPCParameters* rpcParams)
 {
 	unsigned char* Data = reinterpret_cast<unsigned char*>(rpcParams->input);
@@ -661,7 +661,7 @@ void ScrGivePlayerWeapon(RPCParameters* rpcParams)
 	bsData.Read(iAmmo);
 	pNetGame->GetPlayerPool()->GetLocalPlayer()->GetPlayerPed()->GiveWeapon(iWeapon, iAmmo);
 }
-// 0.3.7
+
 void ScrSetPlayerInterior(RPCParameters* rpcParams)
 {
 	unsigned char* Data = reinterpret_cast<unsigned char*>(rpcParams->input);
@@ -673,7 +673,7 @@ void ScrSetPlayerInterior(RPCParameters* rpcParams)
 
 	pGame->FindPlayerPed()->m_pPed->SetInterior(byteInteriorId, true);
 }
-// 0.3.7
+
 extern UI *pUI;
 void ScrShowTextDraw(RPCParameters* rpcParams)
 {
@@ -703,7 +703,7 @@ void ScrShowTextDraw(RPCParameters* rpcParams)
 
     pTextDrawPool->New(wTextDrawID, &textDrawTransmit, szText);
 }
-// 0.3.7
+
 void ScrHideTextDraw(RPCParameters* rpcParams)
 {
 	unsigned char* Data = reinterpret_cast<unsigned char*>(rpcParams->input);
@@ -718,7 +718,7 @@ void ScrHideTextDraw(RPCParameters* rpcParams)
 
 	pTextDrawPool->Delete(wTextDrawID);
 }
-// 0.3.7
+
 void ScrTextDrawSetString(RPCParameters * rpcParams)
 {
 	unsigned char* Data = reinterpret_cast<unsigned char*>(rpcParams->input);
@@ -759,7 +759,7 @@ void ScrSelectTextDraw(RPCParameters* rpcParams)
 	pNetGame->GetTextDrawPool()->SetSelectState(bEnable ? true : false, dwColor);
 }
 
-// 0.3.7
+
 void ScrSetPlayerAmmo(RPCParameters* rpcParams)
 {
 	unsigned char* Data = reinterpret_cast<unsigned char*>(rpcParams->input);
@@ -775,7 +775,7 @@ void ScrSetPlayerAmmo(RPCParameters* rpcParams)
 
 	pLocalPlayer->GetPlayerPed()->SetAmmo(byteWeapon, wAmmo);
 }
-// 0.3.7
+
 void ScrSetVehicleHealth(RPCParameters* rpcParams)
 {
 	unsigned char* Data = reinterpret_cast<unsigned char*>(rpcParams->input);
@@ -796,7 +796,7 @@ void ScrSetVehicleHealth(RPCParameters* rpcParams)
 		}
 	}
 }
-// 0.3.7
+
 void ScrAttachTrailerToVehicle(RPCParameters* rpcParams)
 {
 	unsigned char* Data = reinterpret_cast<unsigned char*>(rpcParams->input);
@@ -820,7 +820,7 @@ void ScrAttachTrailerToVehicle(RPCParameters* rpcParams)
 		pVehicle->AttachTrailer();
 	}
 }
-// 0.3.7
+
 void ScrDetachTrailerFromVehicle(RPCParameters* rpcParams)
 {
 	unsigned char* Data = reinterpret_cast<unsigned char*>(rpcParams->input);
@@ -840,7 +840,7 @@ void ScrDetachTrailerFromVehicle(RPCParameters* rpcParams)
 		pVehicle->SetTrailer(nullptr);
 	}
 }
-// 0.3.7
+
 void ScrSetObjectPos(RPCParameters* rpcParams)
 {
 	unsigned char* Data = reinterpret_cast<unsigned char*>(rpcParams->input);
@@ -866,7 +866,7 @@ void ScrSetObjectPos(RPCParameters* rpcParams)
 		pObject->SetPos(fX, fY, fZ);
 	}
 }
-// 0.3.7
+
 void ScrSetObjectRotation(RPCParameters* rpcParams)
 {
 	unsigned char* Data = reinterpret_cast<unsigned char*>(rpcParams->input);
@@ -888,7 +888,7 @@ void ScrSetObjectRotation(RPCParameters* rpcParams)
 
 	pObject->InstantRotate(vecRot.x, vecRot.y, vecRot.z);
 }
-// 0.3.7
+
 void ScrCreateExplosion(RPCParameters* rpcParams)
 {
 	unsigned char* Data = reinterpret_cast<unsigned char*>(rpcParams->input);
@@ -906,7 +906,7 @@ void ScrCreateExplosion(RPCParameters* rpcParams)
 
 	ScriptCommand(&create_explosion_with_radius, fX, fY, fZ, dwType, fRadius);
 }
-// 0.3.7
+
 void ScrSetVehicleNumberPlate(RPCParameters* rpcParams)
 {
 	unsigned char* Data = reinterpret_cast<unsigned char*>(rpcParams->input);
@@ -936,7 +936,7 @@ void ScrSetVehicleNumberPlate(RPCParameters* rpcParams)
 #define SPECTATE_TYPE_FIXED		2
 #define SPECTATE_TYPE_SIDE		3
 
-// 0.3.7
+
 void ScrSpectatePlayer(RPCParameters* rpcParams)
 {
 	unsigned char* Data = reinterpret_cast<unsigned char*>(rpcParams->input);
@@ -964,7 +964,7 @@ void ScrSpectatePlayer(RPCParameters* rpcParams)
 	pLocalPlayer->m_byteSpectateMode = byteMode;
 	pLocalPlayer->SpectatePlayer(PlayerID);
 }
-// 0.3.7
+
 void ScrSpectateVehicle(RPCParameters* rpcParams)
 {
 	unsigned char* Data = reinterpret_cast<unsigned char*>(rpcParams->input);
@@ -992,7 +992,7 @@ void ScrSpectateVehicle(RPCParameters* rpcParams)
 	pLocalPlayer->m_byteSpectateMode = byteMode;
 	pLocalPlayer->SpectateVehicle(VehicleID);
 }
-// 0.3.7
+
 void ScrRemoveVehicleComponent(RPCParameters* rpcParams)
 {
 	unsigned char* Data = reinterpret_cast<unsigned char*>(rpcParams->input);
@@ -1012,7 +1012,7 @@ void ScrRemoveVehicleComponent(RPCParameters* rpcParams)
 
 	pVehicle->RemoveComponent(wComponent);
 }
-// 0.3.7
+
 void ScrAttachObjectToPlayer(RPCParameters* rpcParams)
 {
 	unsigned char* Data = reinterpret_cast<unsigned char*>(rpcParams->input);
@@ -1059,7 +1059,7 @@ void ScrAttachObjectToPlayer(RPCParameters* rpcParams)
 			rX, rY, rZ);
 	}
 }
-// 0.3.7
+
 void ScrSetPlayerWantedLevel(RPCParameters* rpcParams)
 {
 	unsigned char* Data = reinterpret_cast<unsigned char*>(rpcParams->input);
@@ -1071,7 +1071,7 @@ void ScrSetPlayerWantedLevel(RPCParameters* rpcParams)
 
 	if (pGame) pGame->SetWantedLevel(byteWantedLevel);
 }
-// 0.3.7
+
 void ScrSetPlayerSpecialAction(RPCParameters* rpcParams)
 {
 	unsigned char* Data = reinterpret_cast<unsigned char*>(rpcParams->input);
@@ -1086,7 +1086,7 @@ void ScrSetPlayerSpecialAction(RPCParameters* rpcParams)
 
 	pPlayerPool->GetLocalPlayer()->ApplySpecialAction(byteSpecialAction);
 }
-// 0.3.7
+
 void ScrEnableStuntBonus(RPCParameters* rpcParams)
 {
 	unsigned char* Data = reinterpret_cast<unsigned char*>(rpcParams->input);
@@ -1098,7 +1098,7 @@ void ScrEnableStuntBonus(RPCParameters* rpcParams)
 
 	pGame->EnableStuntBonus(bEnable);
 }
-// 0.3.7
+
 void ScrSetPlayerFightingStyle(RPCParameters* rpcParams)
 {
 	unsigned char* Data = reinterpret_cast<unsigned char*>(rpcParams->input);
@@ -1151,7 +1151,7 @@ void ScrSetPlayerVelocity(RPCParameters* rpcParams)
 
 	pPlayerPed->m_pPed->SetVelocity(vecVelocity);
 }
-// 0.3.7
+
 void ScrSetVehicleVelocity(RPCParameters* rpcParams)
 {
 	unsigned char* Data = reinterpret_cast<unsigned char*>(rpcParams->input);
@@ -1192,7 +1192,7 @@ void ScrSetVehicleVelocity(RPCParameters* rpcParams)
 	}
 
 }
-// 0.3.7
+
 void ScrToggleWidescreen(RPCParameters* rpcParams)
 {
 	unsigned char* Data = reinterpret_cast<unsigned char*>(rpcParams->input);
@@ -1204,7 +1204,7 @@ void ScrToggleWidescreen(RPCParameters* rpcParams)
 	//if (gui) gui->chat()->addDebugMessage("Widescreen = %d", byteToggle);
 	ScriptCommand(&toggle_widescreen, byteToggle);
 }
-// 0.3.7
+
 void ScrSetVehicleTireDamageStatus(RPCParameters* rpcParams)
 {
 	unsigned char* Data = reinterpret_cast<unsigned char*>(rpcParams->input);
@@ -1224,7 +1224,7 @@ void ScrSetVehicleTireDamageStatus(RPCParameters* rpcParams)
 
 	pVehicle->SetTireDamageStatus(byteTireDamageStatus);
 }
-// 0.3.7
+
 void ScrSetPlayerTeam(RPCParameters* rpcParams)
 {
 	unsigned char* Data = reinterpret_cast<unsigned char*>(rpcParams->input);
@@ -1254,7 +1254,7 @@ void ScrSetPlayerTeam(RPCParameters* rpcParams)
 		}
 	}
 }
-// 0.3.7
+
 void ScrSetPlayerName(RPCParameters* rpcParams)
 {
 	unsigned char* Data = reinterpret_cast<unsigned char*>(rpcParams->input);
@@ -1284,7 +1284,7 @@ void ScrSetPlayerName(RPCParameters* rpcParams)
 		pPlayerPool->SetLocalPlayerName(szName);
 	}
 }
-// 0.3.7
+
 void ScrSetPlayerPos(RPCParameters* rpcParams)
 {
 	unsigned char* Data = reinterpret_cast<unsigned char*>(rpcParams->input);
@@ -1308,7 +1308,7 @@ void ScrSetPlayerPos(RPCParameters* rpcParams)
     else
         pLocalPlayer->GetPlayerPed()->m_pPed->SetPosn(vecPos.x, vecPos.y, vecPos.z);
 }
-// 0.3.7
+
 void ScrSetPlayerPosFindZ(RPCParameters* rpcParams)
 {
 	unsigned char* Data = reinterpret_cast<unsigned char*>(rpcParams->input);
@@ -1330,7 +1330,7 @@ void ScrSetPlayerPosFindZ(RPCParameters* rpcParams)
     pLocalPlayer->DisableSurf();
 	pLocalPlayer->GetPlayerPed()->m_pPed->SetPosn(vecPos.x, vecPos.y, vecPos.z);
 }
-// 0.3.7
+
 void ScrPutPlayerInVehicle(RPCParameters* rpcParams)
 {
 	unsigned char* Data = reinterpret_cast<unsigned char*>(rpcParams->input);
@@ -1366,7 +1366,7 @@ void ScrPutPlayerInVehicle(RPCParameters* rpcParams)
 //		CCarEnterExit::SetPedInCarDirect(pPed->m_pPed, pVehicle->m_pVehicle, seatid);
     }
 }
-// 0.3.7
+
 void ScrRemovePlayerFromVehicle(RPCParameters* rpcParams)
 {
 	CPlayerPool* pPlayerPool = pNetGame->GetPlayerPool();
@@ -1377,7 +1377,7 @@ void ScrRemovePlayerFromVehicle(RPCParameters* rpcParams)
 
 	pLocalPlayer->GetPlayerPed()->ExitCurrentVehicle();
 }
-// 0.3.7
+
 void ScrSetPlayerColor(RPCParameters* rpcParams)
 {
 	unsigned char* Data = reinterpret_cast<unsigned char*>(rpcParams->input);
@@ -1407,7 +1407,7 @@ void ScrSetPlayerColor(RPCParameters* rpcParams)
 		}
 	}
 }
-// 0.3.7
+
 void ScrShowGameText(RPCParameters* rpcParams)
 {
 	unsigned char* Data = reinterpret_cast<unsigned char*>(rpcParams->input);
@@ -1430,7 +1430,7 @@ void ScrShowGameText(RPCParameters* rpcParams)
 	szMsg[iLen] = '\0';
 	pGame->DisplayGameText(szMsg, iTime, iSize);
 }
-// 0.3.7
+
 void ScrSetVehiclePos(RPCParameters* rpcParams)
 {
 	unsigned char* Data = reinterpret_cast<unsigned char*>(rpcParams->input);
@@ -1454,7 +1454,7 @@ void ScrSetVehiclePos(RPCParameters* rpcParams)
 
 	pVehicle->m_pVehicle->SetPosn(fX, fY, fZ);
 }
-// 0.3.7
+
 void ScrSetVehicleZAngle(RPCParameters* rpcParams)
 {
 	unsigned char* Data = reinterpret_cast<unsigned char*>(rpcParams->input);
@@ -1474,7 +1474,7 @@ void ScrSetVehicleZAngle(RPCParameters* rpcParams)
 
 	pVehicle->SetZAngle(fAngle);
 }
-// 0.3.7
+
 void ScrSetVehicleParams(RPCParameters* rpcParams)
 {
 	unsigned char* Data = reinterpret_cast<unsigned char*>(rpcParams->input);
@@ -1493,12 +1493,12 @@ void ScrSetVehicleParams(RPCParameters* rpcParams)
 
 	pVehiclePool->AssignSpecialParamsToVehicle(VehicleID, byteObjective, byteDoorsLocked);
 }
-// 0.3.7
+
 void ScrSetPlayerCameraBehindPlayer(RPCParameters* rpcParams)
 {
     CCamera::SetBehindPlayer();
 }
-// 0.3.7
+
 void ScrTogglePlayerControllable(RPCParameters* rpcParams)
 {
 	unsigned char* Data = reinterpret_cast<unsigned char*>(rpcParams->input);
@@ -1526,7 +1526,7 @@ void ScrPlayerPlaySound(RPCParameters* rpcParams)
 
 	// sub_100A1B90(pGame->field_0, a2, a3, a4, a5);
 }
-// 0.3.7
+
 void ScrSetWorldBounds(RPCParameters* rpcParams)
 {
 	unsigned char* Data = reinterpret_cast<unsigned char*>(rpcParams->input);
@@ -1544,7 +1544,7 @@ void ScrSetWorldBounds(RPCParameters* rpcParams)
 	pNetGame->m_pNetSet->fWorldBounds[2] = bounds[2];
 	pNetGame->m_pNetSet->fWorldBounds[3] = bounds[3];
 }
-// 0.3.7
+
 void ScrGivePlayerMoney(RPCParameters* rpcParams)
 {
 	unsigned char* Data = reinterpret_cast<unsigned char*>(rpcParams->input);
@@ -1556,7 +1556,7 @@ void ScrGivePlayerMoney(RPCParameters* rpcParams)
 
 	pGame->AddToLocalMoney(iMoney);
 }
-// 0.3.7
+
 void ScrSetPlayerFacingAngle(RPCParameters* rpcParams)
 {
 	unsigned char* Data = reinterpret_cast<unsigned char*>(rpcParams->input);
@@ -1568,17 +1568,17 @@ void ScrSetPlayerFacingAngle(RPCParameters* rpcParams)
 
 	pGame->FindPlayerPed()->SetTargetRotation(fRotation);
 }
-// 0.3.7
+
 void ScrResetPlayerMoney(RPCParameters* rpcParams)
 {
 	pGame->ResetLocalMoney();
 }
-// 0.3.7
+
 void ScrResetPlayerWeapons(RPCParameters* rpcParams)
 {
 	pNetGame->GetPlayerPool()->GetLocalPlayer()->GetPlayerPed()->ClearWeapons();
 }
-// 0.3.7
+
 void ScrLinkVehicleToInterior(RPCParameters* rpcParams)
 {
 	unsigned char* Data = reinterpret_cast<unsigned char*>(rpcParams->input);
@@ -1595,7 +1595,7 @@ void ScrLinkVehicleToInterior(RPCParameters* rpcParams)
 
 	pVehiclePool->LinkToInterior(VehicleID, byteInterior);
 }
-// 0.3.7
+
 void ScrSetPlayerArmour(RPCParameters* rpcParams)
 {
 	unsigned char* Data = reinterpret_cast<unsigned char*>(rpcParams->input);
@@ -1608,7 +1608,7 @@ void ScrSetPlayerArmour(RPCParameters* rpcParams)
 	bsData.Read(fArmour);
 	pLocalPlayer->GetPlayerPed()->SetArmour(fArmour);
 }
-// 0.3.7
+
 void ScrSetArmedWeapon(RPCParameters* rpcParams)
 {
 	unsigned char* Data = reinterpret_cast<unsigned char*>(rpcParams->input);
@@ -1725,7 +1725,7 @@ void ScrSetPlayerAttachedObject(RPCParameters* rpcParams)
 
     pPed->AttachObject(&info, slot);
 }
-// 0.3.7
+
 void ScrApplyActorAnimation(RPCParameters* rpcParams)
 {
 	unsigned char* Data = reinterpret_cast<unsigned char*>(rpcParams->input);
@@ -1769,7 +1769,7 @@ void ScrApplyActorAnimation(RPCParameters* rpcParams)
 		pActor->ApplyAnimation(szAnimName, szAnimLib, fDelta, bLoop, bLockX, bLockY, bFreeze, iTime);
 	}
 }
-// 0.3.7
+
 void ScrClearActorAnimation(RPCParameters* rpcParams)
 {
 	unsigned char* Data = reinterpret_cast<unsigned char*>(rpcParams->input);
@@ -1787,7 +1787,7 @@ void ScrClearActorAnimation(RPCParameters* rpcParams)
 		pActor->ClearAnimation();
 	}
 }
-// 0.3.7
+
 void ScrSetActorFacingAngle(RPCParameters* rpcParams)
 {
 	unsigned char* Data = reinterpret_cast<unsigned char*>(rpcParams->input);
@@ -1807,7 +1807,7 @@ void ScrSetActorFacingAngle(RPCParameters* rpcParams)
 		pActor->SetFacingAngle(fAngle);
 	}
 }
-// 0.3.7
+
 void ScrSetActorPos(RPCParameters* rpcParams)
 {
 	unsigned char* Data = reinterpret_cast<unsigned char*>(rpcParams->input);
@@ -1829,7 +1829,7 @@ void ScrSetActorPos(RPCParameters* rpcParams)
 		pActor->m_pPed->SetPosn(vecPos.x, vecPos.y, vecPos.z);
 	}
 }
-// 0.3.7
+
 void ScrSetActorHealth(RPCParameters* rpcParams)
 {
 	unsigned char* Data = reinterpret_cast<unsigned char*>(rpcParams->input);
@@ -1911,7 +1911,7 @@ void ScrMoveObject(RPCParameters* rpcParams)
 		pObject->MoveTo(fPosX, fPosY, fPosZ, fSpeed, fRotX, fRotY, fRotZ);
 	}
 }
-// 0.3.7
+
 void ScrStopObject(RPCParameters* rpcParams)
 {
 	unsigned char* Data = reinterpret_cast<unsigned char*>(rpcParams->input);

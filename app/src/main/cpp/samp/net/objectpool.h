@@ -13,7 +13,7 @@ public:
 
 	void Process();
 
-	// 0.3.7
+	
 	CObject* GetAt(OBJECTID ObjectID) {
 		if (ObjectID <= MAX_OBJECTS && m_bObjectSlotState[ObjectID])
 			return m_pObjects[ObjectID];

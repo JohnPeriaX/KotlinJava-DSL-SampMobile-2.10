@@ -6,7 +6,7 @@
 extern CGame* pGame;
 extern CNetGame* pNetGame;
 
-// 0.3.7
+
 C3DTextLabelPool::C3DTextLabelPool()
 {
 	for (int i = 0; i < MAX_TEXT_LABELS; i++) {
@@ -16,7 +16,7 @@ C3DTextLabelPool::C3DTextLabelPool()
 		m_bSlotUsed[i] = false;
 	}
 }
-// 0.3.7
+
 C3DTextLabelPool::~C3DTextLabelPool()
 {
 	for (int i = 0; i < MAX_TEXT_LABELS; i++) {
@@ -25,7 +25,7 @@ C3DTextLabelPool::~C3DTextLabelPool()
 		}
 	}
 }
-// 0.3.7
+
 void C3DTextLabelPool::NewLabel(uint16_t wLabelId, TEXT_LABEL* pLabel) {
 
 	if (wLabelId < MAX_TEXT_LABELS) {
@@ -56,7 +56,7 @@ void C3DTextLabelPool::NewLabel(uint16_t wLabelId, TEXT_LABEL* pLabel) {
 		m_bSlotUsed[wLabelId] = true;
 	}
 }
-// 0.3.7
+
 void C3DTextLabelPool::ClearLabel(uint16_t wLabelId) {
 	if (wLabelId < 0 || wLabelId >= MAX_TEXT_LABELS)
 	{

@@ -9,7 +9,7 @@ extern CSnapShotHelper* pSnapShotHelper;
 
 extern uintptr_t TextDrawTexture[];
 
-// 0.3.7
+
 CTextDraw::CTextDraw(TEXT_DRAW_TRANSMIT* pTextDrawTransmit, const char* szText)
 {
     memset(&m_TextDrawData, 0, sizeof(TEXT_DRAW_DATA));
@@ -65,7 +65,7 @@ CTextDraw::CTextDraw(TEXT_DRAW_TRANSMIT* pTextDrawTransmit, const char* szText)
     m_dwHoverColor = 0;
 
 }
-// 0.3.7
+
 CTextDraw::~CTextDraw()
 {
     if (m_TextDrawData.iTextureSlot != -1 && m_TextDrawData.iTextureSlot != 0x0 && TextDrawTexture[m_TextDrawData.iTextureSlot]) RwTextureDestroy((RwTexture*)TextDrawTexture[m_TextDrawData.iTextureSlot]);

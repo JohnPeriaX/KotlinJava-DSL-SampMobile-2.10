@@ -5,7 +5,7 @@
 extern CGame *pGame;
 extern CNetGame *pNetGame;
 
-// 0.3.7
+
 CPickupPool::CPickupPool()
 {
 	memset(m_Pickups, 0, sizeof(m_Pickups));
@@ -18,7 +18,7 @@ CPickupPool::CPickupPool()
 		m_dwGTAId[i] = 0xFFFFFFFF;
 	}
 }
-// 0.3.7
+
 CPickupPool::~CPickupPool()
 {
 	for (int i = 0; i < MAX_PICKUPS; i++)
@@ -28,7 +28,7 @@ CPickupPool::~CPickupPool()
 		}
 	}
 }
-// 0.3.7
+
 void CPickupPool::Process()
 {
 	for (int i = 0; i < MAX_PICKUPS; i++)
@@ -59,7 +59,7 @@ void CPickupPool::Process()
 		}
 	}
 }
-// 0.3.7
+
 void CPickupPool::New(PICKUP *pPickup, int iPickup)
 {
 	if (m_iPickupCount >= MAX_PICKUPS || iPickup < 0 || iPickup >= MAX_PICKUPS) return;
@@ -77,7 +77,7 @@ void CPickupPool::New(PICKUP *pPickup, int iPickup)
 	m_dwGTAId[iPickup] = dwGTAId;
 	m_iPickupCount++;
 }
-// 0.3.7
+
 void CPickupPool::Destroy(int iPickup)
 {
 	if (m_iPickupCount <= 0 || iPickup < 0 || iPickup >= MAX_PICKUPS) return;
@@ -91,7 +91,7 @@ void CPickupPool::Destroy(int iPickup)
 		m_iPickupCount--;
 	}
 }
-// 0.3.7
+
 int CPickupPool::GetIDFromGTAId(int dwGTAId)
 {
 	for (int i = 0; i < MAX_PICKUPS; i++)
@@ -103,7 +103,7 @@ int CPickupPool::GetIDFromGTAId(int dwGTAId)
 
 	return -1;
 }
-// 0.3.7
+
 void CPickupPool::PickedUp(int dwGTAId)
 {
 	int PickupID = GetIDFromGTAId(dwGTAId);

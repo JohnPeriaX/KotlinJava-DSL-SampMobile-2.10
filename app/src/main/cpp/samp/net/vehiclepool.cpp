@@ -19,7 +19,7 @@ CVehiclePool::CVehiclePool()
         m_dwWastedTime[i] = 0;
     }
 }
-// 0.3.7
+
 CVehiclePool::~CVehiclePool()
 {
     for (int i = 0; i < MAX_VEHICLES; i++)
@@ -27,7 +27,7 @@ CVehiclePool::~CVehiclePool()
         Delete(i);
     }
 }
-// 0.3.7
+
 bool CVehiclePool::New(NEW_VEHICLE* new_veh)
 {
     if (m_pVehicles[new_veh->VehicleID]) {
@@ -107,7 +107,7 @@ bool CVehiclePool::Delete(VEHICLEID VehicleID)
 
     return true;
 }
-// 0.3.7
+
 void CVehiclePool::AssignSpecialParamsToVehicle(VEHICLEID VehicleID, uint8_t byteObjective, uint8_t byteDoorsLocked)
 {
     if (VehicleID < MAX_VEHICLES && m_bVehicleSlotState[VehicleID])
@@ -132,7 +132,7 @@ void CVehiclePool::LinkToInterior(VEHICLEID VehicleID, uint8_t byteInterior)
         m_pVehicles[VehicleID]->LinkToInterior(byteInterior);
     }
 }
-// 0.3.7
+
 VEHICLEID CVehiclePool::FindNearestToLocalPlayerPed()
 {
     float fLeastDistance = 10000.0f;
@@ -255,7 +255,7 @@ void CVehiclePool::Process()
 					m_dwLastUndrivenProcessTick[x] = GetTickCount();
 					byteSentUndrivenSync++;
 				}*/
-// 0.3.7
+
 void CVehiclePool::NotifyVehicleDeath(VEHICLEID VehicleID)
 {
     RakNet::BitStream bsDeath;

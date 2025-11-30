@@ -42,7 +42,7 @@ extern "C" uintptr_t get_lib()
 {
 	return g_libGTASA;
 }
-// 0.3.7
+
 PLAYERID FindPlayerIDFromGtaPtr(CEntityGTA* pEntity)
 {
 	if (pEntity == nullptr) return INVALID_PLAYER_ID;
@@ -67,7 +67,7 @@ PLAYERID FindPlayerIDFromGtaPtr(CEntityGTA* pEntity)
 
 	return INVALID_PLAYER_ID;
 }
-// 0.3.7
+
 PLAYERID FindActorIDFromGtaPtr(CPedGTA* pPed)
 {
 	if (pPed) {
@@ -719,7 +719,7 @@ uint32_t CWorld__ProcessLineOfSight_hook(CVector* vecOrigin, CVector* vecEnd, CC
 
 	return CWorld__ProcessLineOfSight(vecOrigin, vecEnd, colPoint, ppEntity, b1, b2, b3, b4, b5, b6, b7, b8);
 }
-// 0.3.7
+
 uint32_t(*CWeapon__FireSniper)(CWeapon* thiz, CPedGTA* pFiringEntity, CEntityGTA* victim, CVector* target);
 uint32_t CWeapon__FireSniper_hook(CWeapon* thiz, CPedGTA* pFiringEntity, CEntityGTA* victim, CVector* target)
 {
@@ -736,7 +736,7 @@ uint32_t CWeapon__FireSniper_hook(CWeapon* thiz, CPedGTA* pFiringEntity, CEntity
 
 	return true;
 }
-// 0.3.7
+
 bool(*CBulletInfo_AddBullet)(CEntityGTA* creator, int weaponType, CVector pos, CVector velocity);
 bool CBulletInfo_AddBullet_hook(CEntityGTA* creator, int weaponType, CVector pos, CVector velocity)
 {
@@ -760,7 +760,7 @@ struct CPedDamageResponseCalculator
 	int m_weaponType;
 };
 #pragma pack(pop)
-// 0.3.7
+
 bool ComputeDamageResponse(CPedDamageResponseCalculator* calculator, CPedGTA* pPed)
 {
     CPedGTA* pGamePed = GamePool_FindPlayerPed();
@@ -830,7 +830,7 @@ bool ComputeDamageResponse(CPedDamageResponseCalculator* calculator, CPedGTA* pP
 	return true;
 }
 
-// 0.3.7
+
 void (*CPedDamageResponseCalculator__ComputeDamageResponse)(CPedDamageResponseCalculator* thiz, CPedGTA* pPed, uintptr_t* a3, uint32_t a4);
 void CPedDamageResponseCalculator__ComputeDamageResponse_hook(CPedDamageResponseCalculator* thiz, CPedGTA* pPed, uintptr_t *a3, uint32_t a4)
 {

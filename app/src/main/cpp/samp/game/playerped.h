@@ -111,9 +111,9 @@ public:
 	void SetStateFlags(uint32_t dwState);
 	bool IsOnGround();
 
-	// 0.3.7
+	
 	bool IsCuffed() { return m_iCuffedState; };
-	// 0.3.7
+	
 	bool IsCarry() { return m_iCarryState; }
 
 	void SetCuffedOrCarry(int cuff, int carry)

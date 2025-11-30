@@ -109,7 +109,7 @@ bool CAudioStream::Play(const char* szUrl, float fX, float fY, float fZ, float f
 	pthread_create(&thread, 0, audioStreamThread, 0);
 	return true;
 }
-// 0.3.7
+
 bool CAudioStream::Stop(bool bWaitThread)
 {
 	FLog("Stop: %s", g_szAudioStreamUrl);
