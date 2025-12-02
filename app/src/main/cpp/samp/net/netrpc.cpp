@@ -219,11 +219,11 @@ void DialogBox(RPCParameters *rpcParams)
 	Log::addParameter("szButton2", szButton2);
 	Log::addParameter("szMessage", szMessage);
 	
-	/*if (wDialogID == 65535 || wDialogID < 0) //Fix Blank Dialog
+	if (wDialogID == 65535 || wDialogID < 0) //Fix Blank Dialog
 	{
 		pNetGame->SendDialogResponse(wDialogID, 1, -1, " ");
 		return;
-	}*/
+	}
 
 	DialogStyle style;
 	switch (byteDialogStyle)
