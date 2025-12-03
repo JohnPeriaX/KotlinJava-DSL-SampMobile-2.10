@@ -5,7 +5,7 @@ description: "Reverse engineering project for GTA: San Andreas Android"
 version: "2.10"
 author: "JohnPeria"
 license: "MIT"
---------------
+---
 
 <p align="center">
   <img src="https://i.ibb.co/XN7Q9Tm/image-removebg-preview.png" width="200" alt="Project Logo">
