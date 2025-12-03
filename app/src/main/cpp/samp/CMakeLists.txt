@@ -3,16 +3,10 @@ project(samp)
 
 set(CMAKE_CXX_STANDARD 20)
 
-# Check if we're building for 32-bit only
-if(DEFINED ANDROID_ABI)
-    if(ANDROID_ABI STREQUAL "armeabi-v7a")
-        add_definitions(-DVER_x32=1)
-        if(NOT DEFINED BUILD_32BIT_ONLY)
-            add_definitions(-DBUILD_32BIT_ONLY=1)
-        endif()
-    elseif(ANDROID_ABI STREQUAL "arm64-v8a")
-        add_definitions(-DVER_x32=0)
-    endif()
+if(${ANDROID_ABI} STREQUAL "armeabi-v7a")
+    add_definitions(-DVER_x32=true)
+elseif(${ANDROID_ABI} STREQUAL "arm64-v8a")
+    add_definitions(-DVER_x32=false)
 endif()
 
 # Add source files
