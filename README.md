@@ -36,6 +36,10 @@ license: "MIT"
 ## 📚 สารบัญ (Table of Contents)
 
 * [💬 พูดคุย & แจ้งบัค / Discussion](https://t.me/patch_force)
+* [ภาพรวม (Overview)](#-ภาพรวม-overview)
+* [Open Source](#-open-source-210)
+* [Installation](#-การติดตั้ง--installation)
+* [Contribute](#-ร่วมพัฒนา--contribute)
 
 ---
 
@@ -69,7 +73,11 @@ This project is fully open-source, enabling anyone to study, modify, and extend 
 
 ### 🇹🇭 ไทย
 
-1. Clone โปรเจค:
+```bash
+git clone https://github.com/JohnPeriaX/KotlinJava-DSL-SampMobile-2.10.git
+```
+
+### 🇬🇧 English
 
 ```bash
 git clone https://github.com/JohnPeriaX/KotlinJava-DSL-SampMobile-2.10.git
@@ -77,20 +85,34 @@ git clone https://github.com/JohnPeriaX/KotlinJava-DSL-SampMobile-2.10.git
 
 ---
 
-## 🤝 การร่วมพัฒนา / Contribution
+## 👥 ร่วมพัฒนา / Contribute
 
 ### 🇹🇭 ไทย
 
-สำหรับใครก็ตามที่สนใจร่วมพัฒนา SA-MP Mobile 2.10 ไม่ว่าคุณจะเป็นนักพัฒนามือใหม่หรือผู้เชี่ยวชาญ ตราบใดที่คุณยินดีที่จะวิศวกรรมย้อนกลับ GTA SA Android ด้วยม็อด
-ในอนาคต ผมอาจจะหายตัวไปหรือหยุดพัฒนาโปรเจกต์นี้ แต่คนอื่นจะยังคงพัฒนาต่อไป แม้ว่าผมจะหายไป แต่คนอื่นก็ยังคงพัฒนาต่อยอดได้
-🔗 GitHub: [https://github.com/JohnPeriaX/KotlinJava-DSL-SampMobile-2.10](https://github.com/JohnPeriaX/KotlinJava-DSL-SampMobile-2.10)
-💬 พูดคุยบน Telegram: [https://t.me/patch_force](https://t.me/patch_force)
+สำหรับใครก็ตามที่สนใจร่วมพัฒนา **SA-MP Mobile 2.10**
+ไม่ว่าคุณจะเป็นนักพัฒนามือใหม่หรือผู้เชี่ยวชาญ
+ตราบใดที่คุณยินดีที่จะวิศวกรรมย้อนกลับ GTA SA Android ด้วยม็อดได้
+
+ในอนาคตผมอาจจะหายไปหรือหยุดพัฒนาโปรเจกต์นี้
+แต่คนอื่นจะยังคงพัฒนาต่อไปได้เสมอ แม้ว่าผมจะหายไป
+โปรเจกต์นี้ยังคงเป็นโอเพ่นซอร์สให้ทุกคนสานต่อได้
+
+🔗 **GitHub:** [https://github.com/JohnPeriaX/KotlinJava-DSL-SampMobile-2.10](https://github.com/JohnPeriaX/KotlinJava-DSL-SampMobile-2.10)
+💬 **พูดคุยบน Telegram:** [https://t.me/patch_force](https://t.me/patch_force)
+
+---
 
 ### 🇬🇧 English
 
-For anyone interested in helping develop SA-MP Mobile 2.10, whether you're a new developer or an expert, as long as you're willing to reverse-engineer GTA SA Android with mods.
-In the future, I may disappear or cease development on this project, but others will continue to work on it. Even if I disappear, others can continue to build on it.
-🔗 GitHub: [https://github.com/JohnPeriaX/KotlinJava-DSL-SampMobile-2.10](https://github.com/JohnPeriaX/KotlinJava-DSL-SampMobile-2.10)
-💬 Talk on Telegram: [https://t.me/patch_force](https://t.me/patch_force)
+For anyone interested in helping develop **SA-MP Mobile 2.10**,
+whether you're a new developer or an expert,
+as long as you're willing to reverse-engineer GTA SA Android with mods.
+
+In the future, I may disappear or stop working on this project,
+but others will still be able to continue developing it.
+Even if I disappear, the project remains open-source for anyone to build upon.
+
+🔗 **GitHub:** [https://github.com/JohnPeriaX/KotlinJava-DSL-SampMobile-2.10](https://github.com/JohnPeriaX/KotlinJava-DSL-SampMobile-2.10)
+💬 **Talk on Telegram:** [https://t.me/patch_force](https://t.me/patch_force)
 
 ---
