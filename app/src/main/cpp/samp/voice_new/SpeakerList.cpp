@@ -24,7 +24,7 @@ bool SpeakerList::Init() noexcept
 
     try
     {
-        SpeakerList::tSpeakerIcon = (RwTexture*)CUtil::LoadTextureFromDB("samp", "voice_speaker");
+        SpeakerList::tSpeakerIcon = (RwTexture*)CUtil::LoadTextureFromDB("samp", "speaker");
     }
     catch (const std::exception& exception)
     {
