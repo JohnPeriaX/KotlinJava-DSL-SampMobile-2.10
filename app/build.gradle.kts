@@ -32,16 +32,26 @@ android {
 
         multiDexEnabled = true
 
-        ndk {
+        /*ndk {
             abiFilters.addAll(listOf("armeabi-v7a", "arm64-v8a"))
-        }
+        }*/
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
+
         /*externalNativeBuild {
             cmake {
                 cppFlags += "-std=c++11"
             }
         }*/
+    }
+
+    splits {
+        abi {
+            isEnable = true
+            reset()
+            include("armeabi-v7a", "arm64-v8a")
+            isUniversalApk = false
+        }
     }
 
     buildTypes {
