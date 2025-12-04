@@ -140,7 +140,7 @@ public abstract class NvEventQueueActivity extends AppCompatActivity implements 
     	fixedHeight = fh;
     }
 
-    private int mUseFullscreen = 0;
+    private int mUseFullscreen = 1;
 
     private void processCutout()
     {
