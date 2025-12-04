@@ -264,12 +264,8 @@ public class SplashActivity extends AppCompatActivity {
         if (requestCode != 1) {
             return;
         }
-        if (grantResults.length <= 0 || grantResults[0] != 0) {
-            Toast.makeText(this, "Permissions not granted!", Toast.LENGTH_LONG).show();
-        } else {
-            mIsBind = bindService(new Intent(this, UpdateService.class), mConnection, Context.BIND_AUTO_CREATE);
-        }
-
+        // Proceed regardless of permission result as requested
+        mIsBind = bindService(new Intent(this, UpdateService.class), mConnection, Context.BIND_AUTO_CREATE);
     }
 
     @Override
