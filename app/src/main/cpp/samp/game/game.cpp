@@ -553,18 +553,62 @@ void CGame::DisableRaceCheckpoint()
 	m_bRaceCheckpointsEnabled = false;
 }
 
+// ตัวแปรสำหรับเก็บค่าเดิมเพื่อเอาไว้คืนค่า (Restore)
+static uint8_t originalWantedCode32[4] = {0};
+static uint8_t originalWantedCode64[4] = {0};
+static bool bIsFakeWantedActive = false;
+
 void CGame::SetWantedLevel(uint8_t level)
 {
-#if VER_x32
-	CHook::WriteMemory(g_libGTASA+0x2BDFDC, (uintptr_t)&level, 1);
-#else
-    CHook::WriteMemory(g_libGTASA+0x37E160, (uintptr_t)&level, 1);
-#endif
+    if (level < 0) level = 0;
+    if (level > 6) level = 6;
+
+    // Address ของคำสั่ง LDR ที่เราจะแก้ (อ้างอิงจากไฟล์ txt ที่คุณให้มา)
+    uintptr_t addr = g_libGTASA + (VER_x32 ? 0x2BDFDC : 0x37E160);
+
+    // 1. ถ้ายังไม่เคยเก็บค่าเดิม ให้เก็บไว้ก่อน (Backup)
+    if (!bIsFakeWantedActive)
+    {
+        CHook::ReadMemory(addr, VER_x32 ? (void*)originalWantedCode32 : (void*)originalWantedCode64, 4);
+        bIsFakeWantedActive = true;
+    }
+
+    // 2. สร้างคำสั่ง Assembly ใหม่ (MOV Register, #level)
+    if (VER_x32)
+    {
+        // 32-Bit (Thumb-2): MOV.W R11, #level
+        // Opcode: F0 4F 0B 0x (x = level)
+        uint8_t patch[4] = { 0xF0, 0x4F, 0x0B, (uint8_t)level };
+        CHook::WriteMemory(addr, patch, 4);
+    }
+    else
+    {
+        // 64-Bit (ARM64): MOV W22, #level
+        // Opcode: 0x52800000 | (Rd << 0) | (Imm << 5)
+        // Rd = 22 (W22)
+        uint32_t movInstruction = 0x52800000 | (22 << 0) | ((uint32_t)level << 5);
+        CHook::WriteMemory(addr, &movInstruction, 4);
+    }
 }
 
-uint8_t CGame::GetWantedLevel()
+void CGame::GetWantedLevel()
 {
-    return CHook::CallFunction<uint8_t>(g_libGTASA + (VER_x32 ? 0x002BDFDC : 0x37E160));
+    if (!bIsFakeWantedActive) return;
+
+    // Address เดิม
+    uintptr_t addr = g_libGTASA + (VER_x32 ? 0x2BDFDC : 0x37E160);
+
+    // คืนค่าเดิมกลับไป (Restore Original Instruction)
+    if (VER_x32)
+    {
+        CHook::WriteMemory(addr, originalWantedCode32, 4);
+    }
+    else
+    {
+        CHook::WriteMemory(addr, originalWantedCode64, 4);
+    }
+
+    bIsFakeWantedActive = false;
 }
 
 void CGame::EnableStuntBonus(bool bEnable)

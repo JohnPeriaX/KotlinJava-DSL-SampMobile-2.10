@@ -330,6 +330,10 @@ void ApplyGlobalPatches()
     CHook::RET("_ZN8CMirrors17RenderReflectionsEv");
 
     CHook::RET("_ZN8CCarCtrl18GenerateRandomCarsEv");
+
+    CHook::RET("_ZN10CGameLogic43SetPlayerWantedLevelForForbiddenTerritoriesEb");
+
+    CHook::RET("_ZN7CWanted14ReportCrimeNowE10eCrimeTypeRK7CVectorb");
 }
 
 void InstallVehicleEngineLightPatches()
