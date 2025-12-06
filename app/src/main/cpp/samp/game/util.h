@@ -92,10 +92,6 @@ int GetAnimIdxByName(const char* szName);
 
 bool IsGameEntityArePlaceable(CEntityGTA *pEntity);
 
-void RemoveBuilding(uint32_t dwModel, RwV3d vecPos, float fRange);
-void RemoveObjectInRange(int iModel, RwV3d vecPos, float fRange);
-void RemoveOccludersInRadius(RwV3d vecPos, float fRadius);
-
 RwTexture* LoadTextureFromTxd(const char* txdname, const char* texturename);
 uintptr_t LoadTexture(const char* texname);
 

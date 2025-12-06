@@ -72,3 +72,8 @@ void __fastcall CUtil::TransformPoint(RwV3d &result, const CSimpleTransform &t, 
             v.z + t.m_vPosn.z
     };
 }
+
+float CUtil::GetDistanceBetween3DPoints(const RwV3d f, const RwV3d s)
+{
+    return sqrt(pow(s.x - f.x, 2) + pow(s.y - f.y, 2) + pow(s.z - f.z, 2));
+}

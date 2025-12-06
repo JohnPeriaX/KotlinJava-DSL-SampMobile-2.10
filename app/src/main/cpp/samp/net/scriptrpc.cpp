@@ -2,6 +2,7 @@
 #include "../game/game.h"
 #include "netgame.h"
 #include "../audiostream.h"
+#include "game/BuildingRemoval.h"
 
 extern CGame *pGame;
 extern CNetGame *pNetGame;
@@ -430,22 +431,28 @@ void ScrSetObjectMaterial(RPCParameters* rpcParams)
 	}
 }
 
-
 void ScrRemoveBuilding(RPCParameters *rpcParams)
 {
-	unsigned char * Data = reinterpret_cast<unsigned char *>(rpcParams->input);
-	int iBitLength = rpcParams->numberOfBitsOfData;
+    auto* Data = reinterpret_cast<unsigned char *>(rpcParams->input);
+    int iBitLength = rpcParams->numberOfBitsOfData;
 
-	int iModel;
-	float fX, fY, fZ;
-	float fRadius;
-	RakNet::BitStream bsData(Data, (iBitLength / 8) + 1, false);
-	bsData.Read(iModel);
-	bsData.Read(fX);
-	bsData.Read(fY);
-	bsData.Read(fZ);
-	bsData.Read(fRadius);
-	RemoveBuilding(iModel, CVector(fX, fY, fZ), fRadius);
+    RakNet::BitStream bsData(Data, (iBitLength / 8) + 1, false);
+
+    int uModelID;
+    CVector pos;
+    float fRad;
+
+    bsData.Read(uModelID);
+    bsData.Read((char*)&pos, sizeof(CVector));
+    bsData.Read(fRad);
+
+    RemoveModelIDs[iTotalRemovedObjects] = uModelID;
+    RemovePos[iTotalRemovedObjects] = pos;
+    RemoveRad[iTotalRemovedObjects] = fRad;
+
+    iTotalRemovedObjects++;
+
+    CBuildingRemoval::ProcessRemoveBuilding(uModelID, pos, fRad);
 }
 
 void ScrSetPlayerSkin(RPCParameters* rpcParams)

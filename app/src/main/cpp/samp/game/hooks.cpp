@@ -202,83 +202,6 @@ void CRadar_DrawRadarGangOverlay_hook(uint32_t unk)
 
 /* =============================================================================== */
 
-typedef struct {
-    CVector     vecPosObject;
-    CQuaternion m_qRotation;
-    int32       wModelIndex;
-    union {
-        struct { // CFileObjectInstanceType
-            uint32 m_nAreaCode : 8;
-            uint32 m_bRedundantStream : 1;
-            uint32 m_bDontStream : 1; // Merely assumed, no countercheck possible.
-            uint32 m_bUnderwater : 1;
-            uint32 m_bTunnel : 1;
-            uint32 m_bTunnelTransition : 1;
-            uint32 m_nReserved : 19;
-        };
-        uint32 m_nInstanceType;
-    };
-    int32 m_nLodInstanceIndex; // -1 - without LOD model
-} stLoadObjectInstance;
-VALIDATE_SIZE(stLoadObjectInstance, (VER_x32 ? 0x28 : 0x28));
-
-extern int iBuildingToRemoveCount;
-extern REMOVEBUILDING_DATA BuildingToRemove[1000];
-
-int (*CFileLoader__LoadObjectInstance)(stLoadObjectInstance *thiz);
-int CFileLoader__LoadObjectInstance_hook(stLoadObjectInstance *thiz) {
-	if (thiz) {
-		if (iBuildingToRemoveCount >= 1) {
-			for (int i = 0; i < iBuildingToRemoveCount; i++)
-			{
-				float fDistance = GetDistance(BuildingToRemove[i].vecPos, thiz->vecPosObject);
-				if (fDistance <= BuildingToRemove[i].fRange) {
-					if (BuildingToRemove[i].dwModel == -1 || thiz->wModelIndex == (uint16_t) BuildingToRemove[i].dwModel) {
-						thiz->wModelIndex = 19300;
-                        //thiz->vecPosObject = 0.0f;
-						break;
-					}
-				}
-			}
-		}
-	}
-
-	return CFileLoader__LoadObjectInstance(thiz);
-}
-
-extern int iBuildingToRemoveCount;
-extern std::list<REMOVE_BUILDING_DATA> RemoveBuildingData;
-void (*CEntity_Render)(CEntityGTA* pEntity);
-int g_iLastRenderedObject;
-void CEntity_Render_hook(CEntityGTA* pEntity)
-{
-    if(iBuildingToRemoveCount > 1)
-    {
-        if(pEntity && *(uintptr_t*)pEntity != g_libGTASA+(VER_x32 ? 0x667D18:0x8300A0) && !pNetGame->GetObjectPool()->GetObjectFromGtaPtr(pEntity))
-        {
-            for (auto &entry : RemoveBuildingData)
-            {
-                float fDistance = GetDistance(entry.vecPos, pEntity->GetMatrix().m_pos);
-                if(fDistance <= entry.fRange)
-                {
-                    if(pEntity->GetModelId() == entry.usModelIndex)
-                    {
-                        pEntity->m_bUsesCollision = 0;
-                        pEntity->m_bCollisionProcessed = 0;
-                        return;
-                    }
-                }
-            }
-        }
-    }
-    g_iLastRenderedObject = pEntity->GetModelId();
-    CEntity_Render(pEntity);
-}
-
-/* =============================================================================== */
-
-/* =============================================================================== */
-
 void (*CObject_Render)(CObjectGta* thiz);
 void CObject_Render_hook(CObjectGta* thiz)
 {
@@ -874,6 +797,7 @@ void CRenderer_RenderEverythingBarRoads_hook() {
 #include "COcclusion.h"
 #include "RealTimeShadowManager.h"
 #include "game/Widgets/WidgetGta.h"
+#include "BuildingRemoval.h"
 
 CFPSFix g_fps;
 
@@ -1205,107 +1129,6 @@ void CRadar_ClearBlip_hook(uint32_t a2)
 }
 
 /* =============================================================================== */
-
-void InstallHuaweiCrashFixHooks()
-{
-	CHook::InstallPLT(g_libGTASA + 0x677498, (uintptr_t)rqVertexBufferSelect_hook, (uintptr_t*)&rqVertexBufferSelect);
-	CHook::InstallPLT(g_libGTASA + 0x679B14, (uintptr_t)rqVertexBufferDelete_hook, (uintptr_t*)&rqVertexBufferDelete);
-	//CHook::InstallPLT(g_libGTASA + 0x677B6C, (uintptr_t)rqSetAlphaTest_hook, (uintptr_t*)&rqSetAlphaTest);
-}
-
-void InstallCrashFixHooks()
-{
-	// some crashfixes
-	CHook::InstallPLT(g_libGTASA + 0x66F5AC, (uintptr_t)CCustomRoadsignMgr_RenderRoadsignAtomic_hook, (uintptr_t*)&CCustomRoadsignMgr_RenderRoadsignAtomic);
-	CHook::InstallPLT(g_libGTASA + 0x67332C, (uintptr_t)_RwTextureDestroy_hook, (uintptr_t*)&_RwTextureDestroy);
-	CHook::InstallPLT(g_libGTASA + 0x671458, (uintptr_t)CPed_UpdatePosition_hook, (uintptr_t*)&CPed_UpdatePosition);
-	CHook::InstallPLT(g_libGTASA + 0x675490, (uintptr_t)RwFrameAddChild_hook, (uintptr_t*)&RwFrameAddChild);
-	CHook::InstallPLT(g_libGTASA + 0x672D14, (uintptr_t)CTextureDatabaseRuntime__GetEntry_hook, (uintptr_t*)&CTextureDatabaseRuntime__GetEntry);
-	//CHook::InstallPLT(g_libGTASA + 0x66FBD0, (uintptr_t)RpClumpForAllAtomics_hook, (uintptr_t*)&RpClumpForAllAtomics);
-	CHook::InstallPLT(g_libGTASA + 0x6730F0, (uintptr_t)rpMaterialListDeinitialize_hook, (uintptr_t*)&rpMaterialListDeinitialize);
-	//CHook::InstallPLT(g_libGTASA + 0x6778B0, (uintptr_t)rxOpenGLDefaultAllInOneRenderCB_hook, (uintptr_t*)&rxOpenGLDefaultAllInOneRenderCB);
-	//CHook::InstallPLT(g_libGTASA + 0x677CB4, (uintptr_t)CCustomBuildingDNPipeline__CustomPipeRenderCB_hook, (uintptr_t*)&CCustomBuildingDNPipeline__CustomPipeRenderCB);
-	//CHook::InstallPLT(g_libGTASA + 0x66F9E8, (uintptr_t)EmuShader_Select_hook, (uintptr_t*)&EmuShader_Select);
-	CHook::InstallPLT(g_libGTASA + 0x6750D4, (uintptr_t)CAnimManager_UncompressAnimation_hook, (uintptr_t*)&CAnimManager_UncompressAnimation);
-	//CHook::InstallPLT(g_libGTASA + 0x670E1C, (uintptr_t)CStreaming__MakeSpaceFor_hook, (uintptr_t*)&CStreaming__MakeSpaceFor);
-}
-
-void InstallWeaponFireHooks()
-{
-	//CHook::InstallPLT(g_libGTASA + 0x6716D0, (uintptr_t)CWeapon_FireInstantHit_hook, (uintptr_t*)&CWeapon_FireInstantHit);
-	//CHook::InstallPLT(g_libGTASA + 0x671F10, (uintptr_t)CWorld_ProcessLineOfSight_hook, (uintptr_t*)&CWorld_ProcessLineOfSight);
-	//CHook::InstallPLT(g_libGTASA + 0x670A10, (uintptr_t)CWeapon_FireSniper_hook, (uintptr_t*)&CWeapon_FireSniper);
-	//CHook::InstallPLT(g_libGTASA + 0x66EAC4, (uintptr_t)CBulletInfo_AddBullet_hook, (uintptr_t*)&CBulletInfo_AddBullet);
-}
-
-void InstallSAMPHooks()
-{
-	//CHook::InstallPLT(g_libGTASA + 0x677EA0, (uintptr_t)MainMenuScreen__OnExit_hook, (uintptr_t*)&MainMenuScreen__OnExit);
-	// samp main loop
-	//CHook::InstallPLT(g_libGTASA + 0x67589C, (uintptr_t)Render2dStuff_hook, (uintptr_t*)&Render2dStuff);
-	// imgui
-	//CHook::InstallPLT(g_libGTASA + 0x6710C4, (uintptr_t)Idle_hook, (uintptr_t*)&Idle);
-	//CHook::InstallPLT(g_libGTASA + 0x675DE4, (uintptr_t)AND_TouchEvent_hook, (uintptr_t*)&AND_TouchEvent);
-	// splashscreen
-	//ARMHook::installHook(g_libGTASA + 0x43AF28, (uintptr_t)DisplayScreen_hook, (uintptr_t*)&DisplayScreen);
-	// gangzones
-	//CHook::InstallPLT(g_libGTASA + 0x67196C, (uintptr_t)CRadar_DrawRadarGangOverlay_hook, (uintptr_t*)&CRadar_DrawRadarGangOverlay);
-	// radar
-	//CHook::InstallPLT(g_libGTASA+0x675914, (uintptr_t)CRadar__SetCoordBlip_hook, (uintptr_t*)&CRadar__SetCoordBlip);
-	// removebuilding
-	//CHook::InstallPLT(g_libGTASA + 0x675E6C, (uintptr_t)CFileLoader__LoadObjectInstance_hook, (uintptr_t*)&CFileLoader__LoadObjectInstance);
-	// obj material
-	//ARMHook::installHook(g_libGTASA + 0x454EF0, (uintptr_t)CObject_Render_hook, (uintptr_t*)& CObject_Render);
-	// textdraw models
-	//CHook::InstallPLT(g_libGTASA + 0x66FE58, (uintptr_t)CGame_Process_hook, (uintptr_t*)& CGame_Process);
-	// enter vehicle as driver
-	//ARMHook::codeInject(g_libGTASA + 0x40AC28, (uintptr_t)TaskEnterVehicle_hook, 0);
-    //CHook::InstallPLT(g_libGTASA+0x6733F0, (uintptr_t)TaskEnterVehicle_hook, (uintptr_t*)&TaskEnterVehicle);
-	// radar color
-	//CHook::InstallPLT(g_libGTASA + 0x673950, (uintptr_t)CHudColours__GetIntColour_hook, (uintptr_t*)& CHudColours__GetIntColour);
-	// exit vehicle
-	CHook::InstallPLT(g_libGTASA + 0x671984, (uintptr_t)CTaskComplexLeaveCar_hook, (uintptr_t*)& CTaskComplexLeaveCar);
-    CHook::InstallPLT(g_libGTASA + 0x675320, (uintptr_t)CTaskComplexLeaveCar_hook, (uintptr_t*)& CTaskComplexLeaveCar);
-    // attach obj to ped
-	//CHook::InstallPLT(g_libGTASA + 0x675C68, (uintptr_t)CWorld_ProcessPedsAfterPreRender_Hook, (uintptr_t*)&CWorld_ProcessPedsAfterPreRender);
-	// game pause
-	//CHook::InstallPLT(g_libGTASA + 0x672644, (uintptr_t)CTimer_StartUserPause_hook, (uintptr_t*)&CTimer_StartUserPause);
-	//CHook::InstallPLT(g_libGTASA + 0x67056C, (uintptr_t)CTimer_EndUserPause_hook, (uintptr_t*)&CTimer_EndUserPause);
-	// aim
-	// Crosshair Fix
-	//ms_fAspectRatio = (float*)(g_libGTASA+(VER_x32 ? 0xA26A90:0xCC7F00));
-	//CHook::InstallPLT(g_libGTASA + 0x672880, (uintptr_t)DrawCrosshair_hook, (uintptr_t*)&DrawCrosshair);
-
-	// fix radar in passenger
-	CHook::InstallPLT(g_libGTASA+0x671BBC, (uintptr_t)FindPlayerSpeed_hook, (uintptr_t*)&FindPlayerSpeed);
-
-	// fix texture loading
-	CHook::InstallPLT(g_libGTASA + 0x676034, (uintptr_t)CTxdStore__TxdStoreFindCB_hook, (uintptr_t*)&CTxdStore__TxdStoreFindCB);
-
-	// interpolate camera fix
-	CHook::InstallPLT(g_libGTASA + 0x6717BC, (uintptr_t)CCamera__Process_hook, (uintptr_t*)&CCamera__Process);
-
-	// for surfing
-	//CHook::InstallPLT(g_libGTASA + 0x66EAE8, (uintptr_t)CWorld_ProcessAttachedEntities_Hook, (uintptr_t*)&CWorld_ProcessAttachedEntities);
-
-	//CHook::InstallPLT(g_libGTASA + 0x67193C, (uintptr_t)player_control_zelda_hook, (uintptr_t*)&player_control_zelda);
-
-	//ARMHook::installHook(g_libGTASA + 0x4DD5E8, (uintptr_t)CTaskSimpleUseGun__SetMoveAnim_hook, (uintptr_t*)&CTaskSimpleUseGun__SetMoveAnim);
-
-    // hueta ne rabotaet no pust budet (tipo ne kak v 1.08)
-	CHook::InstallPLT(g_libGTASA + 0x674280, (uintptr_t) CVehicleModelInfo__SetupCommonData_hook, (uintptr_t*)&CVehicleModelInfo__SetupCommonData);
-	CHook::InstallPLT(g_libGTASA + 0x06D008, (uintptr_t) CAEVehicleAudioEntity__GetVehicleAudioSettings_hook, (uintptr_t*)&CAEVehicleAudioEntity__GetVehicleAudioSettings);
-
-	CHook::InstallPLT(g_libGTASA + 0x66FF0C, (uintptr_t)CRadar_ClearBlip_hook, (uintptr_t*)&CRadar_ClearBlip);
-
-	// skills
-	CHook::InstallPLT(g_libGTASA + 0x6749D0, (uintptr_t)CPed__GetWeaponSkill_hook, (uintptr_t*)&CPed__GetWeaponSkill);
-
-    //InstallHuaweiCrashFixHooks();
-	InstallCrashFixHooks();
-	InstallWeaponFireHooks();
-	HookCPad();
-}
 
 void ReadSettingFile();
 void ApplyFPSPatch(uint8_t fps);
@@ -1743,7 +1566,37 @@ int mpg123_param_hook(void* mh, int key, long val, int ZERO, double fval)
     return mpg123_param(mh, key, val | (0x2000 | 0x200 | 0x100 | 0x40), ZERO, fval);
 }
 
+int g_iLastRenderedObject;
+
+void(*CEntity_Render)(CEntityGTA*);
+void CEntity_Render_hook(CEntityGTA* thiz) {
+    g_iLastRenderedObject = thiz->m_nModelIndex;
+    CEntity_Render(thiz);
+}
+
+CEntityGTA* (*CFileLoader__LoadObjectInstance)(CFileObjectInstance *pObject, const char *pName);
+CEntityGTA* CFileLoader__LoadObjectInstance_hook(CFileObjectInstance *pObject, const char *pName)
+{
+	for (int i = 0; i < iTotalRemovedObjects; i++)
+	{
+		if (RemoveModelIDs[i] == pObject->m_nModelId)
+		{
+			CVector pos;
+
+			pos.x = pObject->m_vecPosition.x;
+			pos.y = pObject->m_vecPosition.y;
+			pos.z = pObject->m_vecPosition.z;
+
+			if (CUtil::GetDistanceBetween3DPoints(pos, RemovePos[i]) <= RemoveRad[i]) {
+                pObject->m_nModelId = 19300;
+            }
+		}
+	}
+	return CFileLoader__LoadObjectInstance(pObject, pName);
+}
+
 #include "Widgets/TouchInterface.h"
+
 void InjectHooks()
 {
     FLog("InjectHooks");
@@ -1811,8 +1664,7 @@ void InjectHooks()
     //CWidgetRadar::InjectHooks();
 
     //CRealTimeShadowManager::InjectHooks();
-    CHook::Write(g_libGTASA+(VER_x32 ? 0xA41140 : 0xCE3EE8), &COcclusion::aOccluders);
-    CHook::Write(g_libGTASA+(VER_x32 ? 0xA45790:0xCE8538), &COcclusion::NumOccludersOnMap);
+    COcclusion::InjectHooks();
 }
 
 void InstallSpecialHooks()
@@ -1842,7 +1694,9 @@ void InstallSpecialHooks()
 
 #include <EGL/egl.h>
 #include <GLES2/gl2.h>   // If using OpenGL ES 2.0 or 3.0
+
 void SetUpGLHooks();
+
 void InstallHooks()
 {
     //SetUpGLHooks();
@@ -1869,7 +1723,8 @@ void InstallHooks()
     CHook::InlineHook("_ZN7CWeapon18ProcessLineOfSightERK7CVectorS2_R9CColPointRP7CEntity11eWeaponTypeS6_bbbbbbb", &CWeapon__ProcessLineOfSight_hook, &CWeapon__ProcessLineOfSight);
     CHook::InlineHook("_ZN11CBulletInfo9AddBulletEP7CEntity11eWeaponType7CVectorS3_", &CBulletInfo_AddBullet_hook, &CBulletInfo_AddBullet);
 
-    //CHook::InlineHook("_ZN11CFileLoader18LoadObjectInstanceEPKc", &CFileLoader__LoadObjectInstance_hook, &CFileLoader__LoadObjectInstance);
+    // RemoveBuilding
+    CHook::InlineHook("_ZN11CFileLoader18LoadObjectInstanceEP19CFileObjectInstancePKc", &CFileLoader__LoadObjectInstance_hook, &CFileLoader__LoadObjectInstance); // _ZN11CFileLoader18LoadObjectInstanceEPKc
 
     CHook::InlineHook("_ZN6CRadar9ClearBlipEi", &CRadar_ClearBlip_hook, &CRadar_ClearBlip);
 
@@ -1914,10 +1769,12 @@ void InstallHooks()
     CHook::InlineHook("_ZN4CHud14DrawCrossHairsEv", &DrawCrosshair_hook, &DrawCrosshair);
 
     // retexture
-    CHook::InlineHook("_ZN7CEntity6RenderEv", &CEntity_Render_hook, &CEntity_Render);
+    //CHook::InlineHook("_ZN7CEntity6RenderEv", &CEntity_Render_hook, &CEntity_Render);
+    CHook::InstallPLT(g_libGTASA + (VER_x32 ? 0x66F76C : 0x83F610), &CEntity_Render_hook, &CEntity_Render);
 
     //CHook::InlineHook("_ZN26CAEGlobalWeaponAudioEntity21ServiceAmbientGunFireEv", &TaskEnterVehicleHook, &TaskEnterVehicle);
-#if VER_x32
+
+    #if VER_x32
     CHook::UnFuck(g_libGTASA + 0x4DD9E8);
     *(float*)(g_libGTASA + 0x4DD9E8) = 0.015f;
 #else
@@ -1935,6 +1792,6 @@ void InstallHooks()
     CHook::Write(g_libGTASA + 0x339134, 0x52846C02);
     CHook::Write(g_libGTASA + 0x339404, 0x52846C02);
 #endif*/
-
+    
     HookCPad();
 }

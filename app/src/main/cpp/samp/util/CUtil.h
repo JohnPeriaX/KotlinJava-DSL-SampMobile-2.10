@@ -28,5 +28,7 @@ public:
     static RwTexture* GetTexture(const char* name);
 
     static void __fastcall TransformPoint(RwV3d &result, const CSimpleTransform &t, const RwV3d &v);
+    
+    static float GetDistanceBetween3DPoints(const RwV3d f, const RwV3d s);
 };
 

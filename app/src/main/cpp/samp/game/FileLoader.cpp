@@ -99,9 +99,6 @@ int32 CFileLoader::LoadObject(const char* line) {
     return modelId;
 }
 
-extern int iBuildingToRemoveCount;
-extern REMOVEBUILDING_DATA BuildingToRemove[1000];
-
 CEntityGTA* CFileLoader::LoadObjectInstance1(const char* line) {
     char modelName[24];
     CFileObjectInstance instance;
@@ -120,20 +117,6 @@ CEntityGTA* CFileLoader::LoadObjectInstance1(const char* line) {
             &instance.m_qRotation.w,
             &instance.m_nLodInstanceIndex
     ) == 11);
-
-    /*if (iBuildingToRemoveCount >= 1) {
-        for (int i = 0; i < iBuildingToRemoveCount; i++)
-        {
-            float fDistance = GetDistance(BuildingToRemove[i].vecPos, instance.m_vecPosition);
-            if (fDistance <= BuildingToRemove[i].fRange) {
-                if (BuildingToRemove[i].dwModel == -1 || instance.m_nModelId == (uint16_t) BuildingToRemove[i].dwModel) {
-                    instance.m_nModelId = 19300;
-                    break;
-                }
-            }
-        }
-    }*/
-
     return LoadObjectInstance(&instance, modelName);
 }
 
