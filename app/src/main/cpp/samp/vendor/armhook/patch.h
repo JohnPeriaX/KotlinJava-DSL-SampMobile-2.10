@@ -36,6 +36,7 @@ extern "C" bool MSHookFunction(void* symbol, void* replace, void** result);
 #define SET_TO(__a1, __a2) *(void**)&(__a1) = (void*)(__a2)
 
 #include "shadowhook.h"
+#include "../GlossHook/include/Gloss.h"
 
 class CHook {
 public:
@@ -124,6 +125,12 @@ public:
         memcpy((void*)dest, (void*)src, size);
 
         cacheflush(dest, dest + size, 0);
+    }
+
+    static void ReadMemory(uintptr_t addr, void* dest, size_t size)
+    {
+        UnFuck(addr, size);
+        memcpy(dest, (void*)addr, size);
     }
 
     template <typename Src>

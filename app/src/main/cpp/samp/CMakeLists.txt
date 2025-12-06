@@ -5,8 +5,10 @@ set(CMAKE_CXX_STANDARD 20)
 
 if(${ANDROID_ABI} STREQUAL "armeabi-v7a")
     add_definitions(-DVER_x32=true)
+    set(GLOSSHOOK_ABI "ARM")
 elseif(${ANDROID_ABI} STREQUAL "arm64-v8a")
     add_definitions(-DVER_x32=false)
+    set(GLOSSHOOK_ABI "ARM64")
 endif()
 
 # Add source files
@@ -39,7 +41,16 @@ include_directories(
 #set_target_properties(libopus PROPERTIES IMPORTED_LOCATION ${CMAKE_CURRENT_SOURCE_DIR}/vendor/opus/libopus.a)
 
 add_library(samp SHARED ${SOURCES})
-target_link_libraries(samp log EGL GLESv3 opus shadowhook::shadowhook ${CMAKE_CURRENT_SOURCE_DIR}/vendor/bass/libs/${ANDROID_ABI}/libbass.so)
+target_link_libraries(samp 
+        log 
+        EGL 
+        GLESv3 
+        opus 
+        shadowhook::shadowhook 
+        ${CMAKE_CURRENT_SOURCE_DIR}/vendor/bass/libs/${ANDROID_ABI}/libbass.so
+        ${CMAKE_CURRENT_SOURCE_DIR}/vendor/GlossHook/libs/${GLOSSHOOK_ABI}/libGlossHook.a
+        ${CMAKE_CURRENT_SOURCE_DIR}/vendor/GlossHook/libs/${GLOSSHOOK_ABI}/libGlossHook.so
+        )
 
 # Set compilation flags
 #
