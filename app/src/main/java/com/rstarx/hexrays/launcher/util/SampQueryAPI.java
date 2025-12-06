@@ -60,7 +60,7 @@ public final class SampQueryAPI {
             } catch (Exception unused) {
             }
         }
-        return new String(bArr, "windows-1251");
+        return new String(bArr, "windows-874");
     }
 
     /* renamed from: b */
@@ -110,7 +110,7 @@ public final class SampQueryAPI {
     public final DatagramPacket mo7165c(String str) {
         int i = this.f7280d;
         try {
-            byte[] bytes = ("SAMPzalupa" + str).getBytes("windows-1251");
+            byte[] bytes = ("SAMPzalupa" + str).getBytes("windows-874");
             StringTokenizer stringTokenizer = new StringTokenizer(this.f7279c, ".");
             bytes[4] = (byte) Integer.parseInt(stringTokenizer.nextToken());
             bytes[5] = (byte) Integer.parseInt(stringTokenizer.nextToken());
@@ -140,7 +140,7 @@ public final class SampQueryAPI {
         bArr[3] = (byte) ((bArr[3] % 50) & 255);
         byte[] bArr2 = null;
         try {
-            DatagramPacket c = mo7165c("p".concat(new String(bArr, "windows-1251")));
+            DatagramPacket c = mo7165c("p".concat(new String(bArr, "windows-874")));
             if (datagramSocket != null) {
                 try {
                     datagramSocket.send(c);

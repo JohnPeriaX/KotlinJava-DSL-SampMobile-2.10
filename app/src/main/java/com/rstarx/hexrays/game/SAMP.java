@@ -110,7 +110,7 @@ public class SAMP extends GTASA implements CustomKeyboard.InputListener, HeightP
         byte[] toReturn = null;
         try
         {
-            toReturn = str.getBytes("windows-1251");
+            toReturn = str.getBytes("windows-874");
         }
         catch(UnsupportedEncodingException e)
         {

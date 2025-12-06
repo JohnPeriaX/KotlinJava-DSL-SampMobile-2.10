@@ -206,7 +206,7 @@ public class DialogManager {
         }
 
         try {
-            byte[] Str2 = str.getBytes("windows-1251");
+            byte[] Str2 = str.getBytes("windows-874");
 
             Hide();
             sendDialogResponse(i, DialogManager.this.mCurrentDialogId, i2, Str2);
