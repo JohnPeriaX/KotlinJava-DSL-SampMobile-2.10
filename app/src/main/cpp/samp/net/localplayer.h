@@ -37,6 +37,9 @@
 #define VOICE_CHANNEL_STATE_CLOSED		0
 #define VOICE_CHANNEL_STATE_WAIT_ACCEPT	1
 #define VOICE_CHANNEL_STATE_ACCEPTED	2
+
+extern bool bNeedEnterVehicle;
+
 #pragma pack(push, 1)
 typedef struct _PLAYER_SPAWN_INFO
 {
