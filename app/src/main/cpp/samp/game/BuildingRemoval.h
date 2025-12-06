@@ -1,19 +1,25 @@
-//
-// Created by unk.cs on 31/01/2025.
-//
-
 #pragma once
 
-#include "Common.h"
+#include "game/Core/Vector.h"
+#include "game/Entity/CEntityGTA.h"
 
-constexpr int MAX_REMOVE_BUILDINGS = 1200;
-
-extern int RemoveModelIDs[MAX_REMOVE_BUILDINGS];
-extern CVector RemovePos[MAX_REMOVE_BUILDINGS];
-extern float RemoveRad[MAX_REMOVE_BUILDINGS];
-extern int iTotalRemovedObjects;
+struct RemoveBuildingInfo {
+    uint32_t modelId;
+    CVector position;
+    float radius;
+};
 
 class CBuildingRemoval {
 public:
-    static void ProcessRemoveBuilding(int uModelID, CVector pos, float fRad);
+    static constexpr int MAX_REMOVALS = 1200;
+    static inline RemoveBuildingInfo m_RemoveBuildings[MAX_REMOVALS];
+    static inline int m_TotalRemovedObjects = 0;
+
+public:
+    static void ProcessRemoveBuilding(uint32_t modelId, const CVector& pos, float radius);
+    static void RemoveOccluders(const CVector& position, float radius);
+
+    static void RemoveBuildingByPtr(CEntityGTA* pEntity);
+    static bool IsEntityValidForRemoval(CEntityGTA* entity);
+    static float GetDistanceBetween3DPoints(const CVector* point1, const CVector* point2);
 };

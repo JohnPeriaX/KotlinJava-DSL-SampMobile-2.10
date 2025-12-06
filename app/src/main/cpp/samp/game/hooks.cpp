@@ -18,6 +18,7 @@
 #include "game/Collision/Collision.h"
 #include "TxdStore.h"
 #include "util/CUtil.h"
+#include "game/BuildingRemoval.h"
 #include "Coronas.h"
 #include "multitouch.h"
 #include "Streaming.h"
@@ -1577,22 +1578,22 @@ void CEntity_Render_hook(CEntityGTA* thiz) {
 CEntityGTA* (*CFileLoader__LoadObjectInstance)(CFileObjectInstance *pObject, const char *pName);
 CEntityGTA* CFileLoader__LoadObjectInstance_hook(CFileObjectInstance *pObject, const char *pName)
 {
-	for (int i = 0; i < iTotalRemovedObjects; i++)
-	{
-		if (RemoveModelIDs[i] == pObject->m_nModelId)
-		{
-			CVector pos;
+    for (int i = 0; i < CBuildingRemoval::m_TotalRemovedObjects; i++)
+    {
+        if (CBuildingRemoval::m_RemoveBuildings[i].modelId == pObject->m_nModelId)
+        {
+            CVector pos;
 
-			pos.x = pObject->m_vecPosition.x;
-			pos.y = pObject->m_vecPosition.y;
-			pos.z = pObject->m_vecPosition.z;
+            pos.x = pObject->m_vecPosition.x;
+            pos.y = pObject->m_vecPosition.y;
+            pos.z = pObject->m_vecPosition.z;
 
-			if (CUtil::GetDistanceBetween3DPoints(pos, RemovePos[i]) <= RemoveRad[i]) {
+            if (CBuildingRemoval::GetDistanceBetween3DPoints(&pos, &CBuildingRemoval::m_RemoveBuildings[i].position) <= CBuildingRemoval::m_RemoveBuildings[i].radius) {
                 pObject->m_nModelId = 19300;
             }
-		}
-	}
-	return CFileLoader__LoadObjectInstance(pObject, pName);
+        }
+    }
+    return CFileLoader__LoadObjectInstance(pObject, pName);
 }
 
 #include "Widgets/TouchInterface.h"
@@ -1736,6 +1737,7 @@ void InstallHooks()
     CHook::InlineHook("_ZN7CObject6RenderEv", &CObject_Render_hook, & CObject_Render);
 
     CHook::Redirect("_Z19PlayerIsEnteringCarv", &PlayerIsEnteringCar);
+    
     if(*(uint8_t *)(g_libGTASA + (VER_x32 ? 0x6B8B9C:0x896135)))
     {
         CHook::Redirect("_ZNK14TextureListing11GetMipCountEv", &getmip);

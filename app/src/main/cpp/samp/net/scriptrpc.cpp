@@ -438,21 +438,20 @@ void ScrRemoveBuilding(RPCParameters *rpcParams)
 
     RakNet::BitStream bsData(Data, (iBitLength / 8) + 1, false);
 
-    int uModelID;
+    uint32_t modelId;
     CVector pos;
-    float fRad;
+    float radius;
 
-    bsData.Read(uModelID);
+    bsData.Read(modelId);
     bsData.Read((char*)&pos, sizeof(CVector));
-    bsData.Read(fRad);
+    bsData.Read(radius);
 
-    RemoveModelIDs[iTotalRemovedObjects] = uModelID;
-    RemovePos[iTotalRemovedObjects] = pos;
-    RemoveRad[iTotalRemovedObjects] = fRad;
+    if (CBuildingRemoval::m_TotalRemovedObjects < CBuildingRemoval::MAX_REMOVALS) {
+        CBuildingRemoval::m_RemoveBuildings[CBuildingRemoval::m_TotalRemovedObjects] = {modelId, pos, radius};
+        CBuildingRemoval::m_TotalRemovedObjects++;
+    }
 
-    iTotalRemovedObjects++;
-
-    CBuildingRemoval::ProcessRemoveBuilding(uModelID, pos, fRad);
+    CBuildingRemoval::ProcessRemoveBuilding(modelId, pos, radius);
 }
 
 void ScrSetPlayerSkin(RPCParameters* rpcParams)
