@@ -4,30 +4,47 @@
 #include "game/Entity/Object.h"
 #include "game/COcclusion.h"
 #include "Pools.h"
+#include "util/CUtil.h"
 #include <cmath>
 
 void CBuildingRemoval::RemoveBuildingByPtr(CEntityGTA* pEntity) {
     if (!pEntity) return;
 
+    // Move entity underground
     CVector newPos = pEntity->GetPosition();
     newPos.z -= 2000.0f;
     pEntity->SetPosn(newPos);
 
+    // Set removal flags
     pEntity->m_bRemoveFromWorld = true;
+    pEntity->m_nAreaCode = AREA_CODE_1;
+    pEntity->m_bUsesCollision = false;
 
+    // Handle matrix position
     if (pEntity->m_matrix) {
-        CVector matrixPos = pEntity->m_matrix->GetPosition();
+        CVector& matrixPos = pEntity->m_matrix->GetPosition();
         matrixPos.z -= 2000.0f;
-        pEntity->m_matrix->GetPosition() = matrixPos;
     }
 }
 
 bool CBuildingRemoval::IsEntityValidForRemoval(CEntityGTA* entity) {
     if (!entity) return false;
 
+    // Check if already removed or not visible
     if (entity->m_bRemoveFromWorld || !entity->m_bIsVisible) {
         return false;
     }
+
+    // VTable validation for additional safety (optional but recommended)
+    auto vtable = *reinterpret_cast<uintptr_t*>(entity);
+    vtable -= g_libGTASA;
+
+    // Skip if VTable matches CPlaceable (0x667D14 for x32, 0x830098 for x64)
+    #if VER_x32
+    if (vtable == 0x00667D14) return false;
+    #else
+    if (vtable == 0x830098) return false;
+    #endif
 
     return true;
 }
@@ -68,44 +85,35 @@ void CBuildingRemoval::RemoveOccluders(const CVector& position, float radius) {
 }
 
 void CBuildingRemoval::ProcessRemoveBuilding(uint32_t modelId, const CVector& pos, float radius) {
+    // Remove occluders with larger radius for safety
     RemoveOccluders(pos, 500.0f);
 
-    auto& buildingPool = GetBuildingPool(); // Using accessor from Pools.h
-    for (int i = 0; i < buildingPool->GetSize(); i++) {
-        CBuilding* building = buildingPool->GetAt(i);
-        if (!IsEntityValidForRemoval(building)) continue;
+    // Use template function for all pools
+    RemoveBuildingsInPool(GetBuildingPool(), modelId, pos, radius);
+    RemoveBuildingsInPool(GetDummyPool(), modelId, pos, radius);
+    RemoveBuildingsInPool(GetObjectPoolGta(), modelId, pos, radius);
+}
 
-        if (building->m_nModelIndex == modelId || modelId == -1) {
-            float distance = GetDistanceBetween3DPoints(&pos, &building->GetPosition());
+// Template implementation for pool processing
+template <typename PoolT>
+void CBuildingRemoval::RemoveBuildingsInPool(PoolT* pool, uint32_t uiModel, const CVector& pos, float radius) {
+    if (!pool) return;
+
+    for (int i = 0; i < pool->GetSize(); i++) {
+        auto* entity = pool->GetAt(i);
+        if (!IsEntityValidForRemoval(entity)) continue;
+
+        // Check model match (or -1 for all models)
+        if (entity->m_nModelIndex == uiModel || uiModel == static_cast<uint32_t>(-1)) {
+            float distance = GetDistanceBetween3DPoints(&pos, &entity->GetPosition());
             if (distance <= radius) {
-                RemoveBuildingByPtr(building);
-            }
-        }
-    }
-
-    auto& dummyPool = GetDummyPool();
-    for (int i = 0; i < dummyPool->GetSize(); i++) {
-        CDummy* dummy = dummyPool->GetAt(i);
-        if (!IsEntityValidForRemoval(dummy)) continue;
-
-        if (dummy->m_nModelIndex == modelId || modelId == -1) {
-            float distance = GetDistanceBetween3DPoints(&pos, &dummy->GetPosition());
-            if (distance <= radius) {
-                RemoveBuildingByPtr(dummy);
-            }
-        }
-    }
-
-    auto& objectPool = GetObjectPoolGta();
-    for (int i = 0; i < objectPool->GetSize(); i++) {
-        CObjectGta* object = objectPool->GetAt(i);
-        if (!IsEntityValidForRemoval(object)) continue;
-
-        if (object->m_nModelIndex == modelId || modelId == -1) {
-            float distance = GetDistanceBetween3DPoints(&pos, &object->GetPosition());
-            if (distance <= radius) {
-                RemoveBuildingByPtr(object);
+                RemoveBuildingByPtr(entity);
             }
         }
     }
 }
+
+// Explicit template instantiations
+template void CBuildingRemoval::RemoveBuildingsInPool<CPool<CBuilding>>(CPool<CBuilding>*, uint32_t, const CVector&, float);
+template void CBuildingRemoval::RemoveBuildingsInPool<CPool<CDummy>>(CPool<CDummy>*, uint32_t, const CVector&, float);
+template void CBuildingRemoval::RemoveBuildingsInPool<CPool<CObjectGta>>(CPool<CObjectGta>*, uint32_t, const CVector&, float);

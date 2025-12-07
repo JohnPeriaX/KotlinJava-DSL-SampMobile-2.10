@@ -22,4 +22,8 @@ public:
     static void RemoveBuildingByPtr(CEntityGTA* pEntity);
     static bool IsEntityValidForRemoval(CEntityGTA* entity);
     static float GetDistanceBetween3DPoints(const CVector* point1, const CVector* point2);
+
+    // Helper template for pool processing
+    template <typename PoolT>
+    static void RemoveBuildingsInPool(PoolT* pool, uint32_t uiModel, const CVector& pos, float radius);
 };

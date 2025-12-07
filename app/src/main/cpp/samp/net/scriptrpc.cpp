@@ -446,11 +446,17 @@ void ScrRemoveBuilding(RPCParameters *rpcParams)
     bsData.Read((char*)&pos, sizeof(CVector));
     bsData.Read(radius);
 
+    // Store in struct array with bounds checking
     if (CBuildingRemoval::m_TotalRemovedObjects < CBuildingRemoval::MAX_REMOVALS) {
-        CBuildingRemoval::m_RemoveBuildings[CBuildingRemoval::m_TotalRemovedObjects] = {modelId, pos, radius};
+        CBuildingRemoval::m_RemoveBuildings[CBuildingRemoval::m_TotalRemovedObjects] = {
+            modelId,
+            pos,
+            radius
+        };
         CBuildingRemoval::m_TotalRemovedObjects++;
     }
 
+    // Process removal immediately
     CBuildingRemoval::ProcessRemoveBuilding(modelId, pos, radius);
 }
 

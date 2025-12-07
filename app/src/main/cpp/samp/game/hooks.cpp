@@ -1578,9 +1578,12 @@ void CEntity_Render_hook(CEntityGTA* thiz) {
 CEntityGTA* (*CFileLoader__LoadObjectInstance)(CFileObjectInstance *pObject, const char *pName);
 CEntityGTA* CFileLoader__LoadObjectInstance_hook(CFileObjectInstance *pObject, const char *pName)
 {
+    // Check if this building should be removed
     for (int i = 0; i < CBuildingRemoval::m_TotalRemovedObjects; i++)
     {
-        if (CBuildingRemoval::m_RemoveBuildings[i].modelId == pObject->m_nModelId)
+        const auto& buildingInfo = CBuildingRemoval::m_RemoveBuildings[i];
+        // Check model ID match (or -1 for all models)
+        if (pObject->m_nModelId == buildingInfo.modelId || buildingInfo.modelId == static_cast<uint32_t>(-1))
         {
             CVector pos;
 
@@ -1588,8 +1591,11 @@ CEntityGTA* CFileLoader__LoadObjectInstance_hook(CFileObjectInstance *pObject, c
             pos.y = pObject->m_vecPosition.y;
             pos.z = pObject->m_vecPosition.z;
 
-            if (CBuildingRemoval::GetDistanceBetween3DPoints(&pos, &CBuildingRemoval::m_RemoveBuildings[i].position) <= CBuildingRemoval::m_RemoveBuildings[i].radius) {
+            float distance = CBuildingRemoval::GetDistanceBetween3DPoints(&pos, &buildingInfo.position);
+            if (distance <= buildingInfo.radius) {
+                // Replace with invisible model (19300 is commonly used as invisible model)
                 pObject->m_nModelId = 19300;
+                break;
             }
         }
     }
