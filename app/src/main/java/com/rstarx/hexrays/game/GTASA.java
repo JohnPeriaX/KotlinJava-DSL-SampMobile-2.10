@@ -34,8 +34,9 @@ public class GTASA extends WarMedia {
         catch (ExceptionInInitializerError | UnsatisfiedLinkError ignored) {
         }
         System.loadLibrary("GTASA");
-        System.loadLibrary("bass");
         System.loadLibrary("samp");
+        System.loadLibrary("bass");
+        System.loadLibrary("bass_ssl");
     }
 
     public static void staticEnterSocialClub()
