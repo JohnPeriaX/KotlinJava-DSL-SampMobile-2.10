@@ -3,7 +3,7 @@
 #include "../Pools.h"
 #include "Building.h"
 #include "../Models/ModelInfo.h"
-#include "../../vendor/armhook/patch.h"
+#include "../../vendor/shadowhook/patch.h"
 #include "../Enums/eEntityType.h"
 
 

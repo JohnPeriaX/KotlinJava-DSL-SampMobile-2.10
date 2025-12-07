@@ -2,7 +2,7 @@
 // Created by x1y2z on 20.04.2023.
 //
 #include "ClumpModelInfo.h"
-#include "../vendor/armhook/patch.h"
+#include "../vendor/shadowhook/patch.h"
 
 
 void CClumpModelInfo::CClumpModelInfo__SetClump(RpClump* clump)

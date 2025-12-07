@@ -6,7 +6,7 @@
 #include "TouchInterface.h"
 #include "game/RW/RenderWare.h"
 #include "game/Enums/OSDeviceForm.h"
-#include "../../vendor/armhook/patch.h"
+#include "../../vendor/shadowhook/patch.h"
 
 CWidgetGta** CTouchInterface::m_pWidgets;
 

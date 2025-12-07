@@ -3,7 +3,7 @@
 //
 
 #include "Renderer.h"
-#include "../vendor/armhook/patch.h"
+#include "../vendor/shadowhook/patch.h"
 
 void CRenderer::InjectHooks() {
     CHook::Write(g_libGTASA + (VER_x32 ? 0x6764D0 : 0x84AA10), &ms_bRenderOutsideTunnels);

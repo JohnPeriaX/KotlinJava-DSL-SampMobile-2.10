@@ -1,6 +1,6 @@
 
 #include "Collision.h"
-#include "../vendor/armhook/patch.h"
+#include "../vendor/shadowhook/patch.h"
 #include "ColStore.h"
 
 CCollision::DebugSettings CCollision::s_DebugSettings = {

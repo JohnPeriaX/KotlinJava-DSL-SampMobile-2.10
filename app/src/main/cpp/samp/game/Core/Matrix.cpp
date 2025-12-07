@@ -6,7 +6,7 @@
 */
 
 #include "Matrix.h"
-#include "../vendor/armhook/patch.h"
+#include "../vendor/shadowhook/patch.h"
 //uint8_t* CMatrix::EulerIndices1 = (uint8_t*)0x866D9C;
 //uint8_t* CMatrix::EulerIndices2 = (uint8_t*)0x866D94;
 int32_t numMatrices;

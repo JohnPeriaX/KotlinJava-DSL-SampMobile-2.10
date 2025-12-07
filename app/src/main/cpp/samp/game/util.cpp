@@ -2013,7 +2013,7 @@ uintptr_t LoadTexture(const char* texname)
 
  
 #include "sprite2d.h"
-#include "armhook/patch.h"
+#include "shadowhook/patch.h"
 #include <algorithm>
 
 RwTexture* LoadTextureFromTxd(const char* txdname, const char* texturename)

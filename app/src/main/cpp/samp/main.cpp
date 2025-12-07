@@ -16,7 +16,7 @@
 #include "voice_new/Plugin.h"
 #include "voice_new/PluginConfig.h"
 
-#include "vendor/armhook/patch.h"
+#include "vendor/shadowhook/patch.h"
 #include "vendor/str_obfuscator/str_obfuscator.hpp"
 
 #include "settings.h"
@@ -340,7 +340,7 @@ void InitGui()
 }
 
 #include "game/multitouch.h"
-#include "armhook/patch.h"
+#include "shadowhook/patch.h"
 #include "util/CUtil.h"
 
 jint JNI_OnLoad(JavaVM* vm, void* reserved)

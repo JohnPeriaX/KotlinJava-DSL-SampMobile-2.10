@@ -4,7 +4,7 @@
 
 #include "CFileMgr.h"
 #include "main.h"
-#include "../vendor/armhook/patch.h"
+#include "../vendor/shadowhook/patch.h"
 
 void CFileMgr::SetDir(const char *path) {
     ( ( void(*)(const char *path) )(g_libGTASA + (VER_x32 ? 0x003F0C54 + 1 : 0x4D293C)) )(path);

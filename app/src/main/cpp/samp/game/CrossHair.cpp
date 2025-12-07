@@ -6,7 +6,7 @@
 #include "common.h"
 #include "../util/CUtil.h"
 #include "../main.h"
-#include "../vendor/armhook/patch.h"
+#include "../vendor/shadowhook/patch.h"
 #include "Camera.h"
 #include "Core/Quaternion.h"
 #include "playerped.h"

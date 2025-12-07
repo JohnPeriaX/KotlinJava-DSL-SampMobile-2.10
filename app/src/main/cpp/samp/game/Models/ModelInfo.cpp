@@ -3,7 +3,7 @@
 //
 
 #include "ModelInfo.h"
-#include "../vendor/armhook/patch.h"
+#include "../vendor/shadowhook/patch.h"
 #include "log.h"
 
 CVehicleModelInfo* CModelInfo::AddVehicleModel(int index)

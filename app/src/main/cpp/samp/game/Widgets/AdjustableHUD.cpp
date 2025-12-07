@@ -3,7 +3,7 @@
 //
 
 #include "AdjustableHUD.h"
-#include "../../vendor/armhook/patch.h"
+#include "../../vendor/shadowhook/patch.h"
 #include "TouchInterface.h"
 
 void CAdjustableHUD::SaveToDisk() {

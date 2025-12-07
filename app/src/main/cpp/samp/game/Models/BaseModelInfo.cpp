@@ -3,7 +3,7 @@
 //
 #include "BaseModelInfo.h"
 #include "game/TxdStore.h"
-#include "../vendor/armhook/patch.h"
+#include "../vendor/shadowhook/patch.h"
 
 void CBaseModelInfo::SetTexDictionary(const char* txdName, const char *dbName) {
     m_nTxdIndex = CTxdStore::FindOrAddTxdSlot(txdName, dbName);

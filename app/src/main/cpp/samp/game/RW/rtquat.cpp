@@ -2,7 +2,7 @@
 #include "rtquat.h"
 #include "rpworld.h"
 #include "game/common.h"
-#include "../vendor/armhook//patch.h"
+#include "../vendor/shadowhook//patch.h"
 
 void RtQuatConvertToMatrix(const RtQuat* const qpQuat, RwMatrix* const mpMatrix) {
     RwReal              rS;

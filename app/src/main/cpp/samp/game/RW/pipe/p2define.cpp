@@ -3,7 +3,7 @@
 //
 
 #include "p2define.h"
-#include "../vendor/armhook/patch.h"
+#include "../vendor/shadowhook/patch.h"
 #include "pipe.h"
 #include "balibtyp.h"
 #include "opengl/openglpipepriv.h"

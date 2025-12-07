@@ -1,6 +1,6 @@
 #include "RenderWare.h"
 #include "game/common.h"
-#include "../vendor/armhook/patch.h"
+#include "../vendor/shadowhook/patch.h"
 
 void RtAnimAnimationFreeListCreateParams(RwInt32 blockSize, RwInt32 numBlocksToPrealloc) {
     CHook::CallFunction<void>(g_libGTASA + (VER_x32 ? 0x1EADA4 + 1 : 0x287D38), blockSize, numBlocksToPrealloc);

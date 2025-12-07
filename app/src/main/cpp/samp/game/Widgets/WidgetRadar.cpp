@@ -3,7 +3,7 @@
 //
 
 #include "WidgetRadar.h"
-#include "vendor/armhook/patch.h"
+#include "vendor/shadowhook/patch.h"
 
 
 void (*CWidgetRadar__Update)(CWidgetRadar* thiz);

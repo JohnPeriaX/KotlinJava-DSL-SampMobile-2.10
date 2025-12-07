@@ -3,7 +3,7 @@
 //
 
 #include "Camera.h"
-#include "../vendor/armhook/patch.h"
+#include "../vendor/shadowhook/patch.h"
 #include "scripting.h"
 
 void CCamera::InjectHooks() {

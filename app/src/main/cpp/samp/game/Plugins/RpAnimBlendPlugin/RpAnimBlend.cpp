@@ -1,5 +1,5 @@
 #include "RpAnimBlend.h"
-#include "../vendor/armhook/patch.h"
+#include "../vendor/shadowhook/patch.h"
 
 // 0x4D6150
 bool RpAnimBlendPluginAttach() {

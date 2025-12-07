@@ -3,7 +3,7 @@
 //
 #include "rwplcore.h"
 #include "../../main.h"
-#include "../vendor/armhook/patch.h"
+#include "../vendor/shadowhook/patch.h"
 
 RwMatrix* RwMatrixUpdate(RwMatrix* matrix) {
     matrix->flags &= 0xFFFDFFFC;

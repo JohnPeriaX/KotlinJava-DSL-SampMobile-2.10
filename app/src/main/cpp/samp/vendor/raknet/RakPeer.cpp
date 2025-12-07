@@ -2862,7 +2862,7 @@ bool RakPeer::HandleRPCPacket( const char *data, int length, PlayerID playerId )
 		bs.ReadCompressed(numdatbits);
 		unsigned char *dtt = new unsigned char[BITS_TO_BYTES(bs.GetNumberOfUnreadBits())];
 		bs.ReadBits(dtt, numdatbits, false);
-		Log("[RPC] uniqueIdentifier: %d", uniqueIdentifier);
+		FLog("[RPC] uniqueIdentifier: %d", uniqueIdentifier);
 		
 		char mess[1024] = {0};
 		for (unsigned int i = 0; i < BITS_TO_BYTES(numdatbits); i++)
@@ -2871,7 +2871,7 @@ bool RakPeer::HandleRPCPacket( const char *data, int length, PlayerID playerId )
 			sprintf_s(txt_t, sizeof(txt_t), "%c", dtt[i]);
 			strcat_s(mess, sizeof(mess), txt_t);
 		}
-		Log(mess);
+		FLog(mess);
 
 		delete [] dtt;
 	} //*/// ponpon use this if you wanna identify RPCs

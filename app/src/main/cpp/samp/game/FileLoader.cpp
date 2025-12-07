@@ -7,7 +7,7 @@
 #include "CFileMgr.h"
 #include "game/Models/ModelInfo.h"
 #include "game/Enums/eItemDefinitionFlags.h"
-#include "vendor/armhook/patch.h"
+#include "vendor/shadowhook/patch.h"
 #include "game/Models/AtomicModelInfo.h"
 #include "Streaming.h"
 #include "util.h"

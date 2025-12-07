@@ -1,7 +1,7 @@
 
 #include "rphanim.h"
 #include "game/common.h"
-#include "../vendor/armhook/patch.h"
+#include "../vendor/shadowhook/patch.h"
 
 void RpHAnimHierarchySetFreeListCreateParams(RwInt32 blockSize, RwInt32 numBlocksToPrealloc) {
     CHook::CallFunction<void>(g_libGTASA + (VER_x32 ? 0x1C201C + 1 : 0x254B18), blockSize, numBlocksToPrealloc);

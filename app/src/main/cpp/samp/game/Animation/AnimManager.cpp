@@ -10,7 +10,7 @@
 #include "../common.h"
 #include "AnimManager.h"
 #include "game/MemoryMgr.h"
-#include "../vendor/armhook/patch.h"
+#include "../vendor/shadowhook/patch.h"
 #include "game/CFileMgr.h"
 #include "game/FileLoader.h"
 #include "game/Streaming.h"

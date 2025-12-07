@@ -4,7 +4,7 @@
 
 #include "EventHandler.h"
 #include "Event.h"
-#include "../vendor/armhook/patch.h"
+#include "../vendor/shadowhook/patch.h"
 
 CEventHandler::CEventHandler(CPedGTA* ped) {
     m_ped                  = ped;

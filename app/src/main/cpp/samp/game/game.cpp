@@ -1,6 +1,6 @@
 #include "../main.h"
 #include "game.h"
-#include "../vendor/armhook/patch.h"
+#include "../vendor/shadowhook/patch.h"
 #include "Streaming.h"
 #include "MemoryMgr.h"
 #include "CFileMgr.h"

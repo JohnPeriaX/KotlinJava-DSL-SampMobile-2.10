@@ -3,7 +3,7 @@
 //
 
 #include "IplStore.h"
-#include "../vendor/armhook/patch.h"
+#include "../vendor/shadowhook/patch.h"
 
 void CIplStore::LoadIpls(CVector posn, bool bAvoidLoadInPlayerVehicleMovingDirection) {
     CHook::CallFunction<void>(g_libGTASA + (VER_x32 ? 0x28195C + 1 : 0x33CA20), posn, bAvoidLoadInPlayerVehicleMovingDirection);

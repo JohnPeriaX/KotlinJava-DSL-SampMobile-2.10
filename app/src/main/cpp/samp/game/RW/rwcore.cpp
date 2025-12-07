@@ -3,7 +3,7 @@
 //
 #include "rwcore.h"
 #include "rpworld.h"
-#include "../vendor/armhook/patch.h"
+#include "../vendor/shadowhook/patch.h"
 #include <assert.h>
 
 RwFrame* RwFrameUpdateObjects(RwFrame* frame) {

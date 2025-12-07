@@ -4,7 +4,7 @@
 
 #include "Pools.h"
 #include "IplDef.h"
-#include "../vendor/armhook/patch.h"
+#include "../vendor/shadowhook/patch.h"
 #include "game/Entity/CVehicleGTA.h"
 #include "game/Entity/Building.h"
 #include "game/Entity/CopPed.h"

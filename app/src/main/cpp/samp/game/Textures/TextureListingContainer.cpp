@@ -3,7 +3,7 @@
 //
 
 #include "TextureListingContainer.h"
-#include "../vendor/armhook/patch.h"
+#include "../vendor/shadowhook/patch.h"
 
 RwRaster *TextureListingContainer::CreateRaster(const TextureDatabaseEntry *forEntry) {
     return CHook::CallFunction<RwRaster*>(g_libGTASA + (VER_x32 ? 0x1E8CF8 + 1 : 0x2851DC), this, forEntry);

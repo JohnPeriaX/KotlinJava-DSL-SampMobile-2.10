@@ -3,7 +3,7 @@
 //
 
 #include "RenderWare.h"
-#include "../vendor/armhook/patch.h"
+#include "../vendor/shadowhook/patch.h"
 
 RpSkin* RpSkinGeometryGetSkin(RpGeometry* geometry) {
     return CHook::CallFunction<RpSkin*>(g_libGTASA + (VER_x32 ? 0x001C98FC + 1 : 0x25DEA0), geometry);

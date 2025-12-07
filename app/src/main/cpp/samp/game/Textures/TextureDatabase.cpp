@@ -3,7 +3,7 @@
 //
 
 #include "TextureDatabase.h"
-#include "../vendor/armhook/patch.h"
+#include "../vendor/shadowhook/patch.h"
 
 void TextureDatabase::GetPNGFilename(char *pngBuffer, const char *entryName) {
     snprintf(pngBuffer, 0x100u, "texdb/%s/src/%s.png", name, entryName);

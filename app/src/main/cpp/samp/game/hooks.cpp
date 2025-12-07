@@ -1,6 +1,6 @@
 #include <GLES2/gl2.h>
 #include "../main.h"
-#include "../vendor/armhook/patch.h"
+#include "../vendor/shadowhook/patch.h"
 #include "game.h"
 #include "../net/netgame.h"
 #include "../gui/gui.h"

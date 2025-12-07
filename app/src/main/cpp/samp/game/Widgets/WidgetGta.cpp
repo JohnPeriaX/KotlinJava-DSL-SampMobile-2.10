@@ -6,7 +6,7 @@
 #include "main.h"
 #include "game/game.h"
 #include "net/netgame.h"
-#include "vendor/armhook/patch.h"
+#include "vendor/shadowhook/patch.h"
 #include "WidgetRegionLook.h"
 #include "TouchInterface.h"
 #include "WidgetButton.h"

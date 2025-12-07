@@ -1,7 +1,7 @@
 #include "../main.h"
 #include "game.h"
 #include "../net/netgame.h"
-#include "../vendor/armhook/patch.h"
+#include "../vendor/shadowhook/patch.h"
 #include <cmath>
 
 #include "Entity/CPedGTA.h"

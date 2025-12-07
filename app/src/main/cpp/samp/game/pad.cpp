@@ -2,7 +2,7 @@
 #include "game.h"
 #include "../net/netgame.h"
 #include "../gui/gui.h"
-#include "../vendor/armhook/patch.h"
+#include "../vendor/shadowhook/patch.h"
 #include "World.h"
 
 extern UI* pUI;

@@ -3,7 +3,7 @@
 //
 
 #include "Timer.h"
-#include "../vendor/armhook/patch.h"
+#include "../vendor/shadowhook/patch.h"
 #include "../java/jniutil.h"
 #include "../gui/gui.h"
 #include "../net/netgame.h"

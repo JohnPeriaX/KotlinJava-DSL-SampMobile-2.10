@@ -2,7 +2,7 @@
 #include "game.h"
 
 #include "sprite2d.h"
-#include "../vendor/armhook/patch.h"
+#include "../vendor/shadowhook/patch.h"
 #include "Scene.h"
 
 void CSprite2d::Draw(float x, float y, float width, float height, CRGBA* color)

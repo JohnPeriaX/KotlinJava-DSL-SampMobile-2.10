@@ -4,7 +4,7 @@
 #include "../common.h"
 #include "Placeable.h"
 #include "game/Core/MatrixLinkList.h"
-#include "../vendor/armhook/patch.h"
+#include "../vendor/shadowhook/patch.h"
 
 void CPlaceable::InitMatrixArray() {
     gMatrixList.Init(CPlaceable::NUM_MATRICES_TO_CREATE);

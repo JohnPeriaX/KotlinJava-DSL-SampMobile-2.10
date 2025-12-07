@@ -2,7 +2,7 @@
 
 
 #include "common.h"
-#include "../vendor/armhook/patch.h"
+#include "../vendor/shadowhook/patch.h"
 
 enum class eCdStreamStatus : int32 {
     READING_SUCCESS = 0,

@@ -2,7 +2,7 @@
 #include "../main.h"
 #include "multitouch.h"
 #include "nv_event.h"
-#include "../vendor/armhook/patch.h"
+#include "../vendor/shadowhook/patch.h"
 #include <string.h>
 
 /* MultiTouch */

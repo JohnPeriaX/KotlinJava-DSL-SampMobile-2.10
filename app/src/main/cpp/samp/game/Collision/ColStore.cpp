@@ -3,7 +3,7 @@
 //
 
 #include "ColStore.h"
-#include "../vendor/armhook/patch.h"
+#include "../vendor/shadowhook/patch.h"
 #include "game/constants.h"
 
 void CColStore::RequestCollision(const CVector *pos, int32 areaCode) {

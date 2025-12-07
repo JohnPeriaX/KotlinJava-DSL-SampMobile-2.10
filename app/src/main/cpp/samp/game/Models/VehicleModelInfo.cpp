@@ -3,7 +3,7 @@
 //
 
 #include "VehicleModelInfo.h"
-#include "../vendor/armhook/patch.h"
+#include "../vendor/shadowhook/patch.h"
 #include "../RW/rpworld.h"
 #include "ModelInfo.h"
 #include "game/VisibilityPlugins.h"

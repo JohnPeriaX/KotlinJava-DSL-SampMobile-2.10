@@ -1,6 +1,6 @@
 #include "../main.h"
 #include "font.h"
-#include "../vendor/armhook/patch.h"
+#include "../vendor/shadowhook/patch.h"
 
 void CFont::Initialise() {
 	CHook::CallFunction<void>(g_libGTASA + (VER_x32 ? 0x0046FD8C + 1 : 0x55BFEC));

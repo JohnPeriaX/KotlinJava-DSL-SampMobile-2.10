@@ -5,7 +5,7 @@
 #include "Pickups.h"
 #include "game.h"
 #include "net/netgame.h"
-#include "../vendor/armhook/patch.h"
+#include "../vendor/shadowhook/patch.h"
 #include "World.h"
 #include "Pickup.h"
 #include "Camera.h"

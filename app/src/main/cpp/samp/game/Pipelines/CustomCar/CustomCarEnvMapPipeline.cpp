@@ -3,7 +3,7 @@
 //
 
 #include "CustomCarEnvMapPipeline.h"
-#include "../vendor/armhook/patch.h"
+#include "../vendor/shadowhook/patch.h"
 #include "pipe/p2core.h"
 #include "pipe/p2define.h"
 #include "opengl/openglpipepriv.h"

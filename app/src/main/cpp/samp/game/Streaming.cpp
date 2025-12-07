@@ -3,7 +3,7 @@
 //
 
 #include "Streaming.h"
-#include "../vendor/armhook/patch.h"
+#include "../vendor/shadowhook/patch.h"
 #include "StreamingInfo.h"
 #include "game/Models/ModelInfo.h"
 #include "game/Animation/AnimManager.h"

@@ -3,7 +3,7 @@
 //
 
 #include "MatrixLink.h"
-#include "../vendor/armhook/patch.h"
+#include "../vendor/shadowhook/patch.h"
 
 void CMatrixLink::Insert(CMatrixLink* pWhere)
 {

@@ -4,7 +4,7 @@
 
 #include "../common.h"
 #include "Event.h"
-#include "../vendor/armhook/patch.h"
+#include "../vendor/shadowhook/patch.h"
 
 
 CEvent::CEvent() {

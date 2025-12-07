@@ -6,7 +6,7 @@
 */
 
 #include "AnimBlendAssocGroup.h"
-#include "../vendor/armhook/patch.h"
+#include "../vendor/shadowhook/patch.h"
 
 // 0x4CDE70
 CAnimBlendAssocGroup::CAnimBlendAssocGroup() {

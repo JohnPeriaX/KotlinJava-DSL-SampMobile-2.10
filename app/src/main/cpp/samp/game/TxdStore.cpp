@@ -3,7 +3,7 @@
 //
 
 #include "TxdStore.h"
-#include "../vendor/armhook/patch.h"
+#include "../vendor/shadowhook/patch.h"
 
 int32 CTxdStore::GetNumRefs(int32 index){
     return CHook::CallFunction<int32>(g_libGTASA + (VER_x32 ? 0x5D3E34 + 1 : 0x6F8DF4), index);

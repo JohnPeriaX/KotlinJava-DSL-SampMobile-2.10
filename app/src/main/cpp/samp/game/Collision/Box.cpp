@@ -1,6 +1,6 @@
 
 #include "Box.h"
-#include "../vendor/armhook/patch.h"
+#include "../vendor/shadowhook/patch.h"
 #include "game/Lines.h"
 
 //void CBox::InjectHooks()

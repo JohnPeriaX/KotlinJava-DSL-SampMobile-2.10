@@ -3,7 +3,7 @@
 //
 
 #include "NodeName.h"
-#include "../vendor/armhook/patch.h"
+#include "../vendor/shadowhook/patch.h"
 
 const RwChar* GetFrameNodeName(RwFrame* frame) {
     return CHook::CallFunction<const RwChar*>(g_libGTASA + 0x48248C + 1, frame);

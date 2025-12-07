@@ -1,7 +1,7 @@
 #include "AnimBlendHierarchy.h"
 #include "AnimManager.h"
 #include "game/Core/KeyGen.h"
-#include "../vendor/armhook/patch.h"
+#include "../vendor/shadowhook/patch.h"
 #include "game/Core/Quaternion.h"
 #include "game/MemoryMgr.h"
 
