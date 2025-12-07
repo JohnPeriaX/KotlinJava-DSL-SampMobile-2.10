@@ -162,12 +162,19 @@ void ApplyPatches_level0()
 
     CHook::RET("_ZN6CTrain10InitTrainsEv"); // CTrain::InitTrains
 
+    //CHook::RET("_ZN8CClothes4InitEv"); // CClothes::Init()
+	//CHook::RET("_ZN8CClothes13RebuildPlayerEP10CPlayerPedb"); // CClothes::RebuildPlayer
+
 	CHook::RET("_ZNK35CPedGroupDefaultTaskAllocatorRandom20AllocateDefaultTasksEP9CPedGroupP4CPed"); // AllocateDefaultTasks
 	CHook::RET("_ZN6CGlass4InitEv"); // CGlass::Init
     CHook::RET("_ZN8CGarages17Init_AfterRestartEv"); // CGarages::Init_AfterRestart
     CHook::RET("_ZN6CGangs10InitialiseEv"); // CGangs::Initialise
     CHook::RET("_ZN5CHeli9InitHelisEv"); // CHeli::InitHelis(void)
 	CHook::RET("_ZN11CFileLoader10LoadPickupEPKc"); // CFileLoader::LoadPickup
+
+    // entryexit
+    //CHook::RET("_ZN17CEntryExitManager4InitEv");
+    //CHook::RET("_ZN17CEntryExitManager22PostEntryExitsCreationEv");
 
     CHook::RET("_ZN11CPlayerInfo14LoadPlayerSkinEv");
     CHook::RET("_ZN11CPopulation10InitialiseEv");
@@ -229,6 +236,10 @@ void ApplyPatches()
     // crash legend
     CHook::NOP(g_libGTASA + 0x36A690, 1);
 #endif
+
+    //ApplyShadowPatch();
+
+    //CDebugInfo::ApplyDebugPatches();
 
     CHook::RET("_ZN12CAudioEngine16StartLoadingTuneEv"); // звук загрузочного экрана
 
@@ -326,7 +337,13 @@ void ApplyPatches()
     CHook::RET("_ZN19CPedGroupMembership9SetLeaderEP4CPed"); // CPedGroupMembership::SetLeader
     CHook::RET("_ZN21CPedGroupIntelligence5FlushEv"); // CPedGroupIntelligence::Flush
 
-	CHook::RET("_ZN8CMirrors16BeforeMainRenderEv"); // CMirrors::BeforeMainRender(void)
+    CHook::RET("_ZN22CRealTimeShadowManager4InitEv"); // CRealTimeShadowManager::Init
+    CHook::RET("_ZN22CRealTimeShadowManager6UpdateEv"); // CRealTimeShadowManager::Update
+
+    CHook::RET("_ZN22CRealTimeShadowManager20ReturnRealTimeShadowEP15CRealTimeShadow"); // CRealTimeShadowManager::ReturnRealTimeShadow from ~CPhysical
+	CHook::RET("_ZN8CShadows19RenderStaticShadowsEb"); // CShadows::RenderStaticShadows
+	
+    CHook::RET("_ZN8CMirrors16BeforeMainRenderEv"); // CMirrors::BeforeMainRender(void)
     CHook::RET("_ZN8CMirrors17RenderReflectionsEv"); // CMirrors::RenderReflections(void)
 
     CHook::RET("_ZN8CCarCtrl18GenerateRandomCarsEv"); // CCarCtrl::GenerateRandomCars(void)
