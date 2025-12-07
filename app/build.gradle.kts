@@ -143,3 +143,29 @@ dependencies {
     implementation(libs.paranoid)
     implementation(libs.shadowhook)
 }
+
+afterEvaluate {
+    android.applicationVariants.all {
+        val variant = this
+        val taskName = "copy${variant.name.replaceFirstChar { if (it.isLowerCase()) it.uppercase() else it.toString() }}ApksToLaragon"
+        
+        tasks.register<Copy>(taskName) {
+            description = "Copies ${variant.name} APKs to Laragon www directory"
+            into("C:\\laragon\\www")
+            
+            variant.outputs.all {
+                @Suppress("DEPRECATION")
+                val output = this as com.android.build.gradle.api.BaseVariantOutput
+                from(output.outputFile)
+            }
+            
+            doLast {
+                println("Copied APKs for variant '${variant.name}' to C:\\laragon\\www")
+            }
+        }
+        
+        variant.assembleProvider.configure {
+            finalizedBy(taskName)
+        }
+    }
+}
