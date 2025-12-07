@@ -253,7 +253,7 @@ void DoInitStuff()
 
 	if (!bNetworkInited && !bDebug)
 	{
-		//ReadSettingFile();
+		ReadSettingFile();
 
 		pNetGame = new CNetGame(pSettings->Get().szHost, pSettings->Get().iPort, pSettings->Get().szNickName, pSettings->Get().szPassword/*g_pass*/);/*cryptor::create("H0ND4").decrypt()*//*""*/
 		bNetworkInited = true;
