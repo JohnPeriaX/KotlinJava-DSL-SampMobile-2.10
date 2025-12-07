@@ -429,8 +429,7 @@ void CVehicle::SetComponentOpenState(int iDoor, int iComponent, float fDoorOpenR
 {
 	if (GetVehicleSubtype() == VEHICLE_SUBTYPE_CAR)
 	{
-		ScriptCommand(&set_car_door_rotation_to, m_dwGTAId, iDoor, iComponent, fDoorOpenRatio);
-	
+		ScriptCommand(&set_car_component_rotate, m_dwGTAId, iDoor, iComponent, fDoorOpenRatio);
 	}
 }
 
@@ -460,7 +459,7 @@ void CVehicle::RemoveComponent(int iComponentID)
 	if (!m_pVehicle || !GamePool_Vehicle_GetAt(m_dwGTAId))
 		return;
 
-	ScriptCommand(&remove_component, m_dwGTAId, iComponentID);
+	ScriptCommand(&remove_vehicle_mod, m_dwGTAId, iComponentID);
 }
 
 void CVehicle::SetZAngle(float fAngle)

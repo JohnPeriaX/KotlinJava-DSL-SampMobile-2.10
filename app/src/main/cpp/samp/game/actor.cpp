@@ -15,7 +15,7 @@ CActor::CActor(int iSkin, float fX, float fY, float fZ, float fAngle)
         iSkin = 0;
     }
 
-    ScriptCommand(&create_actor, 5, iSkin, fX, fY, fZ, &m_dwGTAId);
+    ScriptCommand(&create_char, 5, iSkin, fX, fY, fZ, &m_dwGTAId);
 
     m_pPed = GamePool_Ped_GetAt(m_dwGTAId);
 
