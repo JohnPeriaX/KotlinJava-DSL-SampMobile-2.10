@@ -86,7 +86,7 @@ CSettings::CSettings()
 	m_Settings.iFirstPerson = reader.GetBoolean("gui", "firstperson", true);
 	m_Settings.iCutout = reader.GetBoolean("gui", "cutout", false);
 	m_Settings.iFPSCounter = reader.GetBoolean("gui", "fps", false);
-	m_Settings.iFPSCount = reader.GetInteger("gui", "FPSLimit", 60);
+	m_Settings.iFPSCount = reader.GetInteger("gui", "FPSLimit", 120);
 	m_Settings.iHPArmourText = reader.GetBoolean("gui", "hparmourtext", false);
 	m_Settings.iOutfitGuns = reader.GetBoolean("gui", "outfitguns", false);
 	m_Settings.iPCMoney = reader.GetBoolean("gui", "pcmoney", false);

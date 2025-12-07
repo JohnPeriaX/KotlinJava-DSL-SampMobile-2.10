@@ -47,7 +47,6 @@ public class SettingsFragment extends Fragment {
     SwitchCompat mVoiceSwitch;
     SwitchCompat mModifySwitch;
     SwitchCompat mFPSSwitch;
-    SwitchCompat mMonetSwitch;
     SeekBar mMessagesSeekBar;
     TextView mMessagesText;
     SeekBar mFPSSeekBar;
@@ -69,7 +68,6 @@ public class SettingsFragment extends Fragment {
         autoCompleteTextView = view.findViewById(R.id.spinner);
         mKeyboardSwitch = view.findViewById(R.id.keyboard_switch);
         mFPSSwitch = view.findViewById(R.id.fps_switch);
-        mMonetSwitch = view.findViewById(R.id.monet_switch);
         mVoiceSwitch = view.findViewById(R.id.voice_switch);
         mModifySwitch = view.findViewById(R.id.modify_switch);
         mMessagesSeekBar = view.findViewById(R.id.messages_seekbar);
@@ -168,10 +166,10 @@ public class SettingsFragment extends Fragment {
         mVoiceSwitch.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
-                new SharedPreferenceCore().setBoolean(requireContext().getApplicationContext(), "AIM", b);
+                new SharedPreferenceCore().setBoolean(requireContext().getApplicationContext(), "VOICE_CHAT", b);
                 try {
                     if(mWini != null) {
-                        mWini.put("gui", "autoaim", b);
+                        mWini.put("gui", "VoiceChatEnable", b);
                         mWini.store();
                     }
                 } catch (IOException e) {
@@ -192,13 +190,6 @@ public class SettingsFragment extends Fragment {
                 } catch (IOException e) {
                     e.printStackTrace();
                 }
-            }
-        });
-
-        mMonetSwitch.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
-            @Override
-            public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
-                new SharedPreferenceCore().setBoolean(requireContext().getApplicationContext(), "MLOADER", b);
             }
         });
 
@@ -303,10 +294,9 @@ public class SettingsFragment extends Fragment {
         super.onResume();
 
         mKeyboardSwitch.setChecked(new SharedPreferenceCore().getBoolean(requireContext().getApplicationContext(), "ANDROID_KEYBOARD"));
-        mVoiceSwitch.setChecked(new SharedPreferenceCore().getBoolean(requireContext().getApplicationContext(), "AIM"));
+        mVoiceSwitch.setChecked(new SharedPreferenceCore().getBoolean(requireContext().getApplicationContext(), "VOICE_CHAT"));
         mFPSSwitch.setChecked(new SharedPreferenceCore().getBoolean(requireContext().getApplicationContext(), "FPS_DISPLAY"));
         mModifySwitch.setChecked(new SharedPreferenceCore().getBoolean(requireContext().getApplicationContext(), "MODIFIED_DATA"));
-        mMonetSwitch.setChecked(new SharedPreferenceCore().getBoolean(requireContext().getApplicationContext(), "MLOADER"));
         autoCompleteTextView.setSelection(new SharedPreferenceCore().getInt(requireContext().getApplicationContext(), "VERSION"));
 
         int fps = new SharedPreferenceCore().getInt(getContext(), "FPS_LIMIT");

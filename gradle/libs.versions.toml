@@ -24,7 +24,7 @@ ini4j = "0.5.4"
 glide = "4.13.0"
 lifecycle_process = "2.9.4"
 paranoid = "0.3.14"
-shadowhook = "1.0.9"
+shadowhook = "1.0.10"
 
 [libraries]
 appcompat = { module = "androidx.appcompat:appcompat", version.ref = "appcompat" }

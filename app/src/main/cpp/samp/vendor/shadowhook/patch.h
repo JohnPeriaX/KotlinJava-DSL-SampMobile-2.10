@@ -7,6 +7,7 @@
 #include <ctype.h>
 #include <link.h>
 #include <sys/cachectl.h>
+#include <sys/mman.h>
 
 #ifdef __arm__
 #define __32BIT
@@ -36,14 +37,50 @@ extern "C" bool MSHookFunction(void* symbol, void* replace, void** result);
 #define SET_TO(__a1, __a2) *(void**)&(__a1) = (void*)(__a2)
 
 #include "shadowhook.h"
+#include "asm32.h"
+#include "asm64.h"
 #include "../GlossHook/include/Gloss.h"
 
 class CHook {
 public:
+    static inline void* lib;
 
-    static uintptr_t mmap_start, mmap_end, memlib_start, memlib_end;
+public:
 
-    static void UnFuck(uintptr_t ptr, size_t len = PAGE_SIZE);
+    static uintptr_t FindLib(const char* libname)
+    {
+        void* handle = dlopen(libname, RTLD_LAZY);
+
+        if (handle) {
+            void* symbol = dlsym(handle, "JNI_OnLoad");
+            if (symbol) {
+                Dl_info info;
+                if (dladdr(symbol, &info) != 0) {
+                    return reinterpret_cast<uintptr_t>(info.dli_fbase);
+                }
+            }
+            dlclose(handle);
+        }
+        return 0;
+    }
+
+    static void InitHookStuff() {
+        lib = dlopen("libGTASA.so", RTLD_LAZY);
+    }
+
+    static void UnFuck(uintptr_t ptr, uint64_t len = PAGE_SIZE) {
+#if VER_x32
+        if(mprotect((void*)(ptr & 0xFFFFF000), len, PROT_READ | PROT_WRITE | PROT_EXEC) == 0)
+            return;
+
+        mprotect((void*)(ptr & 0xFFFFF000), len, PROT_READ | PROT_WRITE);
+#else
+        if(mprotect((void*)(ptr & 0xFFFFFFFFFFFFF000), len, PROT_READ | PROT_WRITE | PROT_EXEC) == 0)
+            return;
+
+        mprotect((void*)(ptr & 0xFFFFFFFFFFFFF000), len, PROT_READ | PROT_WRITE);
+#endif
+    }
 
     static uintptr_t GetAddrBaseXDL(uintptr_t addr)
     {
@@ -56,8 +93,6 @@ public:
 #endif
         return 0;
     }
-
-
 
     template<typename Addr>
     static void NOP(Addr adr, size_t count)
@@ -95,15 +130,15 @@ public:
 
     static void RET(const char* sym)
     {
+        // fully check
         auto addr = getSym(sym);
-//        #if VER_x32
-//            addr -= 1;
-//        #endif
+
         RET(addr);
     }
 
     static void RET(uintptr addr)
     {
+        // fully check
         #if VER_x32
         if(THUMBMODE(addr))
         {
@@ -119,7 +154,7 @@ public:
     }
 
     template <typename Src>
-    static void WriteMemory(uintptr_t dest, Src src, size_t size)
+    static void WriteMemory(uintptr_t dest, Src src, uint64_t size)
     {
         UnFuck(dest, size);
         memcpy((void*)dest, (void*)src, size);
@@ -134,36 +169,45 @@ public:
     }
 
     template <typename Src>
-    static Src Write(uintptr_t dest, Src src, size_t size = 0)
+    static void Write(uintptr_t dest, Src src, uint64_t size = 0)
     {   
-	    size = sizeof(Src);
+	    if(size <= 0)
+            size = sizeof(Src);
+        
         CHook::WriteMemory(dest, &src, size);
-	    return src;
     }
 
-    template <typename Src>
-    static Src Write(const char* sym, Src src, size_t size = 0)
+    static void Write32(uintptr_t dest, uint32_t v)
     {
-        auto addr = (uintptr_t)dlsym(lib, sym);
-        size = sizeof(Src);
-        CHook::WriteMemory(addr, &src, size);
-        return src;
-    }
+        uint32_t vPtr = v;
 
-    static void InitHookStuff();
-    static inline void* lib;
+        CHook::WriteMemory(dest, (uintptr_t)&vPtr, 4);
+    }
 
     static uintptr_t getSym(const char* sym)
     {
 
         auto res = (uintptr_t)dlsym(lib, sym);
-        if(res == 0){
-            FLog("Error find %s", sym);
+        if(res == 0) {
+            FLog("[ERROR]: Failed to search for libraries: %s", sym);
             exit(0);
             return 0;
         }
-       // Log("getsym = %x", sym - g_libGTASA);
         return res;
+    }
+
+    template<typename T, typename A>
+    static void SetVTable(T* obj, A newVTable) {
+        *reinterpret_cast<uintptr_t**>(obj) = (uintptr_t*)(newVTable);
+    }
+
+    template<typename Ret, typename T, typename... Args>
+    static Ret CallVTableFunctionByNum(T* obj, int num, Args... args) {
+        auto vtable = *reinterpret_cast<uintptr_t**>(obj);
+
+        auto func = reinterpret_cast<Ret(*)(T*, Args...)>(vtable[num]);
+
+        return func(obj, std::forward<Args>(args)...);
     }
 
     template <typename Ret, typename... Args>
@@ -173,18 +217,24 @@ public:
     }
 
     template <typename Ret, typename... Args>
-    static Ret CallFunction(const char* sym, Args... args)
-    {
-        auto addr = (uintptr_t)dlsym(lib, sym);
+    static Ret CallFunction(const char* sym, Args... args) {
+        static std::unordered_map<std::string, uintptr_t> addr_map;
 
-        if(addr == 0){
-            FLog("Error find %s", sym);
-            exit(0);
+        auto it = addr_map.find(sym);
+        uintptr_t addr;
+
+        if (it == addr_map.end()) {
+            addr = (uintptr_t)dlsym(lib, sym);
+            if (addr == 0) {
+                FLog("[ERROR]: Function not found: %s", sym);
+                exit(0);
+            }
+            addr_map[sym] = addr;
+        } else {
+            addr = it->second;
         }
 
-        using FuncType = Ret(__cdecl *)(Args...);
-        FuncType func = reinterpret_cast<FuncType>(addr);
-        return func(args...);
+        return ((Ret(*)(Args...))(addr))(args...);
     }
 
     template <typename Addr, typename Func, typename Orig>
@@ -204,11 +254,12 @@ public:
         *(uintptr_t*)addr = reinterpret_cast<uintptr_t>(hook_func);
     }
 
-    template <typename Addr, typename Func, typename Orig>
-    static void InlineHook(uintptr_t lib, Addr addr, Func func, Orig orig)
+    template <typename Func, typename Orig>
+    static void InlineHook(const char* sym, Func func, Orig orig)
     {
-        shadowhook_hook_func_addr(
-                (void*)(lib + addr + 1),
+        shadowhook_hook_sym_name(
+                "libGTASA.so",
+                sym,
                 (void *)func,
                 (void **)orig);
     }
@@ -222,42 +273,31 @@ public:
                 (void **)orig);
     }
 
-    template <typename Func, typename Orig>
-    static void InlineHook(const char* sym, Func func, Orig orig)
-    {
-        auto addr = getSym(sym);
-
-        if(addr == 0){
-            FLog("Error find %s", sym);
-            exit(0);
-        }
-
-        shadowhook_hook_func_addr(
-                (void*)(addr),
-                (void *)func,
-                (void **)orig);
-    }
-
     template <typename Func>
     static void Redirect(const char* sym, Func func)
     {
         auto addr = getSym(sym);
 
+        Redirect(addr, func);
+    }
+    template <typename Ptr, typename Func>
+    static void Redirect(Ptr ptr, Func func)
+    {
 #ifdef __32BIT
         uint32_t hook[2] = {0xE51FF004, reinterpret_cast<uintptr_t>(func)};
-        if (THUMBMODE(addr)) {
-            addr &= ~0x1;
-            if (addr & 0x2) {
-                NOP(RETHUMB(addr), 1);
-                addr += 2;
+        if (THUMBMODE(ptr)) {
+            ptr &= ~0x1;
+            if (ptr & 0x2) {
+                NOP(RETHUMB(ptr), 1);
+                ptr += 2;
             }
             hook[0] = 0xF000F8DF;
         }
-        WriteMemory(DETHUMB(addr), reinterpret_cast<uintptr_t>(hook), sizeof(hook));
+        WriteMemory(DETHUMB(ptr), reinterpret_cast<uintptr_t>(hook), sizeof(hook));
 #elif defined __64BIT
-        UnFuck(addr, 16);
+        UnFuck(ptr, 16);
         uint64_t hook[2] = {0xD61F022058000051, reinterpret_cast<uintptr_t>(func)};
-        WriteMemory(addr, reinterpret_cast<uintptr_t>(hook), sizeof(hook));
+        WriteMemory(ptr, reinterpret_cast<uintptr_t>(hook), sizeof(hook));
 #endif
     }
 };

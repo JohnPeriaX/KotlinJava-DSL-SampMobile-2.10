@@ -14,7 +14,7 @@
 #include "game/Models/ModelInfo.h"
 #include "game/Collision/Collision.h"
 
-void ApplySAMPPatchesInGame();
+void ApplyInGamePatches();
 void InitScripting();
 
 bool bUsedPlayerSlots[PLAYER_PED_SLOTS];
@@ -58,7 +58,7 @@ CGame::~CGame()
 
 }
 
-void ApplyGlobalPatches();
+void ApplyPatches();
 void InstallHooks();
 void CGame::StartGame()
 {
@@ -74,7 +74,7 @@ void CGame::StartGame()
 	//*(char*)(g_libGTASA + 0x6E00D9) = 0;
 
     InstallHooks();
-    ApplyGlobalPatches();
+    ApplyPatches();
 
 	GameAimSyncInit();
 	InitScripting();
@@ -87,7 +87,7 @@ void CGame::Initialize()
 {
 	FLog("CGame initializing..");
 
-    ApplySAMPPatchesInGame();
+    ApplyInGamePatches();
 	GameResetRadarColors();
 
     szGameTextMessage = new uint16_t[1076];

@@ -14,6 +14,7 @@
 
 // voice
 #include "voice_new/Plugin.h"
+#include "voice_new/PluginConfig.h"
 
 #include "vendor/armhook/patch.h"
 #include "vendor/str_obfuscator/str_obfuscator.hpp"
@@ -50,7 +51,7 @@ bool bNetworkInited = false;
 uintptr_t g_libGTASA = 0x00;
 uintptr_t g_libSAMP = 0x00;
 
-void ApplyGlobalPatches();
+void ApplyPatches();
 void ApplyPatches_level0();
 void ApplyMultiTouchPatches();
 void InstallGlobalHooks();
@@ -323,6 +324,12 @@ void MainLoop()
 void InitGui()
 {
 	// new voice
+	if (pSettings)
+	{
+		PluginConfig::SetMicroEnable(pSettings->Get().bVoiceChatEnable);
+		PluginConfig::SetSoundEnable(pSettings->Get().bVoiceChatEnable);
+	}
+
 	Plugin::OnPluginLoad();
 	Plugin::OnSampLoad();
 

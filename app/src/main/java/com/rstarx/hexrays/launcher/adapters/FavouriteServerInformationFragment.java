@@ -142,35 +142,7 @@ public class FavouriteServerInformationFragment extends Dialog {
                     }
                 }
 
-                if(new SharedPreferenceCore().getBoolean(getContext(), "MLOADER"))
-                {
-                    String data = Environment.getExternalStorageDirectory() + "/Android/media/com.rstarx.hexrays";
-                    File file4 = new File(data + "/monetloader/compat/profile.json");
-                    Log.d("AXL", data + "/monetloader/compat/profile.json");
-                    if(file4.isDirectory() || !file4.exists())
-                    {
-                        file4.delete();
-                        try {
-                            file.createNewFile();
-                            FileWriter writer = new FileWriter(file4);
-                            writer.append("{\n" +
-                                    "  \"gtasa_name\": \"libGTASA.so\",\n" +
-                                    "  \"profile_name\": \"SA-MP 0.3.7\",\n" +
-                                    "  \"compat_scripts\": [],\n" +
-                                    "  \"samp_name\": \"libsamp.so\",\n" +
-                                    "  \"receiveignorerpc_pattern\": \"F0B503AF2DE900????B004460068C16A20468847\",\n" +
-                                    "  \"cnetgame_ctor_pattern\": \"F0B503AF2DE9000788B00D46????9146????0446002079447A44\",\n" +
-                                    "  \"rakclientinterface_netgame_offset\": 528,\n" +
-                                    "  \"use_samp_touch_workaround\": true,\n" +
-                                    "  \"nveventinsertnewest_offset\": 2606320\n" +
-                                    "}");
-                            writer.flush();
-                            writer.close();
-                        } catch (Exception e) {
-                            e.printStackTrace();
-                        }
-                    }
-                }
+
 
                 File file1 = new File(act.getExternalFilesDir(null) + "/Text/american.dxt");
                 if(!file1.exists())

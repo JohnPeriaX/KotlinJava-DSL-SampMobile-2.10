@@ -101,13 +101,7 @@ public class GTASA extends WarMedia {
 
         super.onCreate(bundle);
 
-        if (new SharedPreferenceCore().getBoolean(this, "MLOADER")) {
-            try {
-                System.loadLibrary("monetloader");
-            } catch (ExceptionInInitializerError | UnsatisfiedLinkError e) {
-                Log.e("AXL", e.getMessage());
-            }
-        }
+
     }
 
     public void onDestroy()

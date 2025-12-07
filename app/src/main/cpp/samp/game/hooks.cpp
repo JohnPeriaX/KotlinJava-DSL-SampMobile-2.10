@@ -1132,7 +1132,7 @@ void CRadar_ClearBlip_hook(uint32_t a2)
 /* =============================================================================== */
 
 void ReadSettingFile();
-void ApplyFPSPatch(uint8_t fps);
+void ApplyFPSPatch();
 void (*NvUtilInit)();
 void NvUtilInit_hook()
 {
@@ -1144,7 +1144,7 @@ void NvUtilInit_hook()
 
     ReadSettingFile();
 
-    ApplyFPSPatch(120);
+    ApplyFPSPatch();
 }
 
 struct stFile
@@ -1554,7 +1554,8 @@ void(*CStreaming__Init2)();
 void CStreaming__Init2_hook()
 {
     CStreaming__Init2();
-    *(uint32_t*)(g_libGTASA+(VER_x32 ? 0x00685FA0:0x85EBD8)) = 536870912;
+	auto &msAvailable = CStreaming::ms_memoryAvailable;
+    msAvailable = 0x20000000;
 }
 
 int(*mpg123_param)(void* mh, int key, long val, int ZERO, double fval);
