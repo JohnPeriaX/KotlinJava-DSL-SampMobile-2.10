@@ -1525,18 +1525,20 @@ void ScrTogglePlayerControllable(RPCParameters* rpcParams)
 
 void ScrPlayerPlaySound(RPCParameters* rpcParams)
 {
-	unsigned char* Data = reinterpret_cast<unsigned char*>(rpcParams->input);
-	int iBitLength = rpcParams->numberOfBitsOfData;
+    unsigned char * Data = reinterpret_cast<unsigned char *>(rpcParams->input);
+    int iBitLength = rpcParams->numberOfBitsOfData;
+    RakNet::BitStream bsData((unsigned char*)Data, (iBitLength/8)+1, false);
 
-	int iSound;
-	float fX, fY, fZ;
-	RakNet::BitStream bsData(Data, (iBitLength / 8) + 1, false);
-	bsData.Read(iSound);
-	bsData.Read(fX);
-	bsData.Read(fY);
-	bsData.Read(fZ);
+    int iSound;
+    CVector vecPos; // ใช้ CVector แทน VECTOR เพื่อความชัวร์เรื่องโครงสร้างข้อมูล
 
-	// sub_100A1B90(pGame->field_0, a2, a3, a4, a5);
+    bsData.Read(iSound);
+    bsData.Read(vecPos.x);
+    bsData.Read(vecPos.y);
+    bsData.Read(vecPos.z);
+
+    if(pGame)
+        pGame->PlaySound(iSound, vecPos.x, vecPos.y, vecPos.z);
 }
 
 void ScrSetWorldBounds(RPCParameters* rpcParams)
@@ -1987,15 +1989,19 @@ void RegisterScriptRPCs(RakClientInterface *pRakClient)
 	pRakClient->RegisterAsRemoteProcedureCall(&RPC_ScrStopObject, ScrStopObject);
 	pRakClient->RegisterAsRemoteProcedureCall(&RPC_ScrNumberPlate, ScrSetVehicleNumberPlate);
 	pRakClient->RegisterAsRemoteProcedureCall(&RPC_ScrTogglePlayerSpectating, ScrTogglePlayerSpectating);
+	
 	// RPC_null - unused
 	pRakClient->RegisterAsRemoteProcedureCall(&RPC_ScrPlayerSpectatePlayer, ScrSpectatePlayer);
 	pRakClient->RegisterAsRemoteProcedureCall(&RPC_ScrPlayerSpectateVehicle, ScrSpectateVehicle);
 	pRakClient->RegisterAsRemoteProcedureCall(&RPC_ScrRemoveComponent, ScrRemoveVehicleComponent);
+
 	// RPC_ScrForceClassSelection - useless
 	pRakClient->RegisterAsRemoteProcedureCall(&RPC_ScrAttachObjectToPlayer, ScrAttachObjectToPlayer);
+
 	// RPC_ScrInitMenu
 	// RPC_ScrShowMenu
 	// RPC_ScrHideMenu
+
 	pRakClient->RegisterAsRemoteProcedureCall(&RPC_ScrSetPlayerWantedLevel, ScrSetPlayerWantedLevel);
 	pRakClient->RegisterAsRemoteProcedureCall(&RPC_ScrShowTextDraw, ScrShowTextDraw);
 	pRakClient->RegisterAsRemoteProcedureCall(&RPC_ScrHideTextDraw, ScrHideTextDraw);
@@ -2013,9 +2019,11 @@ void RegisterScriptRPCs(RakClientInterface *pRakClient)
 	pRakClient->RegisterAsRemoteProcedureCall(&RPC_ScrSetVehicleVelocity, ScrSetVehicleVelocity);
 	pRakClient->RegisterAsRemoteProcedureCall(&RPC_ScrToggleWidescreen, ScrToggleWidescreen);
 	pRakClient->RegisterAsRemoteProcedureCall(&RPC_ScrSetVehicleTireStatus, ScrSetVehicleTireDamageStatus);
+
 	// RPC_150 ???
 	// RPC_92 ???
 	// RPC_ScrPlayCrimeReport
+
 	pRakClient->RegisterAsRemoteProcedureCall(&RPC_ScrSetSpawnInfo, ScrSetSpawnInfo);
 	pRakClient->RegisterAsRemoteProcedureCall(&RPC_ScrSetPlayerTeam, ScrSetPlayerTeam);
 	pRakClient->RegisterAsRemoteProcedureCall(&RPC_ScrSetPlayerSkin, ScrSetPlayerSkin);
@@ -2042,12 +2050,15 @@ void RegisterScriptRPCs(RakClientInterface *pRakClient)
 	pRakClient->RegisterAsRemoteProcedureCall(&RPC_ScrResetMoney, ScrResetPlayerMoney);
 	pRakClient->RegisterAsRemoteProcedureCall(&RPC_ScrResetPlayerWeapons, ScrResetPlayerWeapons);
 	pRakClient->RegisterAsRemoteProcedureCall(&RPC_ScrGivePlayerWeapon, ScrGivePlayerWeapon);
+
 	// RPC_64 - unused
 	pRakClient->RegisterAsRemoteProcedureCall(&RPC_ScrLinkVehicle, ScrLinkVehicleToInterior);
 	pRakClient->RegisterAsRemoteProcedureCall(&RPC_ScrSetPlayerArmour, ScrSetPlayerArmour);
+
 	// RPC_ScrSendDeathMessage
 	// RPC_ScrSetShopName
 	// RPC_ScrSetPlayerDrunkLevel
+
 	pRakClient->RegisterAsRemoteProcedureCall(&RPC_ScrSetArmedWeapon, ScrSetArmedWeapon);
 	pRakClient->RegisterAsRemoteProcedureCall(&RPC_ScrSetPlayerAttachedObject, ScrSetPlayerAttachedObject);
 	pRakClient->RegisterAsRemoteProcedureCall(&RPC_ScrPlayAudioStream, ScrPlayAudioStream);
@@ -2057,12 +2068,14 @@ void RegisterScriptRPCs(RakClientInterface *pRakClient)
 	pRakClient->RegisterAsRemoteProcedureCall(&RPC_ScrInterpolateCamera, ScrInterpolateCamera);
 	pRakClient->RegisterAsRemoteProcedureCall(&RPC_ClickTextDraw, ScrSelectTextDraw);
 	pRakClient->RegisterAsRemoteProcedureCall(&RPC_ScrSetObjectMaterial, ScrSetObjectMaterial);
+
 	// RPC_ScrObjectNoCameraCol
 	pRakClient->RegisterAsRemoteProcedureCall(&RPC_ScrApplyActorAnimation, ScrApplyActorAnimation);
 	pRakClient->RegisterAsRemoteProcedureCall(&RPC_ScrClearActorAnimations, ScrClearActorAnimation);
 	pRakClient->RegisterAsRemoteProcedureCall(&RPC_ScrSetActorFacingAngle, ScrSetActorFacingAngle);
 	pRakClient->RegisterAsRemoteProcedureCall(&RPC_ScrSetActorPos, ScrSetActorPos);
 	pRakClient->RegisterAsRemoteProcedureCall(&RPC_ScrSetActorHealth, ScrSetActorHealth);
+
 	// RPC_SetPlayerVirtualWorld - 03DL only
 }
 
@@ -2094,4 +2107,6 @@ void UnregisterScriptRPCs(RakClientInterface *pRakClient)
 	pRakClient->UnregisterAsRemoteProcedureCall(&RPC_ScrRemoveBuilding);
 
 	pRakClient->UnregisterAsRemoteProcedureCall(&RPC_ScrInterpolateCamera);
+
+	pRakClient->UnregisterAsRemoteProcedureCall(&RPC_ScrPlaySound);
 }

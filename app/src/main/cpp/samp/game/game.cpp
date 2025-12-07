@@ -46,6 +46,9 @@ CGame::CGame()
 	m_bClockEnabled = false;
 	m_bInputEnable = true;
 
+	m_sound.bMissionAudioLoaded = false;
+	m_sound.bDisableInteriorAmbient = false;
+
 	memset(bUsedPlayerSlots, 0, sizeof(bUsedPlayerSlots));
 	memset(m_bPreloadedVehicleModels, 0, sizeof(m_bPreloadedVehicleModels));
 }
@@ -267,9 +270,46 @@ uint8_t CGame::GetPedSlotsUsed()
 	return count;
 }
 
+void CGame::PlayAmbientSound(int iSound)
+{
+    uintptr_t pMgr = *(uintptr_t*)(g_libGTASA + (VER_x32 ? 0x68C398 : 0x86797C));
+    if (pMgr) ((void (*)(uintptr_t, int))(g_libGTASA + (VER_x32 ? 0x3918B7 : 0x46BC84)))(pMgr, iSound);
+}
+
+void CGame::StopAmbientSound()
+{
+    uintptr_t pMgr = *(uintptr_t*)(g_libGTASA + (VER_x32 ? 0x68C398 : 0x86797C));
+    if (pMgr) ((void (*)(uintptr_t))(g_libGTASA + (VER_x32 ? 0x3918BB : 0x46BC8C)))(pMgr);
+}
+
 void CGame::PlaySound(int iSound, float fX, float fY, float fZ)
 {
-	ScriptCommand(&play_sound, fX, fY, fZ, iSound);
+    if (iSound) {
+        if (iSound == 1) {
+            m_sound.bDisableInteriorAmbient = true;
+        }
+        else if (iSound >= 2000) {
+            ScriptCommand(&clear_mission_audio, 1);
+            ScriptCommand(&load_mission_audio, 1, iSound);
+            ScriptCommand(&set_mission_audio_position, 1, fX, fY, fZ);
+            ScriptCommand(&play_mission_audio, 1);
+            m_sound.bMissionAudioLoaded = true;
+        }
+        else if (iSound >= 1000) {
+            ScriptCommand(&play_sound, fX, fY, fZ, iSound);
+        }
+        else {
+            PlayAmbientSound(iSound);
+        }
+    }
+    else {
+        if (m_sound.bMissionAudioLoaded) {
+            ScriptCommand(&clear_mission_audio, 1);
+            m_sound.bMissionAudioLoaded = false;
+        }
+        StopAmbientSound();
+        m_sound.bDisableInteriorAmbient = false;
+    }
 }
 
 void CGame::RefreshStreamingAt(float x, float y)

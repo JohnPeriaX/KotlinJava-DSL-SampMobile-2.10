@@ -1602,6 +1602,16 @@ CEntityGTA* CFileLoader__LoadObjectInstance_hook(CFileObjectInstance *pObject, c
     return CFileLoader__LoadObjectInstance(pObject, pName);
 }
 
+void (*CAEWeatherAudioEntity__UpdateParameter)(uintptr_t thiz, uintptr_t a1, uint16_t a2);
+void CAEWeatherAudioEntity__UpdateParameter_hook(uintptr_t thiz, uintptr_t a1, uint16_t a2)
+{
+    uint32_t* pArea = (uint32_t*)(g_libGTASA + (VER_x32 ? 0x95957C : 0xBC2418));
+    uint32_t old = *pArea;
+    if (pGame->m_sound.bDisableInteriorAmbient) *pArea = 1;
+    CAEWeatherAudioEntity__UpdateParameter(thiz, a1, a2);
+    *pArea = old;
+}
+
 #include "Widgets/TouchInterface.h"
 
 void InjectHooks()
@@ -1800,6 +1810,8 @@ void InstallHooks()
     CHook::Write(g_libGTASA + 0x339134, 0x52846C02);
     CHook::Write(g_libGTASA + 0x339404, 0x52846C02);
 #endif*/
-    
+
+    CHook::InlineHook("_ZN21CAEWeatherAudioEntity16UpdateParametersEP8CAESounds", &CAEWeatherAudioEntity__UpdateParameter_hook, &CAEWeatherAudioEntity__UpdateParameter);
+
     HookCPad();
 }

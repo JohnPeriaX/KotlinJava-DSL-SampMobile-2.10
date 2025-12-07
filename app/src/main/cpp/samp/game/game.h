@@ -41,7 +41,11 @@ public:
 	void UpdateCheckpoints();
 	uint8_t GetActiveInterior();
 	uint8_t GetPedSlotsUsed();
+
+	void PlayAmbientSound(int iSound);
+	void StopAmbientSound();
 	void PlaySound(int iSound, float fX, float fY, float fZ);
+
 	void RefreshStreamingAt(float x, float y);
 	void DisableTrainTraffic();
 	void UpdateGlobalTimer(uint32_t dwTime);
@@ -123,9 +127,15 @@ public:
     static inline std::queue<std::function<void()>> tasks;
     static inline std::mutex mtx;
     static void Process();
+
 public:
 	bool m_bCheckpointsEnabled;
 	bool m_bRaceCheckpointsEnabled;
+
+	struct {
+		bool 					bDisableInteriorAmbient; 
+		bool 					bMissionAudioLoaded;
+	} m_sound;
 
 private:
 	CPlayerPed* m_pGamePlayer;
