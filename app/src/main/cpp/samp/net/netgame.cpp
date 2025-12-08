@@ -1,6 +1,7 @@
 #include "../main.h"
 #include "../game/game.h"
 #include "netgame.h"
+#include "../game/Timer.h"
 #include "../gui/gui.h"
 #include "../audiostream.h"
 
@@ -92,7 +93,7 @@ CNetGame::CNetGame(const char* szHostOrIp, int iPort, const char *szPlayerName, 
 	m_pNetSet->fGravity = 0.008f;
 	m_bNameTagStatus = true;
 
-	m_dwLastConnectAttempt = GetTickCount();
+	m_dwLastConnectAttempt = CTimer::m_snTimeInMillisecondsNonClipped;
 	SetGameState(GAMESTATE_WAIT_CONNECT);
 	m_bLanMode = false;
 
@@ -204,12 +205,12 @@ void CNetGame::UninitializePools()
 
 void CNetGame::Process()
 {
-	static uint32_t time = GetTickCount();
+	static uint32_t time = CTimer::m_snTimeInMillisecondsNonClipped;
 	bool bProcess = false;
-	if (GetTickCount() - time >= 1000 / 30)
+	if (CTimer::m_snTimeInMillisecondsNonClipped - time >= 1000 / 30)
 	{
 		UpdateNetwork();
-		time = GetTickCount();
+		time = CTimer::m_snTimeInMillisecondsNonClipped;
 		bProcess = true;
 	}
 	if (m_pNetSet->byteHoldTime) {
@@ -494,7 +495,7 @@ void CNetGame::ProcessLoadingScreen()
 
 void CNetGame::ProcessConnecting()
 {
-	if (GetTickCount() - m_dwLastConnectAttempt > 1000/*3000*/)
+	if (CTimer::m_snTimeInMillisecondsNonClipped - m_dwLastConnectAttempt > 1000/*3000*/)
 	{
 		//if (pUI) pUI->chat()->addDebugMessage("Connecting to %s:%d...", m_szHostOrIp, m_iPort);
 		if (pUI) pUI->chat()->addDebugMessage("Connecting to SA-MP Server...");
@@ -504,7 +505,7 @@ void CNetGame::ProcessConnecting()
 		// voice fix voice not connect when restart
 		Network::OnRaknetConnect(m_szHostOrIp, m_iPort);
 
-		m_dwLastConnectAttempt = GetTickCount();
+		m_dwLastConnectAttempt = CTimer::m_snTimeInMillisecondsNonClipped;
 		SetGameState(GAMESTATE_CONNECTING);
 	}
 }
@@ -956,8 +957,8 @@ void CNetGame::UpdatePlayerScoresAndPings()
 {
 	static uint32_t dwLastUpdateTick = 0;
 
-	if (GetTickCount() - dwLastUpdateTick > 3000) {
-		dwLastUpdateTick = GetTickCount();
+	if (CTimer::m_snTimeInMillisecondsNonClipped - dwLastUpdateTick > 3000) {
+		dwLastUpdateTick = CTimer::m_snTimeInMillisecondsNonClipped;
 
 		RakNet::BitStream bsSend;
 		m_pRakClient->RPC(&RPC_UpdateScoresPingsIPs, &bsSend, HIGH_PRIORITY, RELIABLE, 0, false, UNASSIGNED_NETWORK_ID, nullptr);

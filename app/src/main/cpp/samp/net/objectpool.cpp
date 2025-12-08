@@ -58,10 +58,10 @@ void CObjectPool::Process()
 	static uint32_t s_dwLastTick = 0;
 
 	if (s_dwLastTick == 0) {
-		s_dwLastTick = GetTickCount();
+		s_dwLastTick = CTimer::m_snTimeInMillisecondsNonClipped;
 	}
 
-	uint32_t dwThisTick = GetTickCount();
+	uint32_t dwThisTick = CTimer::m_snTimeInMillisecondsNonClipped;
 	float fElapsedTime = (dwThisTick - s_dwLastTick) / 1000.0f;
 
 	for (OBJECTID i = 0; i < MAX_OBJECTS; i++)

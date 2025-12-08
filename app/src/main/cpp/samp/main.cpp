@@ -422,11 +422,6 @@ jint JNI_OnLoad(JavaVM* vm, void* reserved)
 	return JNI_VERSION_1_6;
 }
 
-uint32_t GetTickCount()
-{
-    return CTimer::m_snTimeInMillisecondsNonClipped;
-}	
-
 void FLog(const char* fmt, ...)
 {
 	char buffer[0xFF];

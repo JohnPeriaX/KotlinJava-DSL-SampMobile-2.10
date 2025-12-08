@@ -77,7 +77,7 @@ void CGangZonePool::StopFlash(uint16_t wZoneID)
 void CGangZonePool::Draw(uint32_t unk)
 {
 	static uint32_t dwLastTick = 0;
-	uint32_t dwTick = GetTickCount();
+	uint32_t dwTick = CTimer::m_snTimeInMillisecondsNonClipped;
 	static uint8_t alt = 0;
 	if (dwTick - dwLastTick >= 500)
 	{

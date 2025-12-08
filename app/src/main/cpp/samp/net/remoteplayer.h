@@ -140,9 +140,9 @@ private:
 	CVector			m_vecInCarTargetPos;
 	CVector			m_vecInCarTargetSpeed;
 
-	ONFOOT_SYNC_DATA		m_ofSync;
-	INCAR_SYNC_DATA			m_icSync;
-	PASSENGER_SYNC_DATA		m_psSync;
+	ONFOOT_SYNC_DATA		m_LastSendOnFootSync;
+	INCAR_SYNC_DATA			m_InCarData;
+	PASSENGER_SYNC_DATA		m_PassengerData;
 
 
 	uint32_t		m_dwLastRecvTick;

@@ -108,13 +108,13 @@ CVehicle::CVehicle(int iType, float fX, float fY, float fZ, float fRotation, boo
 	m_bSpecialMarkerEnabled = false;
 	m_dwMarkerID = 0;
 	//_this->field_6D = 0;
-	//_this->field_69 = GetTickCount();
+	//_this->field_69 = CTimer::m_snTimeInMillisecondsNonClipped;
 	m_iEngineState = -1;
 	m_iLightState = -1;
 	m_bDoorsLocked = false;
 	m_bHaveColor = false;
 	m_bHasBeenDriven = false;
-	m_dwTimeSinceLastDriven = GetTickCount();
+	m_dwTimeSinceLastDriven = CTimer::m_snTimeInMillisecondsNonClipped;
 	//_this->field_71 = 0;
 	//_this->field_75 = 0;
 	//_this->field_8F = 0;
@@ -791,7 +791,7 @@ bool CVehicle::UpdateLastDrivenTime()
 		if(m_pVehicle->pDriver)
 		{
 			m_bHasBeenDriven = true;
-			m_dwTimeSinceLastDriven = GetTickCount();
+			m_dwTimeSinceLastDriven = CTimer::m_snTimeInMillisecondsNonClipped;
 			return true;
 		}
 	}

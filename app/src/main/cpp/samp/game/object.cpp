@@ -137,7 +137,7 @@ void CObject::Process(float fElapsedTime)
         matEnt = m_pEntity->GetMatrix().ToRwMatrix();
 		float distance = fElapsedTime * m_fMoveSpeed;
 		float remaining = DistanceRemaining(&matEnt);
-		uint32_t dwThisTick = GetTickCount();
+		uint32_t dwThisTick = CTimer::m_snTimeInMillisecondsNonClipped;
 
 		float posX = matEnt.pos.x;
 		float posY = matEnt.pos.y;
@@ -440,7 +440,7 @@ void CObject::MoveTo(float fX, float fY, float fZ, float fSpeed, float fRotX, fl
         m_pEntity->Add();
 	}
 
-	m_dwMoveTick = GetTickCount();
+	m_dwMoveTick = CTimer::m_snTimeInMillisecondsNonClipped;
 	m_fMoveSpeed = fSpeed;
 	m_matTarget.pos.x = fX;
 	m_matTarget.pos.y = fY;

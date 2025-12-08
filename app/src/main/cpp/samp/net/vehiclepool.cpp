@@ -2,6 +2,7 @@
 #include "../game/game.h"
 #include "netgame.h"
 #include "vehiclepool.h"
+#include "../game/Timer.h"
 
 extern CGame* pGame;
 extern CNetGame* pNetGame;
@@ -171,7 +172,7 @@ continue;
 void CVehiclePool::Process()
 {
     uint8_t byteSentUndrivenSync = 0;
-    uint32_t dwThisTick = GetTickCount();
+    uint32_t dwThisTick = CTimer::m_snTimeInMillisecondsNonClipped;
     CLocalPlayer* pLocalPlayer = pNetGame->GetPlayerPool()->GetLocalPlayer();
 
     for (VEHICLEID VehicleID = 0; VehicleID < MAX_VEHICLES; VehicleID++)
@@ -198,7 +199,7 @@ void CVehiclePool::Process()
                     if (!m_bIsWasted[VehicleID])
                     {
                         m_bIsWasted[VehicleID] = true;
-                        m_dwWastedTime[VehicleID] = GetTickCount();
+                        m_dwWastedTime[VehicleID] = CTimer::m_snTimeInMillisecondsNonClipped;
                     }
                 }
                 else
@@ -209,12 +210,12 @@ void CVehiclePool::Process()
                         pVehicle->HasSunk()) {
                         NotifyVehicleDeath(VehicleID);
                     } else {
-                        /*if ((GetTickCount() - m_dwLastUndrivenProcessTick[VehicleID]) > 100 &&
+                        /*if ((CTimer::m_snTimeInMillisecondsNonClipped - m_dwLastUndrivenProcessTick[VehicleID]) > 100 &&
                             byteSentUndrivenSync < 3 &&
                             pLocalPlayer && pLocalPlayer->ProcessUnoccupiedSync(VehicleID,
                                                                                 m_pVehicles[VehicleID])) {
                             m_lastUndrivenId[VehicleID] = pNetGame->GetPlayerPool()->GetLocalPlayerID();
-                            m_dwLastUndrivenProcessTick[VehicleID] = GetTickCount();
+                            m_dwLastUndrivenProcessTick[VehicleID] = CTimer::m_snTimeInMillisecondsNonClipped;
                             byteSentUndrivenSync++;
                         }*/
 
@@ -247,12 +248,12 @@ void CVehiclePool::Process()
         }
     }
 }
-/*if((GetTickCount() - m_dwLastUndrivenProcessTick[x]) < 100 &&
+/*if((CTimer::m_snTimeInMillisecondsNonClipped - m_dwLastUndrivenProcessTick[x]) < 100 &&
 					byteSentUndrivenSync < 3 &&
 					pLocalPlayer && pLocalPlayer->ProcessUnoccupiedSync(x, m_pVehicles[x]))
 				{
 					m_lastUndrivenId[x] = pPlayerPool->GetLocalPlayerID();
-					m_dwLastUndrivenProcessTick[x] = GetTickCount();
+					m_dwLastUndrivenProcessTick[x] = CTimer::m_snTimeInMillisecondsNonClipped;
 					byteSentUndrivenSync++;
 				}*/
 

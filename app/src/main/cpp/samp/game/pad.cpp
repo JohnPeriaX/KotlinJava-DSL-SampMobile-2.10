@@ -4,6 +4,7 @@
 #include "../gui/gui.h"
 #include "../vendor/shadowhook/patch.h"
 #include "World.h"
+#include "Timer.h"
 
 extern UI* pUI;
 extern CGame* pGame;
@@ -400,9 +401,9 @@ uint32_t CPad__ExitVehicleJustDown_hook(uintptr_t thiz, int a2, uintptr_t vehicl
 uint32_t(*CPad__ExitVehicleJustDown)(uintptr_t thiz, int a2, uintptr_t vehicle, int a4, uintptr_t vec);
 uint32_t CPad__ExitVehicleJustDown_hook(uintptr_t thiz, int a2, uintptr_t vehicle, int a4, uintptr_t vec)
 {
-	static uint32_t dwPassengerEnterExit = GetTickCount();
+	static uint32_t dwPassengerEnterExit = CTimer::m_snTimeInMillisecondsNonClipped;
 
-	if (GetTickCount() - dwPassengerEnterExit < 1000)
+	if (CTimer::m_snTimeInMillisecondsNonClipped - dwPassengerEnterExit < 1000)
 		return 0;
 
 	if (pNetGame)
@@ -414,7 +415,7 @@ uint32_t CPad__ExitVehicleJustDown_hook(uintptr_t thiz, int a2, uintptr_t vehicl
 			if (pLocalPlayer) {
 				if (pLocalPlayer->HandlePassengerEntry())
 				{
-					dwPassengerEnterExit = GetTickCount();
+					dwPassengerEnterExit = CTimer::m_snTimeInMillisecondsNonClipped;
 					return 0;
 				}
 			}

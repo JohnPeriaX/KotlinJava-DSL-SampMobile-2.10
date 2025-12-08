@@ -8,6 +8,7 @@
 #include "Streaming.h"
 #include "World.h"
 #include "game/Models/ModelInfo.h"
+#include "Timer.h"
 
 extern CGame* pGame;
 extern CNetGame* pNetGame;
@@ -1933,7 +1934,7 @@ void CPlayerPed::ProcessDrunk()
                 CVehicleGTA *_pVehicle = GetGtaVehicle();
 				if(_pVehicle)
 				{
-					if(!m_stuffData.dwLastUpdateTick || (GetTickCount() - m_stuffData.dwLastUpdateTick) > 200)
+					if(!m_stuffData.dwLastUpdateTick || (CTimer::m_snTimeInMillisecondsNonClipped - m_stuffData.dwLastUpdateTick) > 200)
 					{
 						int iRandNumber = rand() % 40;
 						float fRotation = 0.0;
@@ -1955,7 +1956,7 @@ void CPlayerPed::ProcessDrunk()
 							_pVehicle->GetTurnSpeed().z = fRotation + _pVehicle->GetTurnSpeed().z;
 						}
 
-						m_stuffData.dwLastUpdateTick = GetTickCount();
+						m_stuffData.dwLastUpdateTick = CTimer::m_snTimeInMillisecondsNonClipped;
 					}
 				}
 			}
