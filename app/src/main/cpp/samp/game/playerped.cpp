@@ -111,6 +111,7 @@ CPlayerPed::CPlayerPed(int iNum, int iSkin, float fX, float fY, float fZ, float 
 	iSpecialAction = 0;
 
 	SetModelIndex(iSkin);
+	ForceTargetRotation(fRotation);
 
 
 	// GameResetPlayerKeys
@@ -542,6 +543,17 @@ void CPlayerPed::SetModelIndex(uint uiModel)
     }
 }
 
+void CPlayerPed::ClearAllWeapons()
+{
+	uintptr_t dwPedPtr = (uintptr_t)m_pPed;
+	uint8_t old = CWorld::PlayerInFocus;
+	CWorld::PlayerInFocus = m_bytePlayerNumber;
+
+	((uint32_t(*)(uintptr_t, int, int, int))(g_libGTASA + (VER_x32 ? 0x0049F836 + 1 : 0x595604)))(dwPedPtr, 1, 1, 1); // CPed::ClearWeapons(void)
+
+	CWorld::PlayerInFocus = old;
+}
+
 void CPlayerPed::ClearWeapons()
 {
 	if (m_pPed == nullptr) return;
@@ -747,6 +759,19 @@ void CPlayerPed::SetFightingStyle(int iStyle)
 	}
 }
 
+void CPlayerPed::ForceTargetRotation(float fRotation) const
+{
+	if(!m_pPed)
+        return;
+
+	if(!GamePool_Ped_GetAt(m_dwGTAId))
+        return;
+
+	m_pPed->m_fCurrentRotation = DegToRad(fRotation);
+	m_pPed->m_fAimingRotation = DegToRad(fRotation);
+
+	ScriptCommand(&set_actor_z_angle, m_dwGTAId, fRotation);
+}
 
 void CPlayerPed::SetRotation(float fRotation)
 {
@@ -2013,25 +2038,19 @@ bool CPlayerPed::IsTakeDamageFallTask()
 	return false;
 }
 
-uint8_t CPlayerPed::IsEnteringVehicle()
+bool CPlayerPed::IsEnteringVehicle()
 {
-	/*if(m_pPed && m_pPed->Tasks && m_pPed->Tasks->pdwJumpJetPack)
-	{
-		int iType = GetTaskTypeFromTask(m_pPed->Tasks->pdwJumpJetPack);
-		if(iType == 700 || iType == 712)
-			return 2;
-		if(iType == 701 || iType == 713)
-			return 1;
-	}*/
-	return m_pPed->IsEnteringCar();
+    if ( GetTaskManager().CTaskManager::FindActiveTaskByType(TASK_COMPLEX_ENTER_CAR_AS_DRIVER) )
+        return true;
+
+    return GetTaskManager().CTaskManager::FindActiveTaskByType(TASK_COMPLEX_ENTER_CAR_AS_PASSENGER) != nullptr;
 }
 
-bool CPlayerPed::IsExitingVehicle()
-{
-	//if(m_pPed && m_pPed->Tasks && m_pPed->Tasks->pdwJumpJetPack)
-		//return GetTaskTypeFromTask(m_pPed->Tasks->pdwJumpJetPack) == 704;
+bool CPed::IsExitingVehicle() {
+    if ( GetTaskManager().CTaskManager::FindActiveTaskByType(TASK_COMPLEX_LEAVE_CAR) )
+        return true;
 
-	return m_pPed->IsExitingVehicle();
+    return false;
 }
 
 bool CPlayerPed::IsSitTask()

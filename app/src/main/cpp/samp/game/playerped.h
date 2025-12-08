@@ -84,6 +84,7 @@ public:
 	uint8_t GetCurrentWeapon();
 	void SetInitialState();
 	void SetModelIndex(uint uiModel);
+	void ClearAllWeapons();
 	void ClearWeapons();
 	void ResetDamageEntity();
 	void GiveWeapon(int iWeaponId, int iAmmo);
@@ -92,6 +93,7 @@ public:
 	void SetImmunities(int BP, int FP, int EP, int CP, int MP);
 	void ShowMarker(int nIndex);
 	void SetFightingStyle(int iStyle);
+	void ForceTargetRotation(float fRotation) const;
 	void SetRotation(float fRotation);
 	void DestroyFollowPedTask();
 	void GetBonePosition(int iBoneID, CVector* vecOut);
@@ -195,7 +197,7 @@ public:
 
 	bool IsPerformingCustomAnim();
 
-	uint8_t IsEnteringVehicle();
+	bool IsEnteringVehicle();
 	bool IsExitingVehicle();
 	bool IsJumpTask();
 	bool IsTakeDamageFallTask();
