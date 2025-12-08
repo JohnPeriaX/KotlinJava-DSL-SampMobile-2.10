@@ -1013,6 +1013,20 @@ void CPlayerPed::ExitCurrentVehicle()
     }
 }
 
+VEHICLEID CPlayerPed::GetCurrentSampVehicleID()
+{
+	if(!m_pPed)
+        return INVALID_VEHICLE_ID;
+
+	if(!pNetWork)
+        return INVALID_VEHICLE_ID;
+
+	if(!m_pPed->pVehicle)
+        return INVALID_VEHICLE_ID;
+
+	return CVehiclePool::FindIDFromGtaPtr((CVehicle *)m_pPed->pVehicle);
+}
+
 int CPlayerPed::GetCurrentVehicleID()
 {
 	if(!m_pPed) {

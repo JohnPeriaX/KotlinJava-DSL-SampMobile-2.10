@@ -154,7 +154,8 @@ public:
     CEntityGTA* GetEntityUnderPlayer();
 
 	CVehicle* GetCurrentVehicle();
-
+	VEHICLEID GetCurrentSampVehicleID();
+	
 	bool IsCrouching();
 	void ApplyCrouch();
 	void ResetCrouch();
