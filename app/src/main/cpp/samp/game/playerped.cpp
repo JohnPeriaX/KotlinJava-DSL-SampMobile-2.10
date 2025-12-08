@@ -1043,13 +1043,13 @@ VEHICLEID CPlayerPed::GetCurrentSampVehicleID()
 	if(!m_pPed)
         return INVALID_VEHICLE_ID;
 
-	if(!pNetWork)
+	if(!pNetGame)
         return INVALID_VEHICLE_ID;
 
 	if(!m_pPed->pVehicle)
         return INVALID_VEHICLE_ID;
 
-	return CVehiclePool::FindIDFromGtaPtr((CVehicle *)m_pPed->pVehicle);
+	return pNetGame->GetVehiclePool()->FindIDFromGtaPtr((CVehicleGTA *)m_pPed->pVehicle);
 }
 
 int CPlayerPed::GetCurrentVehicleID()
@@ -2040,14 +2040,18 @@ bool CPlayerPed::IsTakeDamageFallTask()
 
 bool CPlayerPed::IsEnteringVehicle()
 {
-    if ( GetTaskManager().CTaskManager::FindActiveTaskByType(TASK_COMPLEX_ENTER_CAR_AS_DRIVER) )
+    if (!m_pPed) return false;
+
+    if ( m_pPed->GetTaskManager().FindActiveTaskByType(TASK_COMPLEX_ENTER_CAR_AS_DRIVER) )
         return true;
 
-    return GetTaskManager().CTaskManager::FindActiveTaskByType(TASK_COMPLEX_ENTER_CAR_AS_PASSENGER) != nullptr;
+    return m_pPed->GetTaskManager().FindActiveTaskByType(TASK_COMPLEX_ENTER_CAR_AS_PASSENGER) != nullptr;
 }
 
-bool CPed::IsExitingVehicle() {
-    if ( GetTaskManager().CTaskManager::FindActiveTaskByType(TASK_COMPLEX_LEAVE_CAR) )
+bool CPlayerPed::IsExitingVehicle() {
+    if (!m_pPed) return false;
+
+    if ( m_pPed->GetTaskManager().FindActiveTaskByType(TASK_COMPLEX_LEAVE_CAR) )
         return true;
 
     return false;

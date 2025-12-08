@@ -4,6 +4,7 @@
 #include "object.h"
 #include "game/Entity/CPedGTA.h"
 #include "aimstuff.h"
+#include "common.h"
 
 enum eStuffType {
 	STUFF_TYPE_NONE,
@@ -24,6 +25,7 @@ typedef struct _BULLET_DATA
 	CEntityGTA* pEntity;
 } BULLET_DATA;
 #pragma pack(pop)
+VALIDATE_SIZE(BULLET_DATA, 36 + sizeof(void*));
 
 struct CAttachedPlayerObject
 {
@@ -37,6 +39,7 @@ struct CAttachedPlayerObject
     class CObject*  pObject;
     uint32_t 	    dwSampBone;
 };
+// VALIDATE_SIZE(CAttachedPlayerObject, 64);
 
 #pragma pack(push, 1)
 struct ATTACHED_OBJECT_INFO
