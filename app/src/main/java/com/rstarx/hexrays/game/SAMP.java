@@ -1,5 +1,6 @@
 package com.rstarx.hexrays.game;
 
+import android.annotation.SuppressLint;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.KeyEvent;
@@ -11,6 +12,7 @@ import com.joom.paranoid.Obfuscate;
 import com.rstarx.hexrays.game.ui.AttachEdit;
 import com.rstarx.hexrays.game.ui.CustomKeyboard;
 import com.rstarx.hexrays.game.ui.LoadingScreen;
+import androidx.activity.OnBackPressedCallback;
 import com.rstarx.hexrays.game.ui.dialog.DialogManager;
 import com.rstarx.hexrays.launcher.util.SharedPreferenceCore;
 import com.rstarx.hexrays.launcher.util.SignatureChecker;
@@ -29,7 +31,7 @@ public class SAMP extends GTASA implements CustomKeyboard.InputListener, HeightP
     private AttachEdit mAttachEdit;
     private LoadingScreen mLoadingScreen;
 
-    public native void sendDialogResponse(int i, int i2, int i3, byte[] str);
+    //public native void sendDialogResponse(int i, int i2, int i3, byte[] str);
 
     public static SAMP getInstance() {
         return instance;
@@ -190,14 +192,27 @@ public class SAMP extends GTASA implements CustomKeyboard.InputListener, HeightP
         instance = this;
 
         try {
+            initAssetManager(getAssets());
             initializeSAMP();
         } catch (UnsatisfiedLinkError e5) {
             Log.e(TAG, e5.getMessage());
         }
 
+        getOnBackPressedDispatcher().addCallback(this, new OnBackPressedCallback(true) {
+            @Override
+            public void handleOnBackPressed() {
+                // Perform default action
+                setEnabled(false);
+                getOnBackPressedDispatcher().onBackPressed();
+                // Notify native
+                onEventBackPressed();
+                setEnabled(true);
+            }
+        });
     }
 
     private native void initializeSAMP();
+    public native void initAssetManager(android.content.res.AssetManager assetManager);
 
 
 
@@ -222,12 +237,13 @@ public class SAMP extends GTASA implements CustomKeyboard.InputListener, HeightP
 
     public native void onEventBackPressed();
 
-    @Override
-    public void onBackPressed() {
-        super.onBackPressed();
-        onEventBackPressed();
-    }
+    //@Override
+    //public void onBackPressed() {
+    //    super.onBackPressed();
+    //    onEventBackPressed();
+    //}
 
+    @SuppressLint("GestureBackNavigation")
     @Override
     public boolean onKeyDown(int keyCode, KeyEvent event) {
         if(keyCode == KeyEvent.KEYCODE_BACK)

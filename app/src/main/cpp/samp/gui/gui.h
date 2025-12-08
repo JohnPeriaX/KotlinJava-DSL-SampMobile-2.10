@@ -40,6 +40,7 @@ class UI : public Widget, public ImGuiWrapper
 {
 public:
 	UI(const ImVec2& display_size, const std::string& font_path);
+    UI(const ImVec2& display_size, const std::vector<char>& fontData);
 
 	bool initialize() override;
 	void render() override;

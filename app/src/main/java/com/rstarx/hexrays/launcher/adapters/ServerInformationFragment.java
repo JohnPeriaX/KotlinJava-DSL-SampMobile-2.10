@@ -37,6 +37,7 @@ import java.io.File;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.util.Arrays;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 @Obfuscate
@@ -107,27 +108,32 @@ public class ServerInformationFragment extends Dialog {
 
 
 
-                File file1 = new File(activity.getExternalFilesDir(null) + "/Text/american.dxt");
-                if(!file1.exists())
-                {
-                    File file2 = new File(activity.getExternalFilesDir(null) + "/Textures/fonts/RussianFont.png");
-                    if(!file2.exists())
-                    {
-                        Toast.makeText(activity, "Some important files in your modified data are missing, such as \"Text\" and \"Textures\"" +
-                                "Please, fix it and after try again. ( You can get that files in my discord channel )", Toast.LENGTH_LONG).show();
+                try {
+                    String[] files = activity.getAssets().list("Text");
+                    boolean textExists = Arrays.asList(files).contains("american.gxt");
+                    
+                    String[] fontFiles = activity.getAssets().list("Textures/fonts");
+                    boolean fontExists = Arrays.asList(fontFiles).contains("RussianFont.png");
 
-                        dismiss();
-                    }
-                    else {
+                    if (!textExists) {
+                         if (!fontExists) {
+                             Toast.makeText(activity, "Some important files in your modified data are missing, such as \"Text\" and \"Textures\"" +
+                                     "Please, fix it and after try again. ( You can get that files in my discord channel )", Toast.LENGTH_LONG).show();
+
+                             dismiss();
+                         } else {
+                             activity.startActivity(new Intent(activity, SAMP.class));
+                             activity.finish();
+                             dismiss();
+                         }
+                    } else {
                         activity.startActivity(new Intent(activity, SAMP.class));
                         activity.finish();
                         dismiss();
                     }
-                }
-                else {
-                    activity.startActivity(new Intent(activity, SAMP.class));
-                    activity.finish();
-                    dismiss();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                    Toast.makeText(activity, "Error checking assets", Toast.LENGTH_SHORT).show();
                 }
             }
         });

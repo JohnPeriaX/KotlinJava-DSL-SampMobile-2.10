@@ -21,10 +21,17 @@ extern CPlayerTags* pPlayerTags;
 extern UI* pUI;
 
 UI::UI(const ImVec2& display_size, const std::string& font_path)
-	: Widget(), ImGuiWrapper(display_size, font_path)
+    : Widget(), ImGuiWrapper(display_size, font_path)
 {
 	UISettings::Initialize(display_size);
 	this->setFixedSize(display_size);
+}
+
+UI::UI(const ImVec2& display_size, const std::vector<char>& fontData)
+    : Widget(), ImGuiWrapper(display_size, fontData)
+{
+    UISettings::Initialize(display_size);
+    this->setFixedSize(display_size);
 }
 
 bool UI::initialize()

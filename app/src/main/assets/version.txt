@@ -1,0 +1,9 @@
+################################################
+# version.txt                                  #
+# sets the version number on non-master builds #
+################################################
+
+[VERSION_NUMBER]
+109
+
+# -eof-

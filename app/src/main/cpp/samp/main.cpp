@@ -1,6 +1,8 @@
 ﻿#include <jni.h>
 #include <pthread.h>
 #include <syscall.h>
+#include <android/asset_manager.h>
+#include <android/asset_manager_jni.h>
 
 #include "main.h"
 #include "game/game.h"
@@ -28,6 +30,22 @@ Peerapol Unarak
 */
 
 JavaVM* javaVM;
+
+extern AAssetManager* g_pAssetManager; // Defined down below or use global
+// Or just define it here if it was rejected before?
+// Actually I replaced line 30 with just variable.
+// I will just insert the function now.
+
+std::vector<char> LoadAsset(const char* name) {
+     if (!g_pAssetManager) return {};
+     AAsset* asset = AAssetManager_open(g_pAssetManager, name, AASSET_MODE_BUFFER);
+     if (!asset) return {};
+     size_t size = AAsset_getLength(asset);
+     std::vector<char> buffer(size);
+     AAsset_read(asset, buffer.data(), size);
+     AAsset_close(asset);
+     return buffer;
+ }
 
 char* g_pszStorage = nullptr;
 
@@ -348,8 +366,18 @@ void InitGui()
 	Plugin::OnPluginLoad();
 	Plugin::OnSampLoad();
 
-	std::string font_path = string_format("%sfonts/%s", g_pszStorage, FONT_NAME);
-	pUI = new UI(ImVec2(RsGlobal->maximumWidth, RsGlobal->maximumHeight), font_path.c_str());
+    std::string font_path = string_format("Textures/fonts/%s", FONT_NAME);
+    std::vector<char> fontData = LoadAsset(font_path.c_str());
+
+    if (!fontData.empty()) {
+        pUI = new UI(ImVec2(RsGlobal->maximumWidth, RsGlobal->maximumHeight), fontData);
+        LOGI("Loaded font from assets: %s (size: %zu)", font_path.c_str(), fontData.size());
+    } else {
+        // Fallback to file (should probably not happen if assets are correct, but safe to keep)
+	    std::string file_path = string_format("%sfonts/%s", g_pszStorage, FONT_NAME);
+	    pUI = new UI(ImVec2(RsGlobal->maximumWidth, RsGlobal->maximumHeight), file_path.c_str());
+        LOGI("Loaded font from file: %s", file_path.c_str());
+    }
 	pUI->initialize();
 	pUI->performLayout();
 }
@@ -578,4 +606,12 @@ void LogVoice(const char* fmt, ...)
 	fflush(flLog);
 
 	return;
+}
+
+AAssetManager* g_pAssetManager = nullptr;
+
+extern "C"
+JNIEXPORT void JNICALL
+Java_com_rstarx_hexrays_game_SAMP_initAssetManager(JNIEnv *env, jobject thiz, jobject assetManager) {
+    g_pAssetManager = AAssetManager_fromJava(env, assetManager);
 }

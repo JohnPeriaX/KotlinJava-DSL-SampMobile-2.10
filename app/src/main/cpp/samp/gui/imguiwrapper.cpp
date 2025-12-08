@@ -26,6 +26,18 @@ ImGuiWrapper::ImGuiWrapper(const ImVec2& display_size, const std::string& font_p
 	m_vertexBufferSize = 10000;
 }
 
+ImGuiWrapper::ImGuiWrapper(const ImVec2& display_size, const std::vector<char>& fontData)
+{
+	m_displaySize = display_size;
+	m_renderer = 0;
+	m_fontRaster = nullptr;
+    m_fontData = fontData;
+    m_fontPath = "";
+
+	m_vertexBuffer = nullptr;
+	m_vertexBufferSize = 10000;
+}
+
 ImGuiWrapper::~ImGuiWrapper()
 {
 	shutdown();
@@ -57,8 +69,15 @@ bool ImGuiWrapper::initialize()
 		0
     };
 	
-	ImFont* font = io.Fonts->AddFontFromFileTTF(m_fontPath.c_str(),
-		UISettings::fontSize(), &fontCfg, ranges);
+    ImFont* font = nullptr;
+    if (!m_fontData.empty()) {
+        fontCfg.FontDataOwnedByAtlas = false;
+        font = io.Fonts->AddFontFromMemoryTTF((void*)m_fontData.data(), m_fontData.size(),
+            UISettings::fontSize(), &fontCfg, ranges);
+    } else {
+	    font = io.Fonts->AddFontFromFileTTF(m_fontPath.c_str(),
+		    UISettings::fontSize(), &fontCfg, ranges);
+    }
 
 	if (font == nullptr)
 	{

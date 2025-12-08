@@ -43,6 +43,7 @@ include_directories(
 add_library(samp SHARED ${SOURCES})
 target_link_libraries(samp 
         log 
+        android
         EGL 
         GLESv3 
         opus 

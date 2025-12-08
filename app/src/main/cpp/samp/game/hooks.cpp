@@ -29,6 +29,7 @@
 #include "Renderer.h"
 #include "CrossHair.h"
 #include "World.h"
+#include "CFileMgr.h"
 
 extern UI* pUI;
 extern CGame* pGame;
@@ -1159,76 +1160,71 @@ stFile* NvFOpen(const char* r0, const char* r1, int r2, int r3)
 {
     strcpy(lastFile, r1);
 
-    static char path[255]{};
-    memset(path, 0, sizeof(path));
+    char rel[255]{};
+    memset(rel, 0, sizeof(rel));
+    const char* useRel = r1;
 
-    sprintf(path, "%s%s", g_pszStorage, r1);
-
-    // ----------------------------
     if(!strncmp(r1+12, "mainV1.scm", 10))
     {
-        sprintf(path, "%sSAMP/main.scm", g_pszStorage);
-        FLog("Loading %s", path);
+        sprintf(rel, "SAMP/main.scm");
+        useRel = rel;
+        FLog("Loading %s", rel);
     }
-    // ----------------------------
-    if(!strncmp(r1+12, "SCRIPTV1.IMG", 12))
+    else if(!strncmp(r1+12, "SCRIPTV1.IMG", 12))
     {
-        sprintf(path, "%sSAMP/script.img", g_pszStorage);
+        sprintf(rel, "SAMP/script.img");
+        useRel = rel;
         FLog("Loading script.img..");
     }
-    // ----------------------------
-    if(!strncmp(r1, "DATA/PEDS.IDE", 13))
+    else if(!strncmp(r1, "DATA/PEDS.IDE", 13))
     {
-        sprintf(path, "%sSAMP/peds.ide", g_pszStorage);
+        sprintf(rel, "SAMP/peds.ide");
+        useRel = rel;
         FLog("Loading peds.ide..");
     }
-    // ----------------------------
-    if(!strncmp(r1, "DATA/VEHICLES.IDE", 17))
+    else if(!strncmp(r1, "DATA/VEHICLES.IDE", 17))
     {
-        sprintf(path, "%sSAMP/vehicles.ide", g_pszStorage);
+        sprintf(rel, "SAMP/vehicles.ide");
+        useRel = rel;
         FLog("Loading vehicles.ide..");
     }
-
-    if (!strncmp(r1, "DATA/GTA.DAT", 12))
+    else if (!strncmp(r1, "DATA/GTA.DAT", 12))
     {
-        sprintf(path, "%sSAMP/gta.dat", g_pszStorage);
+        sprintf(rel, "SAMP/gta.dat");
+        useRel = rel;
         FLog("Loading gta.dat..");
     }
-
-    if (!strncmp(r1, "DATA/HANDLING.CFG", 17))
+    else if (!strncmp(r1, "DATA/HANDLING.CFG", 17))
     {
-        sprintf(path, "%sSAMP/handling.cfg", g_pszStorage);
+        sprintf(rel, "SAMP/handling.cfg");
+        useRel = rel;
         FLog("Loading handling.cfg..");
     }
-
-    if (!strncmp(r1, "DATA/WEAPON.DAT", 15))
+    else if (!strncmp(r1, "DATA/WEAPON.DAT", 15))
     {
-        sprintf(path, "%sSAMP/weapon.dat", g_pszStorage);
+        sprintf(rel, "SAMP/weapon.dat");
+        useRel = rel;
         FLog("Loading weapon.dat..");
     }
-
-    if (!strncmp(r1, "DATA/FONTS.DAT", 15))
+    else if (!strncmp(r1, "DATA/FONTS.DAT", 15))
     {
-        sprintf(path, "%sdata/fonts.dat", g_pszStorage);
-        FLog("Loading weapon.dat..");
+        sprintf(rel, "data/fonts.dat");
+        useRel = rel;
     }
-
-    if (!strncmp(r1, "DATA/PEDSTATS.DAT", 15))
+    else if (!strncmp(r1, "DATA/PEDSTATS.DAT", 15))
     {
-        sprintf(path, "%sdata/pedstats.dat", g_pszStorage);
-        FLog("Loading weapon.dat..");
+        sprintf(rel, "data/pedstats.dat");
+        useRel = rel;
     }
-
-    if (!strncmp(r1, "DATA/TIMECYC.DAT", 15))
+    else if (!strncmp(r1, "DATA/TIMECYC.DAT", 15))
     {
-        sprintf(path, "%sdata/timecyc.dat", g_pszStorage);
-        FLog("Loading weapon.dat..");
+        sprintf(rel, "data/timecyc.dat");
+        useRel = rel;
     }
-
-    if (!strncmp(r1, "DATA/POPCYCLE.DAT", 15))
+    else if (!strncmp(r1, "DATA/POPCYCLE.DAT", 15))
     {
-        sprintf(path, "%sdata/popcycle.dat", g_pszStorage);
-        FLog("Loading weapon.dat..");
+        sprintf(rel, "data/popcycle.dat");
+        useRel = rel;
     }
 
 #if VER_x32
@@ -1238,7 +1234,7 @@ stFile* NvFOpen(const char* r0, const char* r1, int r2, int r3)
 #endif
     st->isFileExist = false;
 
-    FILE *f  = fopen(path, "rb");
+    FILE *f  = CFileMgr::OpenFile(useRel, "rb");
 
     if(f)
     {
@@ -1248,7 +1244,9 @@ stFile* NvFOpen(const char* r0, const char* r1, int r2, int r3)
     }
     else
     {
-        FLog("NVFOpen hook | Error: file not found (%s)", path);
+        char absPath[512]{};
+        sprintf(absPath, "%s%s", g_pszStorage, useRel);
+        FLog("NVFOpen hook | Error: file not found (%s)", absPath);
         free(st);
         return nullptr;
     }
