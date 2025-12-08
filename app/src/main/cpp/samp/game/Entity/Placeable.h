@@ -6,7 +6,7 @@
 
 #include "game/SimpleTransform.h"
 #include "game/Core/MatrixLink.h"
-#define VALIDATE_SIZE(struc, size) static_assert(sizeof(struc) == size, "Invalid structure size of " #struc)
+#include "../common.h"
 
 #pragma pack(push, 1)
 class CPlaceable

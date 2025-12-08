@@ -4,9 +4,8 @@
 
 #pragma once
 
-#define VALIDATE_SIZE(struc, size) static_assert(sizeof(struc) == size, "Invalid structure size of " #struc)
-
 #include <stdint.h>
+#include "common.h"
 
 enum MoveLimbResult { CANT_REACH_TARGET, HAVENT_REACHED_TARGET, REACHED_TARGET };
 

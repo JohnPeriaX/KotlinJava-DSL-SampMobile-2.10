@@ -399,15 +399,6 @@ float CCollision::DistAlongLine2D(float lineX, float lineY, float lineDirX, floa
     return (pointX - lineX) * lineDirX + (pointY - lineY) * lineDirY;
 }
 
-/*!
-* Calculate point closest to `point` on line (l0 - l1)
-*
-* @notsa
-*/
-template<typename T>
-auto lerp(const T& from, const T& to, float t) {
-    return to * t + from * (1.f - t);
-}
 CVector CCollision::GetClosestPtOnLine(const CVector& l0, const CVector& l1, const CVector& point) {
     const auto lnMagSq = (l1 - l0).SquaredMagnitude();
     const auto dot = (point - l0).Dot(l1 - l0);

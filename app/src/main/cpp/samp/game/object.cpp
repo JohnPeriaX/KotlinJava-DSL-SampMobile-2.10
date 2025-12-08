@@ -256,12 +256,6 @@ void CObject::SetRotation(CVector * vecRotation)
 	}
 }
 
-// Converts degrees to radians
-// keywords: 0.017453292 flt_8595EC
-constexpr float DegreesToRadians(float angleInDegrees) {
-    return angleInDegrees * PI / 180.0F;
-}
-
 void CObject::InstantRotate(float x, float y, float z)
 {
     if(!m_pEntity)return;
