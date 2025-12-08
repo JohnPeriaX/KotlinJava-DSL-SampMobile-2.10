@@ -436,7 +436,7 @@ bool CRemotePlayer::SurfingOnVehicle()
 {
 	if(GetState() == PLAYER_STATE_ONFOOT) 
 	{
-		if(m_LastSendOnFootSync.wSurfID != -1 && m_LastSendOnFootSync.wSurfID < MAX_VEHICLES) // its an vehicle
+		if(m_LastSendOnFootSync.wSurfInfo != -1 && m_LastSendOnFootSync.wSurfInfo < MAX_VEHICLES) // its an vehicle
 			return true;
 	}
 	return false;
@@ -446,8 +446,8 @@ bool CRemotePlayer::SurfingOnObject()
 {
 	if(GetState() == PLAYER_STATE_ONFOOT) 
 	{
-		if(m_LastSendOnFootSync.wSurfID != -1 && m_LastSendOnFootSync.wSurfID >= MAX_VEHICLES &&
-			m_LastSendOnFootSync.wSurfID < MAX_VEHICLES + MAX_OBJECTS) // its an object
+		if(m_LastSendOnFootSync.wSurfInfo != -1 && m_LastSendOnFootSync.wSurfInfo >= MAX_VEHICLES &&
+			m_LastSendOnFootSync.wSurfInfo < MAX_VEHICLES + MAX_OBJECTS) // its an object
 		{
 			return true;
 		}
@@ -584,17 +584,17 @@ void CRemotePlayer::HandleDeath()
 	ResetAllSyncAttributes();
 }
 
-void CRemotePlayer::StoreOnFootFullSyncData(ONFOOT_SYNC_DATA *ofSync, uint32_t dwTime)
+void CRemotePlayer::StoreOnFootFullSyncData(ONFOOT_SYNC_DATA *m_LastSendOnFootSync, uint32_t dwTime)
 {
 	if (dwTime == 0 || dwTime - m_dwLastStoredSyncDataTime >= 0)
 	{
 		m_dwLastStoredSyncDataTime = dwTime;
-		memcpy(&m_LastSendOnFootSync, ofSync, sizeof(ONFOOT_SYNC_DATA));
-		m_fReportedHealth = ofSync->byteHealth;
-		m_fReportedArmour = ofSync->byteArmour;
+		memcpy(&m_LastSendOnFootSync, m_LastSendOnFootSync, sizeof(ONFOOT_SYNC_DATA));
+		m_fReportedHealth = m_LastSendOnFootSync->byteHealth;
+		m_fReportedArmour = m_LastSendOnFootSync->byteArmour;
 		m_byteUpdateFromNetwork = UPDATE_TYPE_ONFOOT;
 		m_dwLastRecvTick = CTimer::m_snTimeInMillisecondsNonClipped;
-		m_byteSpecialAction = ofSync->byteSpecialAction;
+		m_byteSpecialAction = m_LastSendOnFootSync->byteSpecialAction;
 
 		if (m_pPlayerPed && m_pPlayerPed->IsInVehicle())
 		{
@@ -1101,7 +1101,7 @@ bool CRemotePlayer::IsVoiceActive()
 
 void CRemotePlayer::ProcessSurfing()
 {
-	if(!m_pPlayerPed || GetState() != PLAYER_STATE_ONFOOT || m_LastSendOnFootSync.wSurfID == INVALID_VEHICLE_ID)
+	if(!m_pPlayerPed || GetState() != PLAYER_STATE_ONFOOT || m_LastSendOnFootSync.wSurfInfo == INVALID_VEHICLE_ID)
 		return;
 
 	CVehicle *pVehicleSurfing = 0;
@@ -1112,18 +1112,18 @@ void CRemotePlayer::ProcessSurfing()
 		CVehiclePool *pVehiclePool = pNetGame->GetVehiclePool();
 		if(pVehiclePool)
 		{
-			CVehicle *pVehicle = pVehiclePool->GetAt(m_LastSendOnFootSync.wSurfID);
+			CVehicle *pVehicle = pVehiclePool->GetAt(m_LastSendOnFootSync.wSurfInfo);
 			if(pVehicle) 
 				pVehicleSurfing = pVehicle;
 		}
 	}
 	else if(SurfingOnObject())
 	{
-		m_LastSendOnFootSync.wSurfID -= MAX_VEHICLES; // derive proper object id
+		m_LastSendOnFootSync.wSurfInfo -= MAX_VEHICLES; // derive proper object id
 		CObjectPool *pObjectPool = pNetGame->GetObjectPool();
 		if(pObjectPool)
 		{
-			CObject *pObject = pObjectPool->GetAt((uint16_t)m_LastSendOnFootSync.wSurfID);
+			CObject *pObject = pObjectPool->GetAt((uint16_t)m_LastSendOnFootSync.wSurfInfo);
 			if(pObject)
 				pObjectSurfing = pObject;
 		}

@@ -670,7 +670,7 @@ void CNetGame::Packet_ConnectionLost(Packet *pkt)
 void CNetGame::Packet_PlayerSync(Packet *pkt)
 {
 	RakNet::BitStream bsData(pkt->data, pkt->length, false);
-	ONFOOT_SYNC_DATA ofSync;
+	ONFOOT_SYNC_DATA m_LastSendOnFootSync;
 	uint32_t dwTime = 0;
 	uint8_t bytePacketId;
 	PLAYERID playerId;
@@ -679,26 +679,26 @@ void CNetGame::Packet_PlayerSync(Packet *pkt)
 
 	if (GetGameState() != GAMESTATE_CONNECTED) return;
 
-	memset(&ofSync, 0, sizeof(ONFOOT_SYNC_DATA));
+	memset(&m_LastSendOnFootSync, 0, sizeof(ONFOOT_SYNC_DATA));
 
 	bsData.Read(bytePacketId);
 	bsData.Read(playerId);
 
 	bsData.Read(bHasLR);
 	if (bHasLR) {
-		bsData.Read(ofSync.lrAnalog);
+		bsData.Read(m_LastSendOnFootSync.lrAnalog);
 	}
 
 	bsData.Read(bHasUD);
 	if (bHasUD) {
-		bsData.Read(ofSync.udAnalog);
+		bsData.Read(m_LastSendOnFootSync.udAnalog);
 	}
 
-	bsData.Read(ofSync.wKeys);
-	bsData.Read((char*)&ofSync.vecPos, sizeof(CVector));
+	bsData.Read(m_LastSendOnFootSync.wKeys);
+	bsData.Read((char*)&m_LastSendOnFootSync.vecPos, sizeof(CVector));
 	float w, x, y, z;
 	bsData.ReadNormQuat(w, x, y, z);
-	ofSync.quat.Set(x, y, z, w);
+	m_LastSendOnFootSync.quat.Set(x, y, z, w);
 
 	uint8_t byteHealthArmour;
 	uint8_t byteArmTemp = 0, byteHlTemp = 0;
@@ -707,45 +707,45 @@ void CNetGame::Packet_PlayerSync(Packet *pkt)
 	byteArmTemp = (byteHealthArmour & 0x0F);
 	byteHlTemp = (byteHealthArmour >> 4);
 
-	if (byteArmTemp == 0xF) ofSync.byteArmour = 100;
-	else if (byteArmTemp == 0) ofSync.byteArmour = 0;
-	else ofSync.byteArmour = byteArmTemp * 7;
+	if (byteArmTemp == 0xF) m_LastSendOnFootSync.byteArmour = 100;
+	else if (byteArmTemp == 0) m_LastSendOnFootSync.byteArmour = 0;
+	else m_LastSendOnFootSync.byteArmour = byteArmTemp * 7;
 
-	if (byteHlTemp == 0xF) ofSync.byteHealth = 100;
-	else if (byteHlTemp == 0) ofSync.byteHealth = 0;
-	else ofSync.byteHealth = byteHlTemp * 7;
+	if (byteHlTemp == 0xF) m_LastSendOnFootSync.byteHealth = 100;
+	else if (byteHlTemp == 0) m_LastSendOnFootSync.byteHealth = 0;
+	else m_LastSendOnFootSync.byteHealth = byteHlTemp * 7;
 
 	uint8_t byteCurrentWeapon = 0;
 	bsData.Read(byteCurrentWeapon);
-	ofSync.byteCurrentWeapon ^= (byteCurrentWeapon ^ ofSync.byteCurrentWeapon) & 0x3F;
+	m_LastSendOnFootSync.byteCurrentWeapon ^= (byteCurrentWeapon ^ m_LastSendOnFootSync.byteCurrentWeapon) & 0x3F;
 
-	bsData.Read(ofSync.byteSpecialAction);
-	bsData.ReadVector(ofSync.vecMoveSpeed.x, ofSync.vecMoveSpeed.y, ofSync.vecMoveSpeed.z);
+	bsData.Read(m_LastSendOnFootSync.byteSpecialAction);
+	bsData.ReadVector(m_LastSendOnFootSync.vecMoveSpeed.x, m_LastSendOnFootSync.vecMoveSpeed.y, m_LastSendOnFootSync.vecMoveSpeed.z);
 
 	bool bHasVehicleSurfingInfo;
 	bsData.Read(bHasVehicleSurfingInfo);
 	if (bHasVehicleSurfingInfo)
 	{
-		bsData.Read(ofSync.wSurfID);
-		bsData.Read(ofSync.vecSurfOffsets.x);
-		bsData.Read(ofSync.vecSurfOffsets.y);
-		bsData.Read(ofSync.vecSurfOffsets.z);
+		bsData.Read(m_LastSendOnFootSync.wSurfInfo);
+		bsData.Read(m_LastSendOnFootSync.vecSurfOffsets.x);
+		bsData.Read(m_LastSendOnFootSync.vecSurfOffsets.y);
+		bsData.Read(m_LastSendOnFootSync.vecSurfOffsets.z);
 	}
 	else
-		ofSync.wSurfID = INVALID_VEHICLE_ID;
+		m_LastSendOnFootSync.wSurfInfo = INVALID_VEHICLE_ID;
 
 	bool bHasAnimation;
 	bsData.Read(bHasAnimation);
 	if (bHasAnimation) {
-		bsData.Read(ofSync.dwAnimation);
+		bsData.Read(m_LastSendOnFootSync.dwAnimation);
 	}
 	else {
-		ofSync.dwAnimation = 0x80000000;
+		m_LastSendOnFootSync.dwAnimation = 0x80000000;
 	}
 
 	CRemotePlayer *pRemotePlayer = GetPlayerPool()->GetAt(playerId);
 	if (pRemotePlayer) {
-		pRemotePlayer->StoreOnFootFullSyncData(&ofSync, 0);
+		pRemotePlayer->StoreOnFootFullSyncData(&m_LastSendOnFootSync, 0);
 	}
 }
 

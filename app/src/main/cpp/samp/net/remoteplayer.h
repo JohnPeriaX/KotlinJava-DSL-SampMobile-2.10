@@ -61,7 +61,7 @@ public:
 
 	CPlayerPed* GetPlayerPed() { return m_pPlayerPed; }
 
-	void StoreOnFootFullSyncData(ONFOOT_SYNC_DATA *ofSync, uint32_t dwTime);
+	void StoreOnFootFullSyncData(ONFOOT_SYNC_DATA *m_LastSendOnFootSync, uint32_t dwTime);
 	void StoreInCarFullSyncData(INCAR_SYNC_DATA* picSync, uint32_t dwTime);
 	void StoreAimFullSyncData(AIM_SYNC_DATA* aimSync);
 	void StorePassengerFullSyncData(PASSENGER_SYNC_DATA* psSync);

@@ -1,14 +1,13 @@
 #pragma once
 
+// spectate
 #define SPECTATE_TYPE_NONE						0
 #define SPECTATE_TYPE_PLAYER					1
 #define SPECTATE_TYPE_VEHICLE					2
 
+// special action's
 #define SPECIAL_ACTION_NONE						0
-#define SPECIAL_ACTION_DUCK						1
 #define SPECIAL_ACTION_USEJETPACK				2
-#define SPECIAL_ACTION_ENTER_VEHICLE			3
-#define SPECIAL_ACTION_EXIT_VEHICLE				4
 #define SPECIAL_ACTION_DANCE1					5
 #define SPECIAL_ACTION_DANCE2					6
 #define SPECIAL_ACTION_DANCE3					7
@@ -17,13 +16,23 @@
 #define SPECIAL_ACTION_USECELLPHONE				11
 #define SPECIAL_ACTION_SITTING					12
 #define SPECIAL_ACTION_STOPUSECELLPHONE			13
-#define SPECIAL_ACTION_DRINK_BEER				20
-#define SPECIAL_ACTION_SMOKE_CIGGY				21
-#define SPECIAL_ACTION_DRINK_WINE				22
-#define SPECIAL_ACTION_DRINK_SPRUNK				23
-#define SPECIAL_ACTION_CUFFED					24
-#define SPECIAL_ACTION_CARRY					25
-#define SPECIAL_ACTION_PISSING					68
+#define SPECIAL_ACTION_NIGHTVISION				14
+#define SPECIAL_ACTION_THERMALVISION			15
+
+// added in 0.3
+#define SPECIAL_ACTION_DUCK 			1
+#define SPECIAL_ACTION_ENTER_VEHICLE 	3
+#define SPECIAL_ACTION_EXIT_VEHICLE 	4
+#define SPECIAL_ACTION_DRINK_BEER		20
+#define SPECIAL_ACTION_SMOKE_CIGGY		21
+#define SPECIAL_ACTION_DRINK_WINE		22
+#define SPECIAL_ACTION_DRINK_SPRUNK		23
+#define SPECIAL_ACTION_PISSING			68
+
+// added in 0.3e
+#define SPECIAL_ACTION_CUFFED			24
+// added in 0.3x
+#define SPECIAL_ACTION_CARRY			25
 
 #define BULLET_HIT_TYPE_NONE					0
 #define BULLET_HIT_TYPE_PLAYER					1
@@ -41,20 +50,21 @@
 extern bool bNeedEnterVehicle;
 
 #pragma pack(push, 1)
-typedef struct _PLAYER_SPAWN_INFO
+struct PLAYER_SPAWN_INFO
 {
-	uint8_t byteTeam;
-	int iSkin;
-	uint8_t unk;
-	CVector vecPos;
-	float fRotation;
-	int iSpawnWeapons[3];
-	int iSpawnWeaponsAmmo[3];
-} PLAYER_SPAWN_INFO;
+    uint8_t byteTeam;
+    int iSkin;
+    uint8_t unk;
+    CVector vecPos;
+    float fRotation;
+    int iSpawnWeapons[3];
+    int iSpawnWeaponsAmmo[3];
+};
 #pragma pack(pop)
+VALIDATE_SIZE(PLAYER_SPAWN_INFO, 46);
 
 #pragma pack(push, 1)
-typedef struct _ONFOOT_SYNC_DATA
+struct ONFOOT_SYNC_DATA
 {
 	uint16_t lrAnalog;				// +0
 	uint16_t udAnalog;				// +2
@@ -67,73 +77,111 @@ typedef struct _ONFOOT_SYNC_DATA
 	uint8_t byteSpecialAction;		// +37
 	CVector vecMoveSpeed;			// +38
 	CVector vecSurfOffsets;			// +50
-	uint16_t wSurfID;				// +62
-	uint32_t dwAnimation;			// 64
-} ONFOOT_SYNC_DATA;					// size = 68
+	uint16_t wSurfInfo;				// +62
+	union {
+		struct {
+			uint16_t id;
+			uint8_t  frameDelta;
+			union {
+				struct {
+					bool    loop : 1;
+					bool    lockX : 1;
+					bool    lockY : 1;
+					bool    freeze : 1;
+					uint8_t time : 2;
+					uint8_t _unused : 1;
+					bool    regular : 1;
+				};
+				uint8_t value;
+			} flags;
+		} animation;
+		struct {
+			uint32_t  dwAnimation;
+			//uint16_t  dwAnimationFlags;
+		};
+	};
+};
 #pragma pack(pop)
+VALIDATE_SIZE(ONFOOT_SYNC_DATA, 68);
 
 #pragma pack(push, 1)
-typedef struct _SPECTATOR_SYNC_DATA
+struct SPECTATOR_SYNC_DATA
 {
-	uint16_t	lrAnalog;
-	uint16_t	udAnalog;
-	uint16_t	wKeys;
-	CVector		vecPos;
-} SPECTATOR_SYNC_DATA;
-#pragma pack(pop)
-
-
-#pragma pack(push, 1)
-typedef struct _AIM_SYNC_DATA
-{
-	uint8_t	byteCamMode;
-	CVector vecAimf;
-	CVector vecAimPos;
-	float fAimZ;
-	uint8_t byteCamExtZoom : 6;
-	uint8_t byteWeaponState : 2;
-	uint8_t aspect_ratio;
-} AIM_SYNC_DATA;
-#pragma pack(pop)
-
-#pragma pack(push, 1)
-typedef struct _INCAR_SYNC_DATA
-{
-	VEHICLEID VehicleID;
-	uint16_t lrAnalog;
-	uint16_t udAnalog;
-	uint16_t wKeys;
-	CQuaternion quat;
-	CVector vecPos;
-	CVector vecMoveSpeed;
-	float fCarHealth;
-	uint8_t bytePlayerHealth;
-	uint8_t bytePlayerArmour;
-	uint8_t byteCurrentWeapon;
-	uint8_t byteSirenOn;
-	uint8_t byteLandingGearState;
-	uint16_t TrailerID;
-	float fTrainSpeed;
-} INCAR_SYNC_DATA;
-#pragma pack(pop)
-
-#pragma pack(push, 1)
-typedef struct _PASSENGER_SYNC_DATA
-{
-	VEHICLEID VehicleID;
-	uint8_t byteSeatFlags;
-	uint8_t byteCurrentWeapon;
-	uint8_t bytePlayerHealth;
-	uint8_t bytePlayerArmour;
 	uint16_t lrAnalog;
 	uint16_t udAnalog;
 	uint16_t wKeys;
 	CVector vecPos;
-} PASSENGER_SYNC_DATA;
+};
 #pragma pack(pop)
+VALIDATE_SIZE(SPECTATOR_SYNC_DATA, 18);
 
 #pragma pack(push, 1)
-typedef struct _BULLET_SYNC_DATA
+struct AIM_SYNC_DATA
+{
+	uint8_t		byteCamMode;
+	CVector 	vecAimf;
+	CVector 	vecAimPos;
+	float 		fAimZ;
+	uint8_t 	byteCamExtZoom : 6;
+	uint8_t 	byteWeaponState : 2;
+	uint8_t 	aspect_ratio;
+};
+#pragma pack(pop)
+VALIDATE_SIZE(AIM_SYNC_DATA, 31);
+
+#pragma pack(push, 1)
+struct INCAR_SYNC_DATA
+{
+	VEHICLEID VehicleID;			// +0
+	uint16_t lrAnalog;				// +2
+	uint16_t udAnalog;				// +4
+	uint16_t wKeys;					// +6
+	CQuaternion quat;				// +8
+	CVector vecPos;					// +24
+	CVector vecMoveSpeed;			// +36
+	float fCarHealth;				// +48
+	uint8_t bytePlayerHealth;		// +52
+	uint8_t bytePlayerArmour;		// +53
+	uint8_t byteCurrentWeapon;		// +54
+	uint8_t byteSirenOn;			// +55
+	uint8_t byteLandingGearState;	// +56
+	VEHICLEID TrailerID;			// +57
+
+	union
+	{
+		uint32_t HydraThrustAngle;
+		float fTrainSpeed;
+	};
+};
+#pragma pack(pop)
+VALIDATE_SIZE(INCAR_SYNC_DATA, 63);
+
+#pragma pack(push, 1)
+struct PASSENGER_SYNC_DATA
+{
+	VEHICLEID VehicleID;			// +0
+	union {
+		uint16_t DriveBySeatAdditionalKeyWeapon;
+		struct
+		{
+			uint8_t byteSeatFlags : 2;
+			uint8_t byteDriveBy : 2;
+			uint8_t byteCurrentWeapon : 6;
+			uint8_t AdditionalKey : 2;
+		};
+	};
+	uint8_t bytePlayerHealth;		// +4
+	uint8_t bytePlayerArmour;		// +5
+	uint16_t lrAnalog;				// +6
+	uint16_t udAnalog;				// +8
+	uint16_t wKeys;					// +10
+	CVector vecPos;					// +12
+};
+#pragma pack(pop)
+VALIDATE_SIZE(PASSENGER_SYNC_DATA, 24);
+
+#pragma pack(push, 1)
+struct BULLET_SYNC_DATA
 {
 	uint8_t byteHitType;
 	PLAYERID PlayerID;
@@ -141,38 +189,142 @@ typedef struct _BULLET_SYNC_DATA
 	CVector vecPos;
 	CVector vecOffset;
 	uint8_t byteWeaponID;
-} BULLET_SYNC_DATA;
+};
 #pragma pack(pop)
+VALIDATE_SIZE(BULLET_SYNC_DATA, 40);
 
 #pragma pack(push, 1)
-typedef struct _TRAILER_SYNC_DATA
+struct TRAILER_SYNC_DATA
 {
-	VEHICLEID trailerId;			// +0
-	CVector vecPos;			// +2
-	CQuaternion quat;		// +14
-	CVector vecMoveSpeed;	// +30
-	CVector vecTurnSpeed;	// +42
-} TRAILER_SYNC_DATA; 		// size = 54
+	VEHICLEID trailerID;
+	CVector vecPos;
+	CQuaternion quat;
+	CVector vecMoveSpeed;
+	CVector vecTurnSpeed;
+};
 #pragma pack(pop)
+VALIDATE_SIZE(TRAILER_SYNC_DATA, 54);
 
 #pragma pack(push, 1)
-typedef struct _UNOCCUPIED_SYNC_DATA
+struct UNOCCUPIED_SYNC_DATA
 {
 	VEHICLEID vehicleId;			// +0
-	uint8_t byteSeatId;		// +2
-	CVector vecRoll;			// +3
-	CVector vecDirection;	// +15
-	CVector vecPos;			// +27
-	CVector vecMoveSpeed;	// +39
-	CVector vecTurnSpeed;	// +51
-	float fCarHealth;		// +63
-} UNOCCUPIED_SYNC_DATA;		// size = 67
+	uint8_t byteSeatId;				// +2
+	CVector vecRoll;				// +3
+	CVector vecDirection;			// +15
+	CVector vecPos;					// +27
+	CVector vecMoveSpeed;			// +39
+	CVector vecTurnSpeed;			// +51
+	float fCarHealth;				// +63
+};
 #pragma pack(pop)
+VALIDATE_SIZE(UNOCCUPIED_SYNC_DATA, 67);
+
 class CLocalPlayer
 {
 public:
+    static inline int 	m_nPlayersInRange{};
+
+public:
+	bool				m_bWaitingForSpawnRequestReply;
+	uint32_t			m_SpectateID;
+	bool				m_bSpectateProcessed;
+	uint8_t				m_byteSpectateMode;
+	uint8_t				m_byteSpectateType;
+	uint8_t				m_byteTeam;
+	bool				m_bIsActive;
+	int					m_iSelectedClass;
+	VEHICLEID			m_LastVehicle;
+	VEHICLEID			m_nLastVehicle;
+
+	bool                m_bWasInCar;
+    bool				m_bPassengerDriveByMode;
+
+private:
+	CPlayerPed*			m_pPlayerPed;
+
+    uint32_t			m_dwLastStatsUpdateTick;
+    uint32_t			m_dwLastSendTick;
+    uint32_t    		m_dwLastUpdateOnFootData;
+    uint32_t			m_dwLastSendAimSyncTick;
+    uint32_t			m_dwLastSendSyncTick;
+    uint32_t			m_dwLastUpdateInCarData;
+    uint32_t			m_dwLastSendSpecTick;
+    uint32_t			m_dwLastWeaponsUpdateTick;
+    uint32_t 			m_dwLastPerformStuffAnimTick;
+    uint32_t			m_dwLastAimSendTick;
+    uint32_t			m_dwLastSendAimTick;
+    uint32_t			m_dwLastHeadUpdate;
+    uint32_t 			m_dwTimeLastSendOnFootSync;
+    uint32_t 			m_dwLastUpdatePassengerData;
+
+    PLAYER_SPAWN_INFO	m_SpawnInfo;
+    ONFOOT_SYNC_DATA	m_LastSendOnFootSync{};
+    INCAR_SYNC_DATA		m_InCarData;
+    PASSENGER_SYNC_DATA	m_PassengerData;
+    AIM_SYNC_DATA		m_aimSync;
+    TRAILER_SYNC_DATA 	m_TrailerData;
+    UNOCCUPIED_SYNC_DATA m_UnoccupiedData;
+
+	bool				m_bDeathSended;
+
+    uint32_t			m_dwPassengerEnterExit;
+
+    bool				m_bWantsAnotherClass;
+
+	uint8_t				m_byteLastWeapon[13];
+	uint32_t			m_dwLastAmmo[13];
+
+	bool				m_bIsWasted;
+	bool				m_bClearedToSpawn;
+	bool				m_bInRCMode;
+    bool				m_bHasSpawnInfo;
+	uint32_t			m_dwAnimation;
+	bool				m_bSpawnDialogShowed;
+	uint8_t				m_byteCurrentWeapon;
+	
+	bool				m_bIsSpectating;
+
+	int					m_iDisplayZoneTick;
+
+    uint8_t				m_byteCurInterior;
+
+	VEHICLEID			m_CurrentVehicle;
+    PLAYERID 			lastDamageId;
+    eWeaponType 		lastDamageWeap;
+
+	bool				m_bPerformingStuffAnim;
+
+	struct {
+		CVector vecOffsetPos;
+		int dwSurfVehID;
+
+		bool bIsActive;
+		bool bIsVehicle;
+		uintptr_t pSurfInst;
+	} m_surfData;
+
+	struct {
+		uint32_t dwLastMoney;
+		uint32_t dwLastDrunkLevel;
+	} m_statsData;
+
+private:
+	void SendUnoccupiedData(VEHICLEID vehicleId, CVehicle *pVehicle);
+
+	int GetOptimumUnoccupiedSendRate();
+
+    bool EnterVehicleAsPassenger();
+
+public:
 	CLocalPlayer();
 	~CLocalPlayer();
+
+	static void SendDeath();
+	void GoEnterVehicle(bool passenger);
+	static uint32_t GetPlayerColor();
+
+    uint32_t CalculateAimSendRate(uint16_t wKeys) const;
 
 	bool Process();
 	bool Spawn();
@@ -195,8 +347,6 @@ public:
 	void HandleClassSelection();
 	void MoveHeadWithCamera();
 
-	//void HandlePassengerEntry();
-	//bool EnterVehicleAsPassenger();
 	bool HandlePassengerEntry();
 	bool GbuttonEnterVehicleAsPassenger();
 	bool EnterVehicleAsDriver();
@@ -272,77 +422,4 @@ public:
 
     void MaybeSendExitVehicle();
     void MaybeSendEnterVehicle();
-
-    bool				m_bPassengerDriveByMode;
-public:
-	bool				m_bWaitingForSpawnRequestReply;
-	uint32_t			m_SpectateID;
-	bool				m_bSpectateProcessed;
-	uint8_t				m_byteSpectateMode;
-	uint8_t				m_byteSpectateType;
-	uint8_t				m_byteTeam;
-	bool				m_bIsActive;
-	int					m_iSelectedClass;
-	VEHICLEID			m_LastVehicle;
-	VEHICLEID			m_nLastVehicle;
-
-
-	bool                 m_bWasInCar;
-private:
-	CPlayerPed*			m_pPlayerPed;
-	bool				m_bIsWasted;
-	bool				m_bClearedToSpawn;
-	bool				m_bInRCMode;
-    bool				m_bHasSpawnInfo;
-	uint32_t			m_dwAnimation;
-	bool				m_bSpawnDialogShowed;
-	uint8_t				m_byteCurrentWeapon;
-	uint8_t				m_byteLastWeapon[13];
-	uint32_t			m_dwLastAmmo[13];
-
-	PLAYER_SPAWN_INFO	m_SpawnInfo;
-	ONFOOT_SYNC_DATA	m_ofSync;
-	INCAR_SYNC_DATA		m_icSync;
-	PASSENGER_SYNC_DATA	m_psSync;
-	AIM_SYNC_DATA		m_aimSync;
-	TRAILER_SYNC_DATA 	m_TrailerData;
-	UNOCCUPIED_SYNC_DATA m_UnoccupiedData;
-
-	bool				m_bIsSpectating;
-
-	int					m_iDisplayZoneTick;
-	uint32_t			m_dwLastStatsUpdateTick;
-	uint32_t			m_dwLastSendTick;
-	uint32_t    		m_dwLastUpdateOnFootData;
-	uint32_t			m_dwLastSendAimSyncTick;
-	uint32_t			m_dwLastSendSyncTick;
-	uint32_t			m_dwLastUpdateInCarData;
-	uint32_t			m_dwLastSendSpecTick;
-	uint32_t			m_dwLastWeaponsUpdateTick;
-	uint32_t 			m_dwLastPerformStuffAnimTick;
-
-	uint8_t				m_byteCurInterior;
-	VEHICLEID			m_CurrentVehicle;
-
-	bool				m_bPerformingStuffAnim;
-
-	struct {
-		CVector vecOffsetPos;
-		int dwSurfVehID;
-
-		bool bIsActive;
-		bool bIsVehicle;
-		uintptr_t pSurfInst;
-	} m_surfData;
-
-	struct {
-		uint32_t dwLastMoney;
-		uint32_t dwLastDrunkLevel;
-	} m_statsData;
-
-	void SendUnoccupiedData(VEHICLEID vehicleId, CVehicle *pVehicle);
-
-	int GetOptimumUnoccupiedSendRate();
-
-    bool EnterVehicleAsPassenger();
 };
