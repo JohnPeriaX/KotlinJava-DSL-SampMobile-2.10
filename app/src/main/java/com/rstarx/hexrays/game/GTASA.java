@@ -13,6 +13,8 @@ import com.rstarx.hexrays.launcher.util.SharedPreferenceCore;
 import com.rstarx.hexrays.launcher.util.SignatureChecker;
 import com.wardrumstudios.utils.WarMedia;
 
+import java.io.File;
+
 @Obfuscate
 public class GTASA extends WarMedia {
     // public static GTASA gtasaSelf = null;
@@ -82,6 +84,22 @@ public class GTASA extends WarMedia {
         super.onConfigurationChanged(configuration);
     }
 
+    private void clearModelCache() {
+        try {
+            File file = new File(getExternalFilesDir(null).toString() + "/CINFO.BIN");
+            if (file.exists()) {
+                file.delete();
+            }
+
+            file = new File(getExternalFilesDir(null).toString() + "/models/MINFO.BIN");
+            if (file.exists()) {
+                file.delete();
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
     public void onCreate(Bundle bundle)
     {
         if(!once)
@@ -94,6 +112,8 @@ public class GTASA extends WarMedia {
             Toast.makeText(this, "Use original launcher! No remake", Toast.LENGTH_LONG).show();
             return;
         }
+
+        clearModelCache();
 
         System.out.println("GTASA onCreate");
         //  gtasaSelf = this;

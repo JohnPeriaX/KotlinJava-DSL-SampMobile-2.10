@@ -105,6 +105,8 @@ public class MainActivity extends AppCompatActivity {
             file.delete();
         }
 
+        clearModelCache();
+
         FragmentManager fm = getSupportFragmentManager();
         ViewPagerAdapter sa = new ViewPagerAdapter(fm);
         ViewPagerWithoutSwipe pa = findViewById(R.id.fragment_place);
@@ -336,5 +338,21 @@ public class MainActivity extends AppCompatActivity {
     @Override
     public void onBackPressed() {
         super.onBackPressed();
+    }
+
+    private void clearModelCache() {
+        try {
+            File file = new File(getExternalFilesDir(null).toString() + "/CINFO.BIN");
+            if (file.exists()) {
+                file.delete();
+            }
+
+            file = new File(getExternalFilesDir(null).toString() + "/models/MINFO.BIN");
+            if (file.exists()) {
+                file.delete();
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 }

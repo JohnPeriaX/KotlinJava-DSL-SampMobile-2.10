@@ -206,10 +206,25 @@ void handler3(int signum, siginfo_t *info, void* contextPtr)
 	return;
 }
 
+
+void ClearModelCache()
+{
+	if(g_pszStorage)
+	{
+		char path[0xFF];
+		sprintf(path, "%smodels/MINFO.BIN", g_pszStorage);
+		std::remove(path);
+		sprintf(path, "%sCINFO.BIN", g_pszStorage);
+		std::remove(path);
+	}
+}
+
 void DoInitStuff()
 {
 	if (bGameInited == false)
 	{
+		ClearModelCache();
+
 		pPlayerTags = new CPlayerTags();
 		pSnapShotHelper = new CSnapShotHelper();
 		pMaterialTextGenerator = new MaterialTextGenerator();
