@@ -1049,7 +1049,7 @@ VEHICLEID CPlayerPed::GetCurrentSampVehicleID()
 	if(!m_pPed->pVehicle)
         return INVALID_VEHICLE_ID;
 
-	return pNetGame->GetVehiclePool()->FindIDFromGtaPtr((CVehicleGTA *)m_pPed->pVehicle);
+	return pNetGame->GetVehiclePool()->FindIDFromGtaPtr(m_pPed->pVehicle);
 }
 
 int CPlayerPed::GetCurrentVehicleID()
