@@ -55,7 +55,12 @@ target_link_libraries(samp
         )
 
 # Set compilation flags
-#
-set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -w -s -g -fvisibility=hidden -pthread -Wall -O3 -fexceptions")
+# Debug: default symbol visibility for easier JNI and debugging
+# Release: hidden symbol visibility for smaller binary and encapsulation
+set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -w -s -g -pthread -Wall -O3 -fexceptions")
+target_compile_options(samp PRIVATE
+        $<$<CONFIG:Debug>:-fvisibility=default>
+        $<$<CONFIG:Release>:-fvisibility=hidden>
+)
 target_link_options(samp PRIVATE "-Wl,-z,max-page-size=16384")
 

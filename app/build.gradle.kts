@@ -61,6 +61,13 @@ android {
             isMinifyEnabled = false
             signingConfig = signingConfigs.getByName("release")
 
+            // Debug: Use default symbol visibility for native builds
+            externalNativeBuild {
+                cmake {
+                    cppFlags += "-fvisibility=default"
+                }
+            }
+
             proguardFiles(
                 getDefaultProguardFile("proguard-android-optimize.txt"),
                 "proguard-rules.pro"
@@ -72,6 +79,13 @@ android {
             isJniDebuggable = false
             isMinifyEnabled = false
             signingConfig = signingConfigs.getByName("release")
+
+            // Release: Hide native symbols to reduce binary size and surface
+            externalNativeBuild {
+                cmake {
+                    cppFlags += "-fvisibility=hidden"
+                }
+            }
 
             proguardFiles(
                 getDefaultProguardFile("proguard-android-optimize.txt"),
@@ -150,6 +164,7 @@ afterEvaluate {
         val taskName = "copy${variant.name.replaceFirstChar { if (it.isLowerCase()) it.uppercase() else it.toString() }}ApksToLaragon"
         
         tasks.register<Copy>(taskName) {
+            doNotTrackState("Destination directory contains unreadable content")
             description = "Copies ${variant.name} APKs to Laragon www directory"
             into("C:\\laragon\\www")
             
