@@ -49,6 +49,8 @@
 
 extern bool bNeedEnterVehicle;
 
+//class CPlayerPed;
+
 #pragma pack(push, 1)
 struct PLAYER_SPAWN_INFO
 {
@@ -226,6 +228,8 @@ public:
     static inline int 	m_nPlayersInRange{};
 
 public:
+	//CPlayerPed*			m_pPlayerPed;
+
 	bool				m_bWaitingForSpawnRequestReply;
 	uint32_t			m_SpectateID;
 	bool				m_bSpectateProcessed;
@@ -324,7 +328,7 @@ public:
 	void GoEnterVehicle(bool passenger);
 	static uint32_t GetPlayerColor();
 
-    uint32_t CalculateAimSendRate(uint16_t wKeys) const;
+    uint32_t CalculateAimSendRate(uint16_t wKeys);
 
 	bool Process();
 	bool Spawn();
@@ -365,8 +369,8 @@ public:
 
 	void SetPlayerColor(uint32_t dwColor);
 
-	int GetOptimumOnFootSendRate();
-	int GetOptimumInCarSendRate();
+    int GetOptimumOnFootSendRate();
+    int GetOptimumInCarSendRate();
 
 	void SendPrevClass();
 	void SendNextClass();
