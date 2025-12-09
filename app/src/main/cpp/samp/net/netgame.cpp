@@ -726,13 +726,13 @@ void CNetGame::Packet_PlayerSync(Packet *pkt)
 	bsData.Read(bHasVehicleSurfingInfo);
 	if (bHasVehicleSurfingInfo)
 	{
-		bsData.Read(m_LastSendOnFootSync.wSurfInfo);
+		bsData.Read(m_LastSendOnFootSync.wSurfID);
 		bsData.Read(m_LastSendOnFootSync.vecSurfOffsets.x);
 		bsData.Read(m_LastSendOnFootSync.vecSurfOffsets.y);
 		bsData.Read(m_LastSendOnFootSync.vecSurfOffsets.z);
 	}
 	else
-		m_LastSendOnFootSync.wSurfInfo = INVALID_VEHICLE_ID;
+		m_LastSendOnFootSync.wSurfID = INVALID_VEHICLE_ID;
 
 	bool bHasAnimation;
 	bsData.Read(bHasAnimation);
