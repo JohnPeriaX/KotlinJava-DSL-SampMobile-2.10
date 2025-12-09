@@ -448,7 +448,7 @@ void CLocalPlayer::ResetAllSyncAttributes()
 
     memset(&m_SpawnInfo, 0, sizeof(PLAYER_SPAWN_INFO));
     memset(&m_LastSendOnFootSync, 0, sizeof(ONFOOT_SYNC_DATA));
-    memset(&m_LastSendOnFootSync, 0, sizeof(INCAR_SYNC_DATA));
+    memset(&m_InCarData, 0, sizeof(INCAR_SYNC_DATA));
     memset(&m_TrailerData, 0, sizeof(TRAILER_SYNC_DATA));
     memset(&m_PassengerData, 0, sizeof(PASSENGER_SYNC_DATA));
     memset(&m_aimSync, 0, sizeof(AIM_SYNC_DATA));
@@ -694,64 +694,64 @@ void CLocalPlayer::SendOnFootFullSyncData()
     uint8_t exKeys = m_pPlayerPed->GetAdditionalKeys();
     uint16_t wKeys = m_pPlayerPed->GetKeys(&lrAnalog, &udAnalog);
 
-    ONFOOT_SYNC_DATA m_LastSendOnFootSync;
+    ONFOOT_SYNC_DATA ofSync;
 
     matPlayer = m_pPlayerPed->m_pPed->GetMatrix().ToRwMatrix();
     vecMoveSpeed = m_pPlayerPed->m_pPed->GetMoveSpeed();
 
-    m_LastSendOnFootSync.lrAnalog = lrAnalog;
-    m_LastSendOnFootSync.udAnalog = udAnalog;
-    m_LastSendOnFootSync.wKeys = wKeys;
-    m_LastSendOnFootSync.vecPos.x = matPlayer.pos.x;
-    m_LastSendOnFootSync.vecPos.y = matPlayer.pos.y;
-    m_LastSendOnFootSync.vecPos.z = matPlayer.pos.z;
+    ofSync.lrAnalog = lrAnalog;
+    ofSync.udAnalog = udAnalog;
+    ofSync.wKeys = wKeys;
+    ofSync.vecPos.x = matPlayer.pos.x;
+    ofSync.vecPos.y = matPlayer.pos.y;
+    ofSync.vecPos.z = matPlayer.pos.z;
 
-    m_LastSendOnFootSync.quat.SetFromMatrix(&matPlayer);
-    m_LastSendOnFootSync.quat.Normalize();
+    ofSync.quat.SetFromMatrix(&matPlayer);
+    ofSync.quat.Normalize();
 
-    if (FloatOffset(m_LastSendOnFootSync.quat.w, m_LastSendOnFootSync.quat.w) < 0.00001 &&
-        FloatOffset(m_LastSendOnFootSync.quat.x, m_LastSendOnFootSync.quat.x) < 0.00001 &&
-        FloatOffset(m_LastSendOnFootSync.quat.y, m_LastSendOnFootSync.quat.y) < 0.00001 &&
-        FloatOffset(m_LastSendOnFootSync.quat.z, m_LastSendOnFootSync.quat.z) < 0.00001)
+    if (FloatOffset(ofSync.quat.w, m_LastSendOnFootSync.quat.w) < 0.00001 &&
+        FloatOffset(ofSync.quat.x, m_LastSendOnFootSync.quat.x) < 0.00001 &&
+        FloatOffset(ofSync.quat.y, m_LastSendOnFootSync.quat.y) < 0.00001 &&
+        FloatOffset(ofSync.quat.z, m_LastSendOnFootSync.quat.z) < 0.00001)
     {
-        m_LastSendOnFootSync.quat.Set(m_LastSendOnFootSync.quat);
+        ofSync.quat.Set(m_LastSendOnFootSync.quat);
     }
 
-    m_LastSendOnFootSync.byteHealth = (uint8_t)m_pPlayerPed->GetHealth();
-    m_LastSendOnFootSync.byteArmour = (uint8_t)m_pPlayerPed->GetArmour();
+    ofSync.byteHealth = (uint8_t)m_pPlayerPed->GetHealth();
+    ofSync.byteArmour = (uint8_t)m_pPlayerPed->GetArmour();
 
-    m_LastSendOnFootSync.byteCurrentWeapon = (exKeys << 6) | m_LastSendOnFootSync.byteCurrentWeapon & 0x3F;
-    m_LastSendOnFootSync.byteCurrentWeapon ^= (m_LastSendOnFootSync.byteCurrentWeapon ^ m_pPlayerPed->GetCurrentWeapon()) & 0x3F;
-    m_LastSendOnFootSync.byteSpecialAction = GetSpecialAction();
-    m_LastSendOnFootSync.vecMoveSpeed.x = vecMoveSpeed.x;
-    m_LastSendOnFootSync.vecMoveSpeed.y = vecMoveSpeed.y;
-    m_LastSendOnFootSync.vecMoveSpeed.z = vecMoveSpeed.z;
+    ofSync.byteCurrentWeapon = (exKeys << 6) | ofSync.byteCurrentWeapon & 0x3F;
+    ofSync.byteCurrentWeapon ^= (ofSync.byteCurrentWeapon ^ m_pPlayerPed->GetCurrentWeapon()) & 0x3F;
+    ofSync.byteSpecialAction = GetSpecialAction();
+    ofSync.vecMoveSpeed.x = vecMoveSpeed.x;
+    ofSync.vecMoveSpeed.y = vecMoveSpeed.y;
+    ofSync.vecMoveSpeed.z = vecMoveSpeed.z;
 
-    m_LastSendOnFootSync.vecSurfOffsets.x = 0.0f;
-    m_LastSendOnFootSync.vecSurfOffsets.y = 0.0f;
-    m_LastSendOnFootSync.vecSurfOffsets.z = 0.0f;
-    m_LastSendOnFootSync.wSurfInfo = 0;
+    ofSync.vecSurfOffsets.x = 0.0f;
+    ofSync.vecSurfOffsets.y = 0.0f;
+    ofSync.vecSurfOffsets.z = 0.0f;
+    ofSync.wSurfInfo = 0;
     if(m_surfData.bIsActive){
         if(m_surfData.bIsVehicle && m_surfData.dwSurfVehID != INVALID_VEHICLE_ID){
             CVehicle* pVeh = (CVehicle*)m_surfData.pSurfInst;
-            m_LastSendOnFootSync.vecSurfOffsets.x = m_surfData.vecOffsetPos.x;
-            m_LastSendOnFootSync.vecSurfOffsets.y = m_surfData.vecOffsetPos.y;
-            m_LastSendOnFootSync.vecSurfOffsets.z = m_surfData.vecOffsetPos.z;
-            m_LastSendOnFootSync.wSurfInfo = m_surfData.dwSurfVehID;
+            ofSync.vecSurfOffsets.x = m_surfData.vecOffsetPos.x;
+            ofSync.vecSurfOffsets.y = m_surfData.vecOffsetPos.y;
+            ofSync.vecSurfOffsets.z = m_surfData.vecOffsetPos.z;
+            ofSync.wSurfInfo = m_surfData.dwSurfVehID;
         }
     }
 
-    m_LastSendOnFootSync.dwAnimation = 0;
+    ofSync.dwAnimation = 0;
     //_this->field_104 = 1;
 
-    if ((CTimer::m_snTimeInMillisecondsNonClipped - m_dwLastUpdateOnFootData) > 500 || memcmp(&m_LastSendOnFootSync, &m_LastSendOnFootSync, sizeof(ONFOOT_SYNC_DATA)))
+    if ((CTimer::m_snTimeInMillisecondsNonClipped - m_dwLastUpdateOnFootData) > 500 || memcmp(&m_LastSendOnFootSync, &ofSync, sizeof(ONFOOT_SYNC_DATA)))
     {
         m_dwLastUpdateOnFootData = CTimer::m_snTimeInMillisecondsNonClipped;
 
         bsPlayerSync.Write((uint8_t)ID_PLAYER_SYNC);
-        bsPlayerSync.Write((char*)&m_LastSendOnFootSync, sizeof(ONFOOT_SYNC_DATA));
+        bsPlayerSync.Write((char*)&ofSync, sizeof(ONFOOT_SYNC_DATA));
         pNetGame->GetRakClient()->Send(&bsPlayerSync, HIGH_PRIORITY, UNRELIABLE_SEQUENCED, 1);
-        m_LastSendOnFootSync = m_LastSendOnFootSync;
+        m_LastSendOnFootSync = ofSync;
     }
 }
 
@@ -789,12 +789,12 @@ void CLocalPlayer::SendInCarFullSyncData()
     icSync.quat.SetFromMatrix(&mat);
     icSync.quat.Normalize();
 
-    if (	FloatOffset(icSync.quat.w, m_LastSendOnFootSync.quat.w) < 0.00001f
-            &&	FloatOffset(icSync.quat.x, m_LastSendOnFootSync.quat.x) < 0.00001f
-            &&	FloatOffset(icSync.quat.y, m_LastSendOnFootSync.quat.y) < 0.00001f
-            &&	FloatOffset(icSync.quat.z, m_LastSendOnFootSync.quat.z) < 0.00001f)
+    if (	FloatOffset(icSync.quat.w, m_InCarData.quat.w) < 0.00001f
+            &&	FloatOffset(icSync.quat.x, m_InCarData.quat.x) < 0.00001f
+            &&	FloatOffset(icSync.quat.y, m_InCarData.quat.y) < 0.00001f
+            &&	FloatOffset(icSync.quat.z, m_InCarData.quat.z) < 0.00001f)
     {
-        icSync.quat.Set(m_LastSendOnFootSync.quat);
+        icSync.quat.Set(m_InCarData.quat);
     }
 
     icSync.vecPos = mat.pos;
@@ -852,15 +852,15 @@ void CLocalPlayer::SendInCarFullSyncData()
     if(icSync.TrailerID != INVALID_VEHICLE_ID)
         SendTrailerData(icSync.TrailerID);
 
-    //if (IsNeedSyncDataSend(&m_LastSendOnFootSync, &icSync, sizeof(INCAR_SYNC_DATA)))
-    if( (CTimer::m_snTimeInMillisecondsNonClipped - m_dwLastUpdateInCarData) > 500 || memcmp(&m_LastSendOnFootSync, &icSync, sizeof(INCAR_SYNC_DATA)))
+    //if (IsNeedSyncDataSend(&m_InCarData, &icSync, sizeof(INCAR_SYNC_DATA)))
+    if( (CTimer::m_snTimeInMillisecondsNonClipped - m_dwLastUpdateInCarData) > 500 || memcmp(&m_InCarData, &icSync, sizeof(INCAR_SYNC_DATA)))
     {
         RakNet::BitStream bsVehicleSync;
         bsVehicleSync.Write((uint8_t) ID_VEHICLE_SYNC);
         bsVehicleSync.Write((char *) &icSync, sizeof(INCAR_SYNC_DATA));
         pNetGame->GetRakClient()->Send(&bsVehicleSync, HIGH_PRIORITY, UNRELIABLE_SEQUENCED, 0);
 
-        memcpy(&m_LastSendOnFootSync, &icSync, sizeof(INCAR_SYNC_DATA));
+        memcpy(&m_InCarData, &icSync, sizeof(INCAR_SYNC_DATA));
     }
 
     //if (pVehicle->HasTurret() || CTimer::m_snTimeInMillisecondsNonClipped - m_dwLastSendAimSyncTick > 1000)
