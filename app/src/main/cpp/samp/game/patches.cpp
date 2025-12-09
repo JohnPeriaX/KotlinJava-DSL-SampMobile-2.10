@@ -160,7 +160,7 @@ void ApplyPatches_level0()
     CHook::WriteMemory(g_libGTASA + 0x23FDE0, (uintptr_t)"\x22\x00\x80\x52", 4);
 #endif
 
-    CHook::RET("_ZN6CTrain10InitTrainsEv"); // CTrain::InitTrains
+    //CHook::RET("_ZN6CTrain10InitTrainsEv"); // CTrain::InitTrains crash
 
     //CHook::RET("_ZN8CClothes4InitEv"); // CClothes::Init()
 	//CHook::RET("_ZN8CClothes13RebuildPlayerEP10CPlayerPedb"); // CClothes::RebuildPlayer
