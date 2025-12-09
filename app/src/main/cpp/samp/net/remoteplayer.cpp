@@ -436,7 +436,7 @@ bool CRemotePlayer::SurfingOnVehicle()
 {
 	if(GetState() == PLAYER_STATE_ONFOOT) 
 	{
-		if(m_LastSendOnFootSync.wSurfID != -1 && m_LastSendOnFootSync.wSurfID < MAX_VEHICLES) // its an vehicle
+		if(m_LastSendOnFootSync.wSurfInfo != -1 && m_LastSendOnFootSync.wSurfInfo < MAX_VEHICLES) // its an vehicle
 			return true;
 	}
 	return false;
@@ -446,8 +446,8 @@ bool CRemotePlayer::SurfingOnObject()
 {
 	if(GetState() == PLAYER_STATE_ONFOOT) 
 	{
-		if(m_LastSendOnFootSync.wSurfID != -1 && m_LastSendOnFootSync.wSurfID >= MAX_VEHICLES &&
-			m_LastSendOnFootSync.wSurfID < MAX_VEHICLES + MAX_OBJECTS) // its an object
+		if(m_LastSendOnFootSync.wSurfInfo != -1 && m_LastSendOnFootSync.wSurfInfo >= MAX_VEHICLES &&
+			m_LastSendOnFootSync.wSurfInfo < MAX_VEHICLES + MAX_OBJECTS) // its an object
 		{
 			return true;
 		}
@@ -1101,7 +1101,7 @@ bool CRemotePlayer::IsVoiceActive()
 
 void CRemotePlayer::ProcessSurfing()
 {
-	if(!m_pPlayerPed || GetState() != PLAYER_STATE_ONFOOT || m_LastSendOnFootSync.wSurfID == INVALID_VEHICLE_ID)
+	if(!m_pPlayerPed || GetState() != PLAYER_STATE_ONFOOT || m_LastSendOnFootSync.wSurfInfo == INVALID_VEHICLE_ID)
 		return;
 
 	CVehicle *pVehicleSurfing = 0;
@@ -1112,18 +1112,18 @@ void CRemotePlayer::ProcessSurfing()
 		CVehiclePool *pVehiclePool = pNetGame->GetVehiclePool();
 		if(pVehiclePool)
 		{
-			CVehicle *pVehicle = pVehiclePool->GetAt(m_LastSendOnFootSync.wSurfID);
+			CVehicle *pVehicle = pVehiclePool->GetAt(m_LastSendOnFootSync.wSurfInfo);
 			if(pVehicle) 
 				pVehicleSurfing = pVehicle;
 		}
 	}
 	else if(SurfingOnObject())
 	{
-		m_LastSendOnFootSync.wSurfID -= MAX_VEHICLES; // derive proper object id
+		m_LastSendOnFootSync.wSurfInfo -= MAX_VEHICLES; // derive proper object id
 		CObjectPool *pObjectPool = pNetGame->GetObjectPool();
 		if(pObjectPool)
 		{
-			CObject *pObject = pObjectPool->GetAt((uint16_t)m_LastSendOnFootSync.wSurfID);
+			CObject *pObject = pObjectPool->GetAt((uint16_t)m_LastSendOnFootSync.wSurfInfo);
 			if(pObject)
 				pObjectSurfing = pObject;
 		}
