@@ -1239,14 +1239,14 @@ void CRemotePlayer::StoreTrailerFullSyncData(TRAILER_SYNC_DATA *trSync)
 	}
 }
 
-void CompressNormalVector(CVector *vecOut, CVector vecIn)
+static void CompressNormalVector(CVector *vecOut, CVector vecIn)
 {
     vecOut->x = (short)(vecIn.x * 10000.0f);
     vecOut->y = (short)(vecIn.y * 10000.0f);
     vecOut->z = (short)(vecIn.z * 10000.0f);
 }
 
-void DecompressNormalVector(RwV3d *vecOut, CVector vecIn)
+static void DecompressNormalVector(RwV3d *vecOut, CVector vecIn)
 {
     vecOut->x = (float)(vecIn.x / 10000.0f);
     vecOut->y = (float)(vecIn.y / 10000.0f);

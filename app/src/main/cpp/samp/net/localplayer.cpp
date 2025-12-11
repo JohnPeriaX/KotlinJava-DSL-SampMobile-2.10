@@ -1893,14 +1893,14 @@ void CLocalPlayer::SendBulletSyncData(PLAYERID byteHitID, uint8_t byteHitType, C
     pNetGame->GetRakClient()->Send(&bsBulletSync, HIGH_PRIORITY, UNRELIABLE_SEQUENCED, 0);
 }
 
-void CompressNormalVector(CVector *vecOut, CVector vecIn)
+static void CompressNormalVector(CVector *vecOut, CVector vecIn)
 {
     vecOut->x = (short)(vecIn.x * 10000.0f);
     vecOut->y = (short)(vecIn.y * 10000.0f);
     vecOut->z = (short)(vecIn.z * 10000.0f);
 }
 
-void DecompressNormalVector(RwV3d *vecOut, CVector vecIn)
+static void DecompressNormalVector(RwV3d *vecOut, CVector vecIn)
 {
     vecOut->x = (float)(vecIn.x / 10000.0f);
     vecOut->y = (float)(vecIn.y / 10000.0f);
@@ -1941,6 +1941,13 @@ bool CLocalPlayer::ProcessUnoccupiedSync(VEHICLEID vehicleId, CVehicle *pVehicle
             return false;
         }
 
+        // --- ย้ายตัวแปรขึ้นมาประกาศตรงนี้ (ก่อน goto) เพื่อแก้ Error ---
+        float fDistance = 0.0f;
+        float fSmallest = 100000.0f;
+        PLAYERID iClosestPlayerId = INVALID_PLAYER_ID;
+        bool bCollisionFound = false;
+        // --------------------------------------------------------
+
         // 4. Passenger Check: ถ้ามีคนนั่งข้างใน ให้คนนั้น Sync (Priority สูงกว่าคนนอกรถ)
         for(int i = 0; i < 7; i++)
         {
@@ -1953,11 +1960,6 @@ bool CLocalPlayer::ProcessUnoccupiedSync(VEHICLEID vehicleId, CVehicle *pVehicle
         }
 
         // 5. Priority Check (Hybrid Logic): หาคนที่มีสิทธิ์ส่งข้อมูลที่สุด
-        float fDistance = 0.0f;
-        float fSmallest = 100000.0f;
-        PLAYERID iClosestPlayerId = INVALID_PLAYER_ID;
-        bool bCollisionFound = false;
-
         for(PLAYERID i = 0; i < MAX_PLAYERS; i++)
         {
             CPlayerPed* pPlayerPed = NULL;
