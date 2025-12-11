@@ -1167,23 +1167,23 @@ void CNetGame::Packet_TrailerSync(Packet *pkt)
 
 void CNetGame::Packet_UnoccupiedSync(Packet *pkt)
 {
-	if(m_iGameState != GAMESTATE_CONNECTED) return;
+    if(m_iGameState != GAMESTATE_CONNECTED) return;
 
-	uint8_t bytePacketId;
-	PLAYERID playerId;
+    uint8_t bytePacketId;
+    PLAYERID playerId;
 
-	UNOCCUPIED_SYNC_DATA unocSync;
-	memset(&unocSync, 0, sizeof(UNOCCUPIED_SYNC_DATA));
+    UNOCCUPIED_SYNC_DATA unocSync;
+    memset(&unocSync, 0, sizeof(UNOCCUPIED_SYNC_DATA));
 
-	RakNet::BitStream bsUnocSync((unsigned char *)pkt->data, pkt->length, false);
-	bsUnocSync.Read(bytePacketId);
-	bsUnocSync.Read(playerId);
-	bsUnocSync.Read((char*)&unocSync,sizeof(UNOCCUPIED_SYNC_DATA));
+    RakNet::BitStream bsUnocSync((unsigned char *)pkt->data, pkt->length, false);
+    bsUnocSync.Read(bytePacketId);
+    bsUnocSync.Read(playerId);
+    bsUnocSync.Read((char*)&unocSync,sizeof(UNOCCUPIED_SYNC_DATA));
 
-	if(GetPlayerPool())
-	{
-		CRemotePlayer *pPlayer = GetPlayerPool()->GetAt(playerId);
-		if(pPlayer)
-			pPlayer->StoreUnoccupiedSyncData(&unocSync);
-	}
+    if(GetPlayerPool())
+    {
+        CRemotePlayer *pPlayer = GetPlayerPool()->GetAt(playerId);
+        if(pPlayer)
+            pPlayer->StoreUnoccupiedSyncData(&unocSync);
+    }
 }

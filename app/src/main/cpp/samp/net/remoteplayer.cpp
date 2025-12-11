@@ -1239,143 +1239,103 @@ void CRemotePlayer::StoreTrailerFullSyncData(TRAILER_SYNC_DATA *trSync)
 	}
 }
 
-void DecompressNormalVector(RwV3d *vecOut, RwV3d vecIn)
+void CompressNormalVector(CVector *vecOut, CVector vecIn)
 {
-	vecOut->x = (float)(vecIn.x / 10000.0);
-	vecOut->y = (float)(vecIn.y / 10000.0);
-	vecOut->z = (float)(vecIn.z / 10000.0);
+    vecOut->x = (short)(vecIn.x * 10000.0f);
+    vecOut->y = (short)(vecIn.y * 10000.0f);
+    vecOut->z = (short)(vecIn.z * 10000.0f);
+}
+
+void DecompressNormalVector(RwV3d *vecOut, CVector vecIn)
+{
+    vecOut->x = (float)(vecIn.x / 10000.0f);
+    vecOut->y = (float)(vecIn.y / 10000.0f);
+    vecOut->z = (float)(vecIn.z / 10000.0f);
 }
 
 void CRemotePlayer::StoreUnoccupiedSyncData(UNOCCUPIED_SYNC_DATA *unocSync)
 {
-	VEHICLEID UnocID = unocSync->vehicleId;
-	if (!UnocID || UnocID == INVALID_VEHICLE_ID) return;
+    VEHICLEID UnocID = unocSync->vehicleId;
+    if (!UnocID || UnocID == INVALID_VEHICLE_ID) return;
 
-	CVehiclePool *pVehiclePool = pNetGame->GetVehiclePool();
-	CVehicle *pVehicle = NULL;
-	if (pVehiclePool) {
-		pVehicle = pVehiclePool->GetAt(UnocID);
-		//pVehiclePool->SetLastUndrivenID(UnocID, m_PlayerID);
-	}
+    CVehiclePool *pVehiclePool = pNetGame->GetVehiclePool();
+    CVehicle *pVehicle = NULL;
+    if (pVehiclePool) {
+        pVehicle = pVehiclePool->GetAt(UnocID);
+        // pVehiclePool->SetLastUndrivenID(UnocID, m_PlayerID); // Optional: บันทึกว่าใครขับล่าสุด
+    }
 
-	if(pVehicle && !pVehicle->HasADriver())
-	{
-		RwMatrix matWorld = pVehicle->m_pVehicle->GetMatrix().ToRwMatrix();
+    if(pVehicle && !pVehicle->HasADriver() && !pVehicle->GetTractor())
+    {
+        // สร้าง Matrix เป้าหมายจาก Packet
+        RwMatrix matTarget = pVehicle->m_pVehicle->GetMatrix().ToRwMatrix();
+        
+        // Decompress ทิศทาง (Rotation)
+        DecompressNormalVector(&matTarget.up, unocSync->vecDirection);
+        DecompressNormalVector(&matTarget.right, unocSync->vecRoll);
+        
+        // ตำแหน่งเป้าหมาย (Target Position)
+        CVector vecTargetPos;
+        vecTargetPos.x = unocSync->vecPos.x;
+        vecTargetPos.y = unocSync->vecPos.y;
+        vecTargetPos.z = unocSync->vecPos.z;
 
-		DecompressNormalVector(&matWorld.up, unocSync->vecDirection);
-		DecompressNormalVector(&matWorld.right, unocSync->vecRoll);
+        // ตำแหน่งปัจจุบัน (Current Position)
+        CVector vecCurrentPos;
+        vecCurrentPos = pVehicle->m_pVehicle->GetPosition();
 
-		// if we're pretty already there.. no translation.
-		if( (FloatOffset(unocSync->vecPos.x,matWorld.pos.x) <= 0.1f) &&
-			(FloatOffset(unocSync->vecPos.y,matWorld.pos.y) <= 0.1f) &&
-			(FloatOffset(unocSync->vecPos.z,matWorld.pos.z) <= 0.1f) )
-		{
-			return;
-		}
+        // คำนวณความต่าง (Diff)
+        float fOffX = unocSync->vecPos.x - vecCurrentPos.x;
+        float fOffY = unocSync->vecPos.y - vecCurrentPos.y;
+        float fOffZ = unocSync->vecPos.z - vecCurrentPos.z;
 
-		// if difference is over 8 units, direct translation
-		if( !pVehicle->m_pVehicle->IsAdded() ||
-			(FloatOffset(unocSync->vecPos.x,matWorld.pos.x) > 8.0f) ||
-			(FloatOffset(unocSync->vecPos.y,matWorld.pos.y) > 8.0f) ||
-			(FloatOffset(unocSync->vecPos.z,matWorld.pos.z) > 8.0f) ) {
+        // --- Hybrid Logic Starts Here ---
 
-			matWorld.pos.x = unocSync->vecPos.x;
-			matWorld.pos.y = unocSync->vecPos.y;
-			matWorld.pos.z = unocSync->vecPos.z;
+        // Case 1: Deadzone (ถ้าระยะห่างน้อยมากๆ < 0.1) -> ไม่ต้องทำอะไร ป้องกันรถสั่น
+        if(fabs(fOffX) < 0.1f && fabs(fOffY) < 0.1f && fabs(fOffZ) < 0.1f) 
+        {
+            pVehicle->m_pVehicle->SetTurnSpeed(unocSync->vecTurnSpeed);
+            // ไม่ต้อง SetVelocity ถ้ารถนิ่งแล้ว
+            return;
+        }
 
-			pVehicle->m_pVehicle->SetMatrix((CMatrix&)matWorld);
-			pVehicle->m_pVehicle->SetVelocity(unocSync->vecMoveSpeed);
-			pVehicle->m_pVehicle->SetTurnSpeed(unocSync->vecTurnSpeed);
-			return;
-		}
+        // Case 2: Teleport (ถ้าระยะห่างมากเกินไป > 8.0) -> วาร์ปเลย (กันตกแมพ/บัค)
+        if(!pVehicle->m_pVehicle->IsAdded() || 
+           fabs(fOffX) > 8.0f || fabs(fOffY) > 8.0f || fabs(fOffZ) > 8.0f)
+        {
+            matTarget.pos.x = vecTargetPos.x;
+            matTarget.pos.y = vecTargetPos.y;
+            matTarget.pos.z = vecTargetPos.z;
 
-		// gradually increase/decrease velocities towards the target
-		pVehicle->m_pVehicle->SetMatrix((CMatrix&)matWorld);							// rotation
-		pVehicle->m_pVehicle->SetVelocity(unocSync->vecMoveSpeed);	// move velocity
-		pVehicle->m_pVehicle->SetTurnSpeed(unocSync->vecTurnSpeed);	// turn velocity
+            pVehicle->m_pVehicle->SetMatrix((CMatrix&)matTarget);
+            pVehicle->m_pVehicle->SetVelocity(unocSync->vecMoveSpeed);
+            pVehicle->m_pVehicle->SetTurnSpeed(unocSync->vecTurnSpeed);
+        }
+        else 
+        {
+            // Case 3: Interpolation / Smoothing (สูตรลับความเนียน)
+            // เราจะไม่วาร์ปตำแหน่ง แต่จะใช้ความเร็ว "ดึง" รถไปหาจุดหมาย
+            
+            // A. ตั้งค่าหัวรถให้หันถูกทางทันที (Rotation) แต่คงตำแหน่งเดิมไว้ก่อน
+            matTarget.pos.x = vecCurrentPos.x;
+            matTarget.pos.y = vecCurrentPos.y;
+            matTarget.pos.z = vecCurrentPos.z;
+            pVehicle->m_pVehicle->SetMatrix((CMatrix&)matTarget); 
 
-		CVector vec = {0.0f, 0.0f, 0.0f};
-        vec = pVehicle->m_pVehicle->GetMoveSpeed();
+            // B. คำนวณแรงส่ง (Velocity Correction)
+            // สูตร: ความเร็วจาก Packet + (ระยะห่าง * ค่าความหน่วง 0.05)
+            CVector vecNewSpeed = unocSync->vecMoveSpeed;
+            float fAlpha = 0.05f; // ยิ่งค่าน้อยยิ่งสมูท (0.05 - 0.1)
 
-		if( FloatOffset(unocSync->vecPos.x,matWorld.pos.x) > 0.05 ) {
-			vec.x += (unocSync->vecPos.x - matWorld.pos.x) * 0.05f;
-		}
-		if( FloatOffset(unocSync->vecPos.y,matWorld.pos.y) > 0.05 ) {
-			vec.y += (unocSync->vecPos.y - matWorld.pos.y) * 0.05f;
-		}
-		if( FloatOffset(unocSync->vecPos.z,matWorld.pos.z) > 0.05 ) {
-			vec.z += (unocSync->vecPos.z - matWorld.pos.z) * 0.05f;
-		}
+            if(fabs(fOffX) > 0.05f) vecNewSpeed.x += fOffX * fAlpha;
+            if(fabs(fOffY) > 0.05f) vecNewSpeed.y += fOffY * fAlpha;
+            if(fabs(fOffZ) > 0.05f) vecNewSpeed.z += fOffZ * fAlpha;
 
-		pVehicle->m_pVehicle->SetVelocity(vec);
-		//pVehicle->m_bRemoteUnocSync = true;
-	}
-	/*VEHICLEID vehicleId = unocSync->vehicleId;
-	if(vehicleId < 0 || vehicleId >= MAX_VEHICLES)
-		return;
-
-	CVehiclePool *pVehiclePool = pNetGame->GetVehiclePool();
-	if(pVehiclePool)
-	{
-		CVehicle *pVehicle = pVehiclePool->GetAt(vehicleId);
-		if(pVehicle)
-		{
-			RwMatrix matVehicle;
-			pVehicle->GetMatrix(&matVehicle);
-
-			DecompressNormalVector(&matVehicle.right, unocSync->vecRoll);
-			DecompressNormalVector(&matVehicle.up, unocSync->vecDirection);
-
-			//unocSync->quat.GetAsMatrix(&matVehicle);
-
-			if(pVehicle->IsAdded() && !pVehicle->HasADriver() && pVehicle->GetTractor() == NULL)
-			{
-				m_vecPosOffset.x = FloatOffset(unocSync->vecPos.x, matVehicle.pos.x);
-				m_vecPosOffset.y = FloatOffset(unocSync->vecPos.y, matVehicle.pos.y);
-				m_vecPosOffset.z = FloatOffset(unocSync->vecPos.z, matVehicle.pos.z);
-
-				if(m_vecPosOffset.x > 0.1f && m_vecPosOffset.y > 0.1f && m_vecPosOffset.z > 0.1f)
-				{
-					if(m_vecPosOffset.x > 6.0f || m_vecPosOffset.y > 6.0f || m_vecPosOffset.z > 3.0f)
-					{
-						matVehicle.pos.x = unocSync->vecPos.x;
-						matVehicle.pos.y = unocSync->vecPos.y;
-						matVehicle.pos.z = unocSync->vecPos.z;
-
-						pVehicle->SetMatrix(matVehicle);
-						pVehicle->SetVelocity(unocSync->vecMoveSpeed);
-						pVehicle->SetTurnSpeedVector(unocSync->vecTurnSpeed);
-					}
-					else
-					{
-						pVehicle->SetMatrix(matVehicle);
-						pVehicle->SetVelocity(unocSync->vecMoveSpeed);
-						pVehicle->SetTurnSpeedVector(unocSync->vecTurnSpeed);
-
-						CVector vecMoveSpeed;
-						pVehicle->GetMoveSpeedVector(&vecMoveSpeed);
-
-						if(m_vecPosOffset.x > 0.05)
-							vecMoveSpeed.x += (unocSync->vecPos.x - matVehicle.pos.x) * 0.05f;
-						if(m_vecPosOffset.y > 0.05)
-							vecMoveSpeed.y += (unocSync->vecPos.y - matVehicle.pos.y) * 0.05f;
-						if(m_vecPosOffset.z > 0.05)
-							vecMoveSpeed.z += (unocSync->vecPos.z - matVehicle.pos.z) * 0.05f;
-
-						pVehicle->SetVelocity(vecMoveSpeed);
-					}
-				}
-			}
-			else
-			{
-				matVehicle.pos.x = unocSync->vecPos.x;
-				matVehicle.pos.y = unocSync->vecPos.y;
-				matVehicle.pos.z = unocSync->vecPos.z;
-
-				pVehicle->SetMatrix(matVehicle);
-			}
-		}
-	}*/
+            // Apply ค่าใหม่
+            pVehicle->m_pVehicle->SetVelocity(vecNewSpeed);
+            pVehicle->m_pVehicle->SetTurnSpeed(unocSync->vecTurnSpeed);
+        }
+    }
 }
 
 void CRemotePlayer::ProcessSpecialActions(uint8_t byteSpecialAction)

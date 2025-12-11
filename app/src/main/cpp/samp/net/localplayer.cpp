@@ -1893,110 +1893,136 @@ void CLocalPlayer::SendBulletSyncData(PLAYERID byteHitID, uint8_t byteHitType, C
     pNetGame->GetRakClient()->Send(&bsBulletSync, HIGH_PRIORITY, UNRELIABLE_SEQUENCED, 0);
 }
 
+void CompressNormalVector(CVector *vecOut, CVector vecIn)
+{
+    vecOut->x = (short)(vecIn.x * 10000.0f);
+    vecOut->y = (short)(vecIn.y * 10000.0f);
+    vecOut->z = (short)(vecIn.z * 10000.0f);
+}
+
+void DecompressNormalVector(RwV3d *vecOut, CVector vecIn)
+{
+    vecOut->x = (float)(vecIn.x / 10000.0f);
+    vecOut->y = (float)(vecIn.y / 10000.0f);
+    vecOut->z = (float)(vecIn.z / 10000.0f);
+}
+
 int CLocalPlayer::GetOptimumUnoccupiedSendRate()
 {
     if(!m_pPlayerPed) return 1000;
 
-    if(m_pPlayerPed->GetGtaVehicle()) // ramming an unoccupied vehicle
+    if(m_pPlayerPed->GetGtaVehicle()) // กรณีขับรถชนรถ (Ramming)
         return GetOptimumInCarSendRate();
-    else return GetOptimumOnFootSendRate(); // pushing an unoccupied vehicle
+    else 
+        return GetOptimumOnFootSendRate(); // กรณีเดินดันรถ (Pushing)
 }
 
 bool CLocalPlayer::ProcessUnoccupiedSync(VEHICLEID vehicleId, CVehicle *pVehicle)
 {
-    if((CTimer::m_snTimeInMillisecondsNonClipped - m_dwLastSendTick) > (unsigned int)GetOptimumUnoccupiedSendRate())
-        //if(vehicleId <= 2000 && pVehicle)
+    // 1. Rate Limit: ตรวจสอบว่าถึงเวลาส่งหรือยัง
+    if((CTimer::m_snTimeInMillisecondsNonClipped - m_dwLastSendTick) < (unsigned int)GetOptimumUnoccupiedSendRate())
+        return false;
+
+    CPlayerPool *pPlayerPool = pNetGame->GetPlayerPool();
+    CVehiclePool *pVehiclePool = pNetGame->GetVehiclePool();
+    if(!pPlayerPool || !pVehiclePool) return false;
+
+    CVehicleGTA *pVehicleType = pVehicle->m_pVehicle;
+    
+    // 2. Validity Check: ตรวจสอบความถูกต้องของรถ
+    if(pVehicleType && m_pPlayerPed && !pVehicle->IsATrainPart() &&
+       !pVehicle->IsATrailer() && !pVehicle->GetTractor())
     {
-        CPlayerPool *pPlayerPool = pNetGame->GetPlayerPool();
-        CVehiclePool *pVehiclePool = pNetGame->GetVehiclePool();
-        if(!pPlayerPool || !pVehiclePool) return false;
-
-        CVehicleGTA *pVehicleType = pVehicle->m_pVehicle;
-        if(pVehicleType && m_pPlayerPed && !pVehicle->IsATrainPart() &&
-           !pVehicle->IsATrailer() && !pVehicle->GetTractor())
+        // 3. Driver Check: ถ้ารถมีคนขับอยู่แล้ว หรือรถอยู่ไกลเกิน หรือรถจอดนิ่งสนิท ไม่ต้องส่ง
+        CPedGTA *pDriver = pVehicleType->pDriver;
+        if((pDriver && pDriver->IsInVehicle()) ||
+           pVehicleType->GetDistanceFromLocalPlayerPed() > 90.0f)
         {
-            CPedGTA *pDriver = pVehicleType->pDriver;
-            if(pDriver && pDriver->IsInVehicle() ||
-               pVehicle->m_pVehicle->GetDistanceFromLocalPlayerPed() > 90.0f /*||
-			   pVehicle->m_pVehicle->IsStationary()*/)
+            return false;
+        }
+
+        // 4. Passenger Check: ถ้ามีผู้เล่นอื่นนั่งอยู่ในรถ ให้คนนั้นรับผิดชอบ Sync
+        for(int i = 0; i < 7; i++)
+        {
+            CPedGTA *pPassenger = pVehicleType->m_apPassengers[i];
+            if(pPassenger && pPassenger->m_nPedType == (ePedType)0) // 0 = Player Ped
             {
-                return false;
+                if(pPassenger == m_pPlayerPed->m_pPed) goto sync; // เราเป็นผู้โดยสาร ส่งได้
+                return false; // มีคนอื่นนั่งอยู่ ให้เขา Sync
             }
+        }
 
-            float fDistance = 0.0f, fSmallest = 1000000.0f;
-            PLAYERID iClosestPlayerId = 0;
+        // 5. Priority Check (Hybrid Logic): หาคนที่เหมาะที่สุดที่จะส่งข้อมูล
+        float fDistance = 0.0f;
+        float fSmallest = 100000.0f;
+        PLAYERID iClosestPlayerId = INVALID_PLAYER_ID;
+        bool bCollisionFound = false;
 
-            for(int i = 0; i < 7; i++)
+        for(PLAYERID i = 0; i < MAX_PLAYERS; i++)
+        {
+            CPlayerPed* pPlayerPed = NULL;
+
+            if(i == pPlayerPool->GetLocalPlayerID())
+                pPlayerPed = m_pPlayerPed;
+            else
             {
-                CPedGTA *pPassenger = pVehicleType->m_apPassengers[i];
-                if(pPassenger && pPassenger->m_nPedType == (ePedType)0)
-                {
-                    if(pPassenger == m_pPlayerPed->m_pPed) goto sync;
-                    return false;
-                }
-            }
-
-            for(PLAYERID i = 0; i < MAX_PLAYERS; i++)
-            {
-                CPlayerPed* pPlayerPed;
-
-                if(i == pPlayerPool->GetLocalPlayerID())
-                    pPlayerPed = m_pPlayerPed;
-                else
+                if(pPlayerPool->GetSlotState(i))
                 {
                     CRemotePlayer* pTmpPlayer = pPlayerPool->GetAt(i);
                     if(pTmpPlayer) pPlayerPed = pTmpPlayer->GetPlayerPed();
                 }
+            }
 
-                if(pVehicle && pPlayerPed && pPlayerPed->m_pPed->IsAdded())
+            if(pVehicle && pPlayerPed && pPlayerPed->m_pPed->IsAdded())
+            {
+                fDistance = pPlayerPed->GetDistanceFromVehicle(pVehicle);
+
+                // Priority สูงสุด: ถ้าอยู่ใกล้มาก (< 1.5m) ถือว่ากำลัง "ดันรถ" (Pushing)
+                // Logic นี้ช่วยให้เวลาเราเดินชนรถ รถจะขยับตามเราทันที ไม่รอคนอื่น
+                if (!bCollisionFound && fDistance < 1.5f) 
                 {
-                    fDistance = pPlayerPed->GetDistanceFromVehicle(pVehicle);
-                    if(i)
+                    fSmallest = fDistance;
+                    iClosestPlayerId = i;
+                    bCollisionFound = true; // เจอคนดันแล้ว หยุดหาคนอื่น
+                }
+                else if (!bCollisionFound) // ถ้ายังไม่มีคนดัน ให้หาคนที่ใกล้ที่สุดตามปกติ
+                {
+                    if(fDistance < fSmallest)
                     {
-                        if(fDistance < fSmallest)
-                        {
-                            fSmallest = fDistance;
-                            iClosestPlayerId = i;
-                        }
+                        fSmallest = fDistance;
+                        iClosestPlayerId = i;
                     }
-                    else fSmallest = fDistance;
                 }
             }
+        }
 
-            if(iClosestPlayerId == pPlayerPool->GetLocalPlayerID() && fSmallest <= 90.0f)
-            {
-                sync:
-                SendUnoccupiedData(vehicleId, pVehicle);
-                m_dwLastSendTick = CTimer::m_snTimeInMillisecondsNonClipped;
-                return true;
-            }
+        // ถ้าเราคือผู้โชคดี (ใกล้สุด หรือ ดันรถอยู่) และระยะไม่เกิน 90 เมตร
+        if(iClosestPlayerId == pPlayerPool->GetLocalPlayerID() && fSmallest <= 90.0f)
+        {
+            sync:
+            SendUnoccupiedData(vehicleId, pVehicle);
+            m_dwLastSendTick = CTimer::m_snTimeInMillisecondsNonClipped;
+            return true;
         }
     }
 
     return false;
 }
 
-void CompressNormalVector(CVector *vecOut, CVector vecIn)
-{
-vecOut->x = (short)(vecIn.x * 10000.0);
-vecOut->y = (short)(vecIn.y * 10000.0);
-vecOut->z = (short)(vecIn.z * 10000.0);
-}
-
 void CLocalPlayer::SendUnoccupiedData(VEHICLEID vehicleId, CVehicle *pVehicle)
 {
     RakNet::BitStream bsUnoccupiedSync;
-    CVector vecMoveSpeed, vecTurnSpeed;
-    RwMatrix matVehicle;
     UNOCCUPIED_SYNC_DATA unSync;
+    RwMatrix matVehicle;
 
+    // ดึง Matrix จากเกม
     matVehicle = pVehicle->m_pVehicle->GetMatrix().ToRwMatrix();
 
+    // Compress Rotation (อัดข้อมูลทิศทาง)
     CompressNormalVector(&unSync.vecRoll, matVehicle.right);
     CompressNormalVector(&unSync.vecDirection, matVehicle.up);
 
     unSync.vehicleId = vehicleId;
-
     unSync.byteSeatId = m_pPlayerPed->GetVehicleSeatID();
 
     unSync.vecMoveSpeed = pVehicle->m_pVehicle->GetMoveSpeed();
@@ -2008,12 +2034,14 @@ void CLocalPlayer::SendUnoccupiedData(VEHICLEID vehicleId, CVehicle *pVehicle)
 
     unSync.fCarHealth = pVehicle->GetHealth();
 
+    // Bandwidth Optimization: ส่งเฉพาะเมื่อข้อมูลเปลี่ยนไปมากพอ
     if(IsNeedSyncDataSend(&m_UnoccupiedData, &unSync, sizeof(UNOCCUPIED_SYNC_DATA)))
     {
         bsUnoccupiedSync.Write((uint8_t)ID_UNOCCUPIED_SYNC);
         bsUnoccupiedSync.Write((char*)&unSync, sizeof(UNOCCUPIED_SYNC_DATA));
         pNetGame->GetRakClient()->Send(&bsUnoccupiedSync, HIGH_PRIORITY, UNRELIABLE_SEQUENCED, 0);
 
+        // จำค่าล่าสุดไว้เปรียบเทียบครั้งหน้า
         memcpy(&m_UnoccupiedData, &unSync, sizeof(UNOCCUPIED_SYNC_DATA));
     }
 }
