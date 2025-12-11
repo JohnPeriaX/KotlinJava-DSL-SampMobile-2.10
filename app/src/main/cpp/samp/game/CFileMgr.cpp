@@ -81,7 +81,9 @@ FILE* CFileMgr::OpenFile(const char *path, const char *mode) {
     auto file = fopen(ms_path, mode);
 
     if(!file) {
-        FLog("Fail open file %s", ms_path);
+        if (!strstr(ms_path, ".idx") && !strstr(ms_path, "gta_sa.set") && !strstr(ms_path, "gtasatelem.set") && !strstr(ms_path, "gta3.ini") && !strstr(ms_path, "CINFO.BIN") && !strstr(ms_path, "MINFO.BIN") && !strstr(ms_path, "GTASAsf") && !strstr(ms_path, "Adjustable.cfg")) {
+            FLog("Fail open file %s", ms_path);
+        }
     }
     return file;
 }
