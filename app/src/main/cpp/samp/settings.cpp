@@ -18,9 +18,19 @@ CSettings::CSettings()
 
 	if(reader.ParseError() < 0)
 	{
-		FLog("Error: can't load %s", buff);
-		std::terminate();
-		return;
+		CSimpleIniA ini;
+		ini.SetUnicode(false);
+		ini.SetValue("client", "name", buff);
+		ini.SetValue("client", "host", "127.0.0.1");
+		ini.SetValue("client", "port", "7777");
+		ini.SetValue("client", "password", "");
+		ini.SetValue("client", "version", "0.3.7");
+		ini.SetValue("gui", "androidkeyboard", "false");
+		ini.SetValue("gui", "VoiceChatEnable", "true");
+		ini.SetValue("gui", "fps", "0");
+		ini.SetValue("gui", "ChatMaxMessages", "6");
+		ini.SetValue("gui", "FPSLimit", "120");
+		ini.SaveFile(buff);
 	}
 
 	// client

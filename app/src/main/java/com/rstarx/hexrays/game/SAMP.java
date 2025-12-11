@@ -193,7 +193,8 @@ public class SAMP extends GTASA implements CustomKeyboard.InputListener, HeightP
 
         try {
             initAssetManager(getAssets());
-            initializeSAMP();
+            initAssetManager(getAssets());
+            initializeSAMP(getExternalFilesDir(null).getAbsolutePath() + "/");
         } catch (UnsatisfiedLinkError e5) {
             Log.e(TAG, e5.getMessage());
         }
@@ -211,7 +212,7 @@ public class SAMP extends GTASA implements CustomKeyboard.InputListener, HeightP
         });
     }
 
-    private native void initializeSAMP();
+    private native void initializeSAMP(String storagePath);
     public native void initAssetManager(android.content.res.AssetManager assetManager);
 
 

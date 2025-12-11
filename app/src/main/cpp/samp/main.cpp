@@ -82,23 +82,6 @@ int work = 0;
 
 void ReadSettingFile()
 {
-	/*char path[255] = { 0 };
-	//sprintf(path, "%ssamp.set", g_pszStorage);
-	sprintf(path, "%sNickName.ini", g_pszStorage);
-
-	FILE* fp = fopen(path, "r");
-	if (fp == NULL) return;
-
-	char buf[1024];
-
-	// nickname
-	if (fgets(buf, 1024, fp) != NULL) {
-		buf[strcspn(buf, "\n\r")] = 0;
-		strcpy(g_nick, buf);
-	}
-
-	fclose(fp);*/
-
 	pSettings = new CSettings();
 
 	firebase::crashlytics::SetUserId(pSettings->Get().szNickName);
@@ -296,8 +279,16 @@ void DoInitStuff()
 }
 
 extern "C" {
-	JNIEXPORT void JNICALL Java_com_rstarx_hexrays_game_SAMP_initializeSAMP(JNIEnv *pEnv, jobject thiz)
+	JNIEXPORT void JNICALL Java_com_rstarx_hexrays_game_SAMP_initializeSAMP(JNIEnv *pEnv, jobject thiz, jstring path)
 	{
+		const char *str = pEnv->GetStringUTFChars(path, NULL);
+		if (str != NULL) {
+			if (g_pszStorage == NULL) {
+				g_pszStorage = strdup(str);
+			}
+			pEnv->ReleaseStringUTFChars(path, str);
+		}
+
 		pJavaWrapper = new CJavaWrapper(pEnv, thiz);
 
 	}
@@ -479,8 +470,7 @@ void FLog(const char* fmt, ...)
 
 	if (flLog == nullptr && pszStorage != nullptr)
 	{
-		sprintf(buffer, "%s/samp_log.txt", pszStorage);
-		//LOGI("buffer: %s", buffer);
+		sprintf(buffer, "%s/crashlytics_log.txt", pszStorage);
 		flLog = fopen(buffer, "a");
 	}
 

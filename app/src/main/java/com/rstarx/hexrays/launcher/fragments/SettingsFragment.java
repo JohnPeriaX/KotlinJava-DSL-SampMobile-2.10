@@ -81,9 +81,12 @@ public class SettingsFragment extends Fragment {
 
         File file = new File(getActivity().getExternalFilesDir(null) + "/SAMP/settings.ini");
         try {
+            com.rstarx.hexrays.launcher.util.ConfigValidator.validateConfigFiles(getActivity());
             mWini = new Wini(file);
 
-            mNickName.setText(mWini.get("client", "name"));
+            String nn = mWini.get("client", "name");
+            if (nn == null) nn = "YourName";
+            mNickName.setText(nn);
 
             mWini.store();
         } catch (IOException e) {
@@ -115,30 +118,37 @@ public class SettingsFragment extends Fragment {
 
         mNickName.addTextChangedListener(new TextWatcher() {
             @Override
-            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
-
-            }
+            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) { }
 
             @Override
             public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
                 String text = charSequence.toString();
                 File file = new File(getActivity().getExternalFilesDir(null) + "/SAMP/settings.ini");
-                if(file.exists()) {
-                    try {
-                        if(mWini != null) {
-                            mWini.put("client", "name", text);
-                            mWini.store();
-                        }
-                    } catch (IOException e) {
-                        e.printStackTrace();
+                
+                // สร้างโฟลเดอร์และไฟล์หากยังไม่มี
+                try {
+                    if (!file.getParentFile().exists()) {
+                        file.getParentFile().mkdirs();
                     }
+                    if (!file.exists()) {
+                        file.createNewFile();
+                        // ถ้าสร้างไฟล์ใหม่ ต้อง re-init mWini
+                        mWini = new Wini(file);
+                    }
+                    
+                    if(mWini == null) {
+                        mWini = new Wini(file);
+                    }
+                    
+                    mWini.put("client", "name", text);
+                    mWini.store();
+                } catch (IOException e) {
+                    e.printStackTrace();
                 }
             }
 
             @Override
-            public void afterTextChanged(Editable editable) {
-
-            }
+            public void afterTextChanged(Editable editable) { }
         });
 
         mModifySwitch.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {

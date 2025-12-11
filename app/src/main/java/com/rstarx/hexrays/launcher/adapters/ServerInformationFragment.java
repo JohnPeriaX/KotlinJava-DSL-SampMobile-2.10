@@ -26,8 +26,10 @@ import com.rstarx.hexrays.game.GTASA;
 import com.rstarx.hexrays.game.SAMP;
 import com.rstarx.hexrays.launcher.MainActivity;
 import com.rstarx.hexrays.launcher.util.ButtonAnimator;
+import com.rstarx.hexrays.launcher.util.ConfigValidator;
 import com.rstarx.hexrays.launcher.util.SAMPServerInfo;
 import com.rstarx.hexrays.launcher.util.SharedPreferenceCore;
+import com.rstarx.hexrays.launcher.util.ConfigValidator;
 
 import org.ini4j.Wini;
 
@@ -94,16 +96,16 @@ public class ServerInformationFragment extends Dialog {
         mConnect.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                ConfigValidator.validateConfigFiles(activity);
                 File file = new File(activity.getExternalFilesDir(null) + "/SAMP/settings.ini");
-                if(file.exists()) {
-                    try {
-                        Wini wini = new Wini(file);
-                        wini.put("client", "host", sampServerInfo.getAddress());
-                        wini.put("client", "port", sampServerInfo.getPort());
-                        wini.store();
-                    } catch (IOException e) {
-                        e.printStackTrace();
-                    }
+                try {
+                    Wini wini = new Wini(file);
+                    wini.put("client", "host", sampServerInfo.getAddress());
+                    wini.put("client", "port", sampServerInfo.getPort());
+                    wini.store();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                    Toast.makeText(activity, "Cannot update settings.ini", Toast.LENGTH_SHORT).show();
                 }
 
 
