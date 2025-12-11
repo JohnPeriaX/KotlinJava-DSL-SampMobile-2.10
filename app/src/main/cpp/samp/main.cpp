@@ -470,6 +470,35 @@ void FLog(const char* fmt, ...)
 
 	if (flLog == nullptr && pszStorage != nullptr)
 	{
+		sprintf(buffer, "%s/samp_log.txt", pszStorage);
+		flLog = fopen(buffer, "a");
+	}
+
+	memset(buffer, 0, sizeof(buffer));
+
+	va_list arg;
+	va_start(arg, fmt);
+	vsnprintf(buffer, sizeof(buffer), fmt, arg);
+	va_end(arg);
+
+	LOGI("%s", buffer);
+
+	if (flLog == nullptr) return;
+	fprintf(flLog, "%s\n", buffer);
+	fflush(flLog);
+
+	return;
+}
+
+void crashlyticsLog(const char* fmt, ...)
+{
+	char buffer[0xFF];
+	static FILE* flLog = nullptr;
+	const char* pszStorage = g_pszStorage;
+
+
+	if (flLog == nullptr && pszStorage != nullptr)
+	{
 		sprintf(buffer, "%s/crashlytics_log.txt", pszStorage);
 		flLog = fopen(buffer, "a");
 	}
