@@ -1262,50 +1262,38 @@ void CRemotePlayer::StoreUnoccupiedSyncData(UNOCCUPIED_SYNC_DATA *unocSync)
     CVehicle *pVehicle = NULL;
     if (pVehiclePool) {
         pVehicle = pVehiclePool->GetAt(UnocID);
-        // pVehiclePool->SetLastUndrivenID(UnocID, m_PlayerID); // Optional: บันทึกว่าใครขับล่าสุด
+        // pVehiclePool->SetLastUndrivenID(UnocID, m_PlayerID); // ถ้ามีฟังก์ชันนี้ให้เปิดใช้
     }
 
     if(pVehicle && !pVehicle->HasADriver() && !pVehicle->GetTractor())
     {
-        // สร้าง Matrix เป้าหมายจาก Packet
+        // เตรียม Matrix เป้าหมาย
         RwMatrix matTarget = pVehicle->m_pVehicle->GetMatrix().ToRwMatrix();
         
         // Decompress ทิศทาง (Rotation)
         DecompressNormalVector(&matTarget.up, unocSync->vecDirection);
         DecompressNormalVector(&matTarget.right, unocSync->vecRoll);
         
-        // ตำแหน่งเป้าหมาย (Target Position)
-        CVector vecTargetPos;
-        vecTargetPos.x = unocSync->vecPos.x;
-        vecTargetPos.y = unocSync->vecPos.y;
-        vecTargetPos.z = unocSync->vecPos.z;
-
-        // ตำแหน่งปัจจุบัน (Current Position)
-        CVector vecCurrentPos;
-        vecCurrentPos = pVehicle->m_pVehicle->GetPosition();
-
-        // คำนวณความต่าง (Diff)
+        // ตำแหน่งเป้าหมาย vs ปัจจุบัน
+        CVector vecCurrentPos = pVehicle->m_pVehicle->GetPosition();
         float fOffX = unocSync->vecPos.x - vecCurrentPos.x;
         float fOffY = unocSync->vecPos.y - vecCurrentPos.y;
         float fOffZ = unocSync->vecPos.z - vecCurrentPos.z;
 
-        // --- Hybrid Logic Starts Here ---
-
-        // Case 1: Deadzone (ถ้าระยะห่างน้อยมากๆ < 0.1) -> ไม่ต้องทำอะไร ป้องกันรถสั่น
+        // 1. Deadzone Check: ถ้าระยะห่างน้อยมากๆ (< 0.1) ไม่ต้องทำอะไร (กันสั่น)
         if(fabs(fOffX) < 0.1f && fabs(fOffY) < 0.1f && fabs(fOffZ) < 0.1f) 
         {
             pVehicle->m_pVehicle->SetTurnSpeed(unocSync->vecTurnSpeed);
-            // ไม่ต้อง SetVelocity ถ้ารถนิ่งแล้ว
             return;
         }
 
-        // Case 2: Teleport (ถ้าระยะห่างมากเกินไป > 8.0) -> วาร์ปเลย (กันตกแมพ/บัค)
+        // 2. Teleport Check: ถ้าห่างเกิน 8 เมตร ให้วาร์ปเลย (กันบัค/ตกแมพ)
         if(!pVehicle->m_pVehicle->IsAdded() || 
            fabs(fOffX) > 8.0f || fabs(fOffY) > 8.0f || fabs(fOffZ) > 8.0f)
         {
-            matTarget.pos.x = vecTargetPos.x;
-            matTarget.pos.y = vecTargetPos.y;
-            matTarget.pos.z = vecTargetPos.z;
+            matTarget.pos.x = unocSync->vecPos.x;
+            matTarget.pos.y = unocSync->vecPos.y;
+            matTarget.pos.z = unocSync->vecPos.z;
 
             pVehicle->m_pVehicle->SetMatrix((CMatrix&)matTarget);
             pVehicle->m_pVehicle->SetVelocity(unocSync->vecMoveSpeed);
@@ -1313,25 +1301,23 @@ void CRemotePlayer::StoreUnoccupiedSyncData(UNOCCUPIED_SYNC_DATA *unocSync)
         }
         else 
         {
-            // Case 3: Interpolation / Smoothing (สูตรลับความเนียน)
-            // เราจะไม่วาร์ปตำแหน่ง แต่จะใช้ความเร็ว "ดึง" รถไปหาจุดหมาย
+            // 3. Hybrid Smoothing: ใช้ความเร็ว "ดึง" รถไปหาเป้าหมาย แทนการวาร์ป
             
-            // A. ตั้งค่าหัวรถให้หันถูกทางทันที (Rotation) แต่คงตำแหน่งเดิมไว้ก่อน
+            // ตั้งค่าหัวรถให้หันถูกทางทันที (Rotation) แต่คงตำแหน่งเดิมไว้ก่อน
             matTarget.pos.x = vecCurrentPos.x;
             matTarget.pos.y = vecCurrentPos.y;
             matTarget.pos.z = vecCurrentPos.z;
             pVehicle->m_pVehicle->SetMatrix((CMatrix&)matTarget); 
 
-            // B. คำนวณแรงส่ง (Velocity Correction)
-            // สูตร: ความเร็วจาก Packet + (ระยะห่าง * ค่าความหน่วง 0.05)
+            // คำนวณแรงส่ง (Velocity Correction)
+            // สูตร: ความเร็วจาก Packet + (ระยะห่าง * 0.05)
             CVector vecNewSpeed = unocSync->vecMoveSpeed;
-            float fAlpha = 0.05f; // ยิ่งค่าน้อยยิ่งสมูท (0.05 - 0.1)
+            float fAlpha = 0.05f; 
 
             if(fabs(fOffX) > 0.05f) vecNewSpeed.x += fOffX * fAlpha;
             if(fabs(fOffY) > 0.05f) vecNewSpeed.y += fOffY * fAlpha;
             if(fabs(fOffZ) > 0.05f) vecNewSpeed.z += fOffZ * fAlpha;
 
-            // Apply ค่าใหม่
             pVehicle->m_pVehicle->SetVelocity(vecNewSpeed);
             pVehicle->m_pVehicle->SetTurnSpeed(unocSync->vecTurnSpeed);
         }

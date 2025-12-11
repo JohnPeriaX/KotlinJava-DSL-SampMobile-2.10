@@ -1919,7 +1919,7 @@ int CLocalPlayer::GetOptimumUnoccupiedSendRate()
 
 bool CLocalPlayer::ProcessUnoccupiedSync(VEHICLEID vehicleId, CVehicle *pVehicle)
 {
-    // 1. Rate Limit: ตรวจสอบว่าถึงเวลาส่งหรือยัง
+    // 1. Rate Limit: ตรวจสอบว่าถึงเวลาส่งของ Global หรือยัง
     if((CTimer::m_snTimeInMillisecondsNonClipped - m_dwLastSendTick) < (unsigned int)GetOptimumUnoccupiedSendRate())
         return false;
 
@@ -1929,11 +1929,11 @@ bool CLocalPlayer::ProcessUnoccupiedSync(VEHICLEID vehicleId, CVehicle *pVehicle
 
     CVehicleGTA *pVehicleType = pVehicle->m_pVehicle;
     
-    // 2. Validity Check: ตรวจสอบความถูกต้องของรถ
+    // 2. Validity Check: รถต้องไม่มีคนขับหลัก (Driver)
     if(pVehicleType && m_pPlayerPed && !pVehicle->IsATrainPart() &&
        !pVehicle->IsATrailer() && !pVehicle->GetTractor())
     {
-        // 3. Driver Check: ถ้ารถมีคนขับอยู่แล้ว หรือรถอยู่ไกลเกิน หรือรถจอดนิ่งสนิท ไม่ต้องส่ง
+        // 3. Driver Check: ถ้ามีคนขับอยู่แล้ว (Sync แบบ InCar) ไม่ต้องทำต่อ
         CPedGTA *pDriver = pVehicleType->pDriver;
         if((pDriver && pDriver->IsInVehicle()) ||
            pVehicleType->GetDistanceFromLocalPlayerPed() > 90.0f)
@@ -1941,18 +1941,18 @@ bool CLocalPlayer::ProcessUnoccupiedSync(VEHICLEID vehicleId, CVehicle *pVehicle
             return false;
         }
 
-        // 4. Passenger Check: ถ้ามีผู้เล่นอื่นนั่งอยู่ในรถ ให้คนนั้นรับผิดชอบ Sync
+        // 4. Passenger Check: ถ้ามีคนนั่งข้างใน ให้คนนั้น Sync (Priority สูงกว่าคนนอกรถ)
         for(int i = 0; i < 7; i++)
         {
             CPedGTA *pPassenger = pVehicleType->m_apPassengers[i];
             if(pPassenger && pPassenger->m_nPedType == (ePedType)0) // 0 = Player Ped
             {
-                if(pPassenger == m_pPlayerPed->m_pPed) goto sync; // เราเป็นผู้โดยสาร ส่งได้
-                return false; // มีคนอื่นนั่งอยู่ ให้เขา Sync
+                if(pPassenger == m_pPlayerPed->m_pPed) goto sync; // เราเป็นคนนั่ง เราส่งได้
+                return false; // คนอื่นนั่ง ให้เขาส่ง
             }
         }
 
-        // 5. Priority Check (Hybrid Logic): หาคนที่เหมาะที่สุดที่จะส่งข้อมูล
+        // 5. Priority Check (Hybrid Logic): หาคนที่มีสิทธิ์ส่งข้อมูลที่สุด
         float fDistance = 0.0f;
         float fSmallest = 100000.0f;
         PLAYERID iClosestPlayerId = INVALID_PLAYER_ID;
@@ -1977,8 +1977,9 @@ bool CLocalPlayer::ProcessUnoccupiedSync(VEHICLEID vehicleId, CVehicle *pVehicle
             {
                 fDistance = pPlayerPed->GetDistanceFromVehicle(pVehicle);
 
-                // Priority สูงสุด: ถ้าอยู่ใกล้มาก (< 1.5m) ถือว่ากำลัง "ดันรถ" (Pushing)
-                // Logic นี้ช่วยให้เวลาเราเดินชนรถ รถจะขยับตามเราทันที ไม่รอคนอื่น
+                // *** Hybrid Logic Point ***
+                // ถ้ามีใครอยู่ใกล้รถมากๆ (< 1.5 เมตร) ถือว่ากำลัง "ดันรถ" หรือ "ชนรถ"
+                // ให้สิทธิ์คนนั้นทันที โดยไม่สนว่าคนอื่นจะอยู่ใกล้แค่ไหน (ถ้าเขาไม่ได้ดัน)
                 if (!bCollisionFound && fDistance < 1.5f) 
                 {
                     fSmallest = fDistance;

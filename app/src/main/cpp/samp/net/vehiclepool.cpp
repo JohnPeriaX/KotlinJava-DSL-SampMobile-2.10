@@ -171,7 +171,9 @@ continue;
 
 void CVehiclePool::Process()
 {
+    // ตัวนับจำนวนรถที่ส่งข้อมูลไปแล้วในเฟรมนี้ (Limit Bandwidth)
     uint8_t byteSentUndrivenSync = 0;
+    
     uint32_t dwThisTick = CTimer::m_snTimeInMillisecondsNonClipped;
     CLocalPlayer* pLocalPlayer = pNetGame->GetPlayerPool()->GetLocalPlayer();
 
@@ -186,6 +188,8 @@ void CVehiclePool::Process()
             else
             {
                 CVehicle* pVehicle = m_pVehicles[VehicleID];
+                
+                // ระบบอมตะ (Invulnerable)
                 if (pVehicle->IsDriverLocalPlayer()) {
                     pVehicle->SetInvulnerable(false);
                 }
@@ -193,6 +197,7 @@ void CVehiclePool::Process()
                     pVehicle->SetInvulnerable(true);
                 }
 
+                // เช็ครถพัง
                 if (pVehicle->GetHealth() == 0.0f)
                 {
                     NotifyVehicleDeath(VehicleID);
@@ -204,21 +209,32 @@ void CVehiclePool::Process()
                 }
                 else
                 {
+                    // เช็ครถจมน้ำหรือตกโลก
                     float fDistance = pVehicle->m_pVehicle->GetDistanceFromLocalPlayerPed();
                     if (pVehicle->GetVehicleSubtype() != VEHICLE_SUBTYPE_BOAT &&
                         fDistance < 200.0f &&
-                        pVehicle->HasSunk()) {
+                        pVehicle->HasSunk()) 
+                    {
                         NotifyVehicleDeath(VehicleID);
-                    } else {
-                        /*if ((CTimer::m_snTimeInMillisecondsNonClipped - m_dwLastUndrivenProcessTick[VehicleID]) > 100 &&
-                            byteSentUndrivenSync < 3 &&
-                            pLocalPlayer && pLocalPlayer->ProcessUnoccupiedSync(VehicleID,
-                                                                                m_pVehicles[VehicleID])) {
-                            m_lastUndrivenId[VehicleID] = pNetGame->GetPlayerPool()->GetLocalPlayerID();
-                            m_dwLastUndrivenProcessTick[VehicleID] = CTimer::m_snTimeInMillisecondsNonClipped;
-                            byteSentUndrivenSync++;
-                        }*/
+                    } 
+                    else 
+                    {
+                        // --- ส่วนสำคัญ: UNOCCUPIED SYNC (Hybrid Enabled) ---
+                        // เงื่อนไข: ส่งไม่เกิน 3 คันต่อรอบ และ เว้นระยะเวลาการเช็ค (100ms+)
+                        if (byteSentUndrivenSync < 3 && 
+                           (CTimer::m_snTimeInMillisecondsNonClipped - m_dwLastUndrivenProcessTick[VehicleID]) > 100) 
+                        {
+                            if (pLocalPlayer && pLocalPlayer->ProcessUnoccupiedSync(VehicleID, m_pVehicles[VehicleID])) 
+                            {
+                                // ถ้าส่งข้อมูลสำเร็จ ให้บันทึกเวลาและเพิ่มตัวนับ
+                                // m_lastUndrivenId[VehicleID] = pNetGame->GetPlayerPool()->GetLocalPlayerID(); // ถ้ามีตัวแปรนี้ให้เปิดใช้
+                                m_dwLastUndrivenProcessTick[VehicleID] = CTimer::m_snTimeInMillisecondsNonClipped;
+                                byteSentUndrivenSync++;
+                            }
+                        }
+                        // --------------------------------------------------
 
+                        // ระบบไฟและเครื่องยนต์ (Engine & Lights)
                         if (pNetGame->m_pNetSet->bManualVehicleEngineAndLight) {
                             pVehicle->ApplyEngineState(pVehicle->GetEngineState());
                             pVehicle->ApplyLightState(pVehicle->GetLightState());
@@ -235,10 +251,11 @@ void CVehiclePool::Process()
                             pVehicle->ApplyLightState(pVehicle->GetLightState());
                         }
 
+                        // อัปเดต Pointer เพื่อความชัวร์
                         if (pVehicle->m_pVehicle != m_pGTAVehicles[VehicleID])
                             m_pGTAVehicles[VehicleID] = pVehicle->m_pVehicle;
 
-                        //ProcessColors();
+                        // อัปเดตสถานะอื่นๆ
                         pVehicle->UpdateLastDrivenTime();
                         pVehicle->UpdateColor();
                         pVehicle->ProcessMarkers();
@@ -248,6 +265,7 @@ void CVehiclePool::Process()
         }
     }
 }
+
 /*if((CTimer::m_snTimeInMillisecondsNonClipped - m_dwLastUndrivenProcessTick[x]) < 100 &&
 					byteSentUndrivenSync < 3 &&
 					pLocalPlayer && pLocalPlayer->ProcessUnoccupiedSync(x, m_pVehicles[x]))
